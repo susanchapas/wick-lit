@@ -12,7 +12,7 @@
         var s = JSON.parse(localStorage.getItem("wick.settings") || "{}");
         var m = function (q) { return matchMedia(q).matches; };
         var r = document.documentElement;
-        r.dataset.theme = s.theme || (m("(prefers-contrast: more)") ? "contrast" : m("(prefers-color-scheme: light)") ? "dawn" : "night");
+        r.dataset.theme = s.theme === "dawn" ? "dawn" : (m("(prefers-color-scheme: light)") ? "dawn" : "night");
         if (s.reduceMotion) r.dataset.motion = "still";
       } catch (e) {}
     </script>

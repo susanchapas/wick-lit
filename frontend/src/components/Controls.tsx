@@ -39,7 +39,7 @@ export function Switch({ label, hint, checked, onChange }: SwitchProps) {
 
 interface ChoiceGroupProps<T extends string> {
   legend: ReactNode;
-  options: { value: T; label: ReactNode }[];
+  options: { value: T; label: ReactNode; hint?: ReactNode }[];
   value: T;
   onChange: (next: T) => void;
 }
@@ -62,7 +62,10 @@ export function ChoiceGroup<T extends string>({ legend, options, value, onChange
             />
             <label htmlFor={`${name}-${o.value}`}>
               <Icon name="check" size={20} className="wk-dpick__check" />
-              {o.label}
+              <span>
+                {o.label}
+                {o.hint && <small className="choice__hint">{o.hint}</small>}
+              </span>
             </label>
           </div>
         ))}

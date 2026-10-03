@@ -16,15 +16,25 @@ interface TrailCardProps {
   index: number;
   featured?: boolean;
   headingLevel?: 2 | 3;
+  lit?: boolean;
 }
 
-export function TrailCard({ scenario: s, index, featured, headingLevel = 3 }: TrailCardProps) {
+export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit }: TrailCardProps) {
   const Heading = `h${headingLevel}` as const;
   return (
     <article className={`wk-card wk-card--link wk-ornate${featured ? " wk-ornate-gilded" : ""}`}>
       <span className={`wk-band wk-band--${bands[s.location] ?? "moss"}`} aria-hidden="true" />
+      <span className="wk-glint" aria-hidden="true" />
       <p className="wk-card__over">
-        Trail {String(index + 1).padStart(2, "0")} · {s.location}
+        <span>
+          Trail {String(index + 1).padStart(2, "0")} · {s.location}
+        </span>
+        {lit && (
+          <span className="wk-card__lit">
+            <Icon name="flame" size={20} />
+            Lantern lit
+          </span>
+        )}
       </p>
       <Heading className="wk-card__title">
         <Link to={`/trails/${s.id}`}>{s.title}</Link>
@@ -50,7 +60,7 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3 }: Tr
       </ul>
       <div className="wk-card__foot" aria-hidden="true">
         <span className="wk-card__go">
-          Read the content note
+          View content note
           <Icon name="arrow" size={20} />
         </span>
       </div>

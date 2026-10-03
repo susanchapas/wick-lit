@@ -1,10 +1,19 @@
+import { useHistory } from "../lib/history";
+import type { Scenario } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
 import { Button } from "./Button";
 import { Notice, Skeleton } from "./Feedback";
 import { TrailCard } from "./TrailCard";
 
-export function TrailList({ limit, featureFirst }: { limit?: number; featureFirst?: boolean }) {
+interface TrailListProps {
+  limit?: number;
+  featureFirst?: boolean;
+  filter?: (s: Scenario) => boolean;
+}
+
+export function TrailList({ limit, featureFirst, filter = () => true }: TrailListProps) {
   const { data, error, retry } = useScenarios();
+  const done = new Set(useHistory().map((h) => h.scenarioId));
 
   if (error)
     return (
@@ -16,11 +25,15 @@ export function TrailList({ limit, featureFirst }: { limit?: number; featureFirs
   return (
     <ul className="trail-grid" aria-busy={!data}>
       {data
-        ? data.slice(0, limit).map((s, i) => (
-            <li key={s.id}>
-              <TrailCard scenario={s} index={i} featured={featureFirst && i === 0} />
-            </li>
-          ))
+        ? data
+            .map((s, i) => ({ s, i }))
+            .filter(({ s }) => filter(s))
+            .slice(0, limit)
+            .map(({ s, i }) => (
+              <li key={s.id}>
+                <TrailCard scenario={s} index={i} featured={featureFirst && i === 0} lit={done.has(s.id)} />
+              </li>
+            ))
         : Array.from({ length: limit ?? 4 }, (_, i) => (
             <li key={i}>
               <Skeleton />

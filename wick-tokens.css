@@ -1,4 +1,4 @@
-/* Wick tokens. Set data-theme="night" | "dawn" | "contrast" on the root. Font files: fonts/*.woff2 */
+/* Wick tokens. Set data-theme="night" or "dawn" on the root. Font files: fonts/*.woff2 */
 :root, [data-theme="night"] {
   --night-forest: #06140f;
   --pine: #0f2a20;
@@ -145,79 +145,6 @@
   --bleed-night: 0 20px 40px -14px #3a2e1a4d;
   --focus-ring: 0 0 0 2px #e2d9c5, 0 0 0 5px #0f231a;
 }
-[data-theme="contrast"] {
-  --night-forest: #06140f;
-  --pine: #0f2a20;
-  --moss: #3e6b48;
-  --lichen: #b7ddb0;
-  --lantern-amber: #ffbe4d;
-  --ember: #e08a1e;
-  --flame-core: #fff1c9;
-  --parchment: #f4efe3;
-  --dew-blue: #a6d8f3;
-  --copper: #f2b38a;
-  --ground: #000000;
-  --ground-raised: #000000;
-  --ground-sunken: #000000;
-  --veil: #000000;
-  --frost: #000000;
-  --frost-hover: #1a1a1a;
-  --sill: #ffffff;
-  --vein: #8a8a8a;
-  --edge: #ffffff;
-  --ink: #ffffff;
-  --ink-muted: #ececec;
-  --ink-link: #ffe27a;
-  --lantern: #ffd700;
-  --lantern-hover: #ffe95c;
-  --on-lantern: #000000;
-  --lantern-text: #ffd700;
-  --lantern-soft: #000000;
-  --flame: #ffd700;
-  --focus: #00e5ff;
-  --voice-you: #ffd700;
-  --voice-ai: #9fdfff;
-  --bubble-you: var(--lantern-soft);
-  --bubble-ai: var(--frost);
-  --steady: #9fdfff;
-  --steady-soft: #000000;
-  --caution: #fff36b;
-  --caution-soft: #000000;
-  --danger: #ffb38a;
-  --danger-soft: #000000;
-  --d-direct: #ffd700;
-  --d-distract: #7ff6ff;
-  --d-delegate: #ffc4f6;
-  --d-delay: #d0d6ff;
-  --d-document: #b8ffb0;
-  --on-d: #000000;
-  --meter-fill: #ffffff;
-  --meter-track: var(--ground-sunken);
-  --gold-deep: #b8860b;
-  --gold: #ffd700;
-  --gold-bright: #fff3a0;
-  --gem: #e3a6ff;
-  --gem-text: #efcbff;
-  --gem-soft: #000000;
-  --tree-far: #000000;
-  --tree-near: #000000;
-  --lantern-pool: #000000;
-  --inset-frost: inset 0 0 0 2px #ffffff;
-  --inset-raised: inset 0 0 0 2px #ffffff;
-  --inset-well: inset 0 0 0 2px #ffffff;
-  --inset-well-focus: inset 0 0 0 3px #00e5ff;
-  --inset-well-error: inset 0 0 0 3px #ffb38a;
-  --inset-lantern: inset 0 0 0 2px #000000;
-  --inset-press: inset 0 0 0 4px #00e5ff;
-  --rim-gilt: inset 0 0 0 2px #ffd700;
-  --glow-gem: 0 0 0 2px #ffd700;
-  --glow-lantern: 0 0 0 2px #ffd700;
-  --glow-soft: 0 0 0 2px #ffffff;
-  --glow-voice: 0 0 0 4px #ffd700;
-  --glow-ai: 0 0 0 4px #9fdfff;
-  --bleed-night: 0 0 0 2px #ffffff;
-  --focus-ring: 0 0 0 2px #000000, 0 0 0 5px #00e5ff;
-}
 :root {
   --space-1: 4px;
   --space-2: 8px;
@@ -299,20 +226,19 @@
   --ornament-flame: 10px;
   --ornament-bracket: 20px;
   --ornament-ember: 4px;
-  --font-display: "Cormorant", "Cormorant Garamond", Georgia, serif;
+  --font-display: "Faculty Glyphic", Georgia, serif;
   --font-sans: "Mona Sans", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
 }
-@font-face { font-family: "Cormorant"; src: url("fonts/Cormorant-Variable.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Cormorant"; src: url("fonts/Cormorant-Italic-Variable.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Mona Sans"; src: url("fonts/MonaSans-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Mona Sans"; src: url("fonts/MonaSans-Italic-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("fonts/DMMono-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("fonts/DMMono-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-.hero { font-family: var(--font-display); font-size: 56px; line-height: 60px; font-weight: 500; letter-spacing: -0.01em; }
-.title { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 500; }
-.heading { font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 600; }
-.aside { font-family: var(--font-display); font-size: 20px; line-height: 28px; font-weight: 500; font-style: italic; }
+.hero { font-family: var(--font-display); font-size: 56px; line-height: 60px; font-weight: 400; letter-spacing: -0.01em; }
+.title { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 400; }
+.heading { font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 400; }
+.aside { font-family: var(--font-display); font-size: 20px; line-height: 28px; font-weight: 400; }
 .score { font-family: var(--font-sans); font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.02em; }
 .scenario-title { font-family: var(--font-sans); font-size: 24px; line-height: 30px; font-weight: 650; }
 .subtitle { font-family: var(--font-sans); font-size: 20px; line-height: 28px; font-weight: 600; }

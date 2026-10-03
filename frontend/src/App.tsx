@@ -7,8 +7,9 @@ import { Clearing } from "./screens/Clearing";
 import { ContentNote } from "./screens/ContentNote";
 import { FieldGuide } from "./screens/FieldGuide";
 import { Grove } from "./screens/Grove";
-import { HowItWorks } from "./screens/HowItWorks";
 import { LanternsLit } from "./screens/LanternsLit";
+import { Result } from "./screens/Result";
+import { Settings } from "./screens/Settings";
 import { SteppingIn } from "./screens/SteppingIn";
 import { Trails } from "./screens/Trails";
 import { Welcome } from "./screens/Welcome";
@@ -51,7 +52,6 @@ export function App() {
       <RouteFocus />
       <Routes>
         <Route path="welcome" element={<Welcome />} />
-        <Route path="welcome/how" element={<HowItWorks />} />
         <Route path="welcome/access" element={<Access />} />
         <Route path="welcome/stepping-in" element={<SteppingIn />} />
         <Route element={<RequireOnboarded />}>
@@ -60,6 +60,8 @@ export function App() {
             <Route path="trails" element={<Trails />} />
             <Route path="lanterns" element={<LanternsLit />} />
             <Route path="guide" element={<FieldGuide />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="trails/:id/result" element={<Result />} />
           </Route>
           <Route path="trails/:id" element={<ContentNote />} />
           <Route path="trails/:id/clearing" element={<Clearing />} />

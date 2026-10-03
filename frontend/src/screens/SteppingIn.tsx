@@ -1,12 +1,16 @@
+import type { MouseEvent } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "../components/Button";
 import { Notice } from "../components/Feedback";
+import { Icon } from "../components/Icon";
 import { OnboardingStep } from "../components/OnboardingStep";
+import { burst } from "../lib/effects";
 import { setOnboarded } from "../lib/settings";
 
 export function SteppingIn() {
   const navigate = useNavigate();
-  const enter = () => {
+  const enter = (e: MouseEvent<HTMLButtonElement>) => {
+    burst(e.currentTarget);
     setOnboarded();
     navigate("/", { replace: true });
   };
@@ -14,24 +18,37 @@ export function SteppingIn() {
   return (
     <OnboardingStep
       step={3}
-      title="What you're stepping into"
+      title="What you’re stepping into"
+      lead="Please read this before your first practice. It is short, direct, and important."
       back="/welcome/access"
+      backLabel="Back to step 2"
+      note="Continue only when you feel ready."
       action={
-        <Button tone="lantern" onClick={enter} iconAfter="arrow">
-          I understand, continue
+        <Button tone="lantern" size="lg" onClick={enter} iconAfter="arrow" className="block">
+          I understand, enter the grove
         </Button>
       }
     >
-      <p className="body-lg prose">
-        Trails show moments that can be hard to watch: drinking, pressure, harassment and private images shared without
-        consent. They show the warning signs and stop before any harm happens.
-      </p>
-      <ul className="wk-cnote__list prose">
-        <li>You see a content note before every trail.</li>
-        <li>You can step out at any moment. Nothing is saved unless you finish.</li>
-        <li>Your scores and history are private to you.</li>
-        <li>If a trail brings up something personal, it is okay to stop and take a break.</li>
-      </ul>
+      <section className="wk-card panel" aria-labelledby="awareness">
+        <h2 id="awareness" className="overline eyebrow-row">
+          <Icon name="caution" size={20} />
+          Content awareness
+        </h2>
+        <p className="subtitle">
+          The people you practice with are AI characters playing a role. They will say pressuring, dismissive, even
+          harassing things, on purpose. That is the rehearsal: real pressure, zero real risk.
+        </p>
+        <hr className="divider" />
+        <div className="icon-row">
+          <Icon name="step-out" size={20} />
+          <div>
+            <h3 className="label">You stay in control</h3>
+            <p className="muted">
+              You can step out at any moment. Nothing is saved unless you finish. Voice audio is deleted after 24 hours.
+            </p>
+          </div>
+        </div>
+      </section>
       <Notice tone="safety" title="This is practice.">
         If someone is in danger right now, call 911 or campus security.
       </Notice>

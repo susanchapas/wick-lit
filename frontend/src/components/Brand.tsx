@@ -1,3 +1,5 @@
+import { wordmark } from "./wordmark";
+
 interface MarkProps {
   size?: number;
   live?: boolean;
@@ -20,6 +22,25 @@ export function Mark({ size = 48, live, label }: MarkProps) {
       <path className="wk-mark__core" d="M32 30C34.2 33 36 35 36 38.2C36 41 34.2 43 32 43C29.8 43 28 41 28 38.2C28 35.4 30.2 33.4 32 30Z" />
       <path className="wk-mark__wick" fill="none" strokeWidth="2.5" strokeLinecap="round" d="M32 43V52" />
     </svg>
+  );
+}
+
+export function Wordmark({ height = 28 }: { height?: number }) {
+  return (
+    <svg viewBox={wordmark.viewBox} height={height} width={Math.round((height * wordmark.width) / wordmark.height)} role="img" aria-label="Wick">
+      <path className="wk-wordmark__ink" d={wordmark.ink} />
+      <path className="wk-wordmark__flame" d={wordmark.flame} />
+      <path className="wk-wordmark__core" d={wordmark.core} />
+    </svg>
+  );
+}
+
+export function Lockup({ size = 40 }: { size?: number }) {
+  return (
+    <span className="wk-mark">
+      <Mark size={size} />
+      <Wordmark height={Math.round(size * 0.7)} />
+    </span>
   );
 }
 
@@ -49,7 +70,28 @@ function treeline(seed: number, count: number, base: number, min: number, max: n
 const far = treeline(7, 30, 160, 40, 100);
 const near = treeline(31, 20, 188, 50, 130);
 
-export function Scenery({ height = 200 }: { height?: number }) {
+const emberSpots = [
+  [8, 62, 0],
+  [22, 38, 3.1],
+  [37, 74, 6.4],
+  [51, 46, 1.7],
+  [64, 68, 4.6],
+  [77, 34, 2.4],
+  [88, 58, 7.2],
+  [95, 80, 5.3],
+];
+
+export function Embers({ count = 7 }: { count?: number }) {
+  return (
+    <div className="wk-embers" aria-hidden="true">
+      {emberSpots.slice(0, Math.min(count, 8)).map(([x, y, delay]) => (
+        <i key={x} style={{ left: `${x}%`, top: `${y}%`, animationDelay: `-${delay}s, -${delay / 2}s` }} />
+      ))}
+    </div>
+  );
+}
+
+export function Scenery({ height = 200, embers = true }: { height?: number; embers?: boolean }) {
   return (
     <div className="wk-scenery" style={{ height }} aria-hidden="true">
       <div className="wk-scenery__pool" />
@@ -57,6 +99,7 @@ export function Scenery({ height = 200 }: { height?: number }) {
         <path className="wk-scenery__far" d={far} />
         <path className="wk-scenery__near" d={near} />
       </svg>
+      {embers && <Embers />}
     </div>
   );
 }

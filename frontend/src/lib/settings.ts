@@ -1,11 +1,12 @@
 import { useSyncExternalStore } from "react";
-import type { Mode } from "./types";
+import type { Intensity, Mode } from "./types";
 
-export type Theme = "night" | "dawn" | "contrast";
+export type Theme = "night" | "dawn";
 
 export interface Settings {
   theme: Theme;
   input: Mode;
+  intensity: Intensity;
   captions: boolean;
   reduceMotion: boolean;
   untimed: boolean;
@@ -16,12 +17,9 @@ const ONBOARDED = "wick.onboarded";
 const listeners = new Set<() => void>();
 
 const defaults = (): Settings => ({
-  theme: matchMedia("(prefers-contrast: more)").matches
-    ? "contrast"
-    : matchMedia("(prefers-color-scheme: light)").matches
-      ? "dawn"
-      : "night",
+  theme: matchMedia("(prefers-color-scheme: light)").matches ? "dawn" : "night",
   input: "voice",
+  intensity: "realistic",
   captions: true,
   reduceMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
   untimed: false,
@@ -29,7 +27,8 @@ const defaults = (): Settings => ({
 
 function load(): Settings {
   try {
-    return { ...defaults(), ...JSON.parse(localStorage.getItem(KEY) ?? "{}") };
+    const stored = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Partial<Settings>;
+    return { ...defaults(), ...stored, theme: stored.theme === "dawn" ? "dawn" : "night" };
   } catch {
     return defaults();
   }
