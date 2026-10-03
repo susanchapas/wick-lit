@@ -35,7 +35,7 @@ export function Welcome() {
             causing harm, an uncomfortable friend, or a passive onlooker, followed by calm scoring and coaching.
           </p>
           <div className="actions">
-            <ButtonLink tone="lantern" size="lg" ornate to="/welcome/access" icon="arrow">
+            <ButtonLink tone="lantern" size="lg" ornate to="/welcome/access">
               Begin with Wick
             </ButtonLink>
           </div>

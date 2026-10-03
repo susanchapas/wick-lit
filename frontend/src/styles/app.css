@@ -230,8 +230,9 @@ kbd { font: 500 13px/16px var(--font-mono); }
   .welcome { position: relative; grid-template-rows: auto 1fr; overflow: clip; }
   .welcome > .wk-scenery { position: absolute; inset: auto 0 0; }
   .welcome .onboard-head { padding-block: clamp(var(--space-3), 3vh, var(--space-6)); }
-  .welcome .onboard__body { position: relative; z-index: 1; grid-template-columns: 3fr 2fr; align-content: center; row-gap: clamp(var(--space-4), 4vh, var(--space-8)); padding-block: 0 clamp(var(--space-4), 4vh, var(--space-10)); }
+  .welcome .onboard__body { position: relative; z-index: 1; grid-template-columns: 3fr 2fr; align-content: center; align-items: end; row-gap: clamp(var(--space-4), 4vh, var(--space-8)); padding-block: 0 clamp(var(--space-4), 4vh, var(--space-10)); }
   .welcome .onboard__intro { gap: clamp(var(--space-3), 2.4vh, var(--space-5)); }
+  .welcome .onboard__intro .actions { margin-top: var(--space-6); }
   .welcome .hero { font-size: clamp(40px, min(7vh, 4.5vw), 96px); line-height: 1.05; }
   .welcome__how { grid-column: 1 / -1; gap: var(--space-3); padding-top: clamp(var(--space-3), 3vh, var(--space-5)); border-top: 1px solid var(--edge); }
   .welcome__how .steps { grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
