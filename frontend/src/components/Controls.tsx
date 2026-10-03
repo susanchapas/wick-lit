@@ -73,3 +73,42 @@ export function ChoiceGroup<T extends string>({ legend, options, value, onChange
     </fieldset>
   );
 }
+
+interface AnswersProps {
+  legend: ReactNode;
+  hint?: ReactNode;
+  options: { value: string; label: ReactNode }[];
+  value: string[];
+  multi?: boolean;
+  onChange: (next: string[]) => void;
+}
+
+export function Answers({ legend, hint, options, value, multi, onChange }: AnswersProps) {
+  const name = useId();
+  const toggle = (v: string) => onChange(!multi ? [v] : value.includes(v) ? value.filter((x) => x !== v) : [...value, v]);
+  return (
+    <fieldset className="answers" aria-describedby={hint ? `${name}-hint` : undefined}>
+      <legend className="answers__legend">{legend}</legend>
+      {hint && (
+        <p className="answers__hint" id={`${name}-hint`}>
+          {hint}
+        </p>
+      )}
+      <ul className="answers__list">
+        {options.map((o) => (
+          <li key={o.value}>
+            <label className="wk-check answers__opt">
+              <input type={multi ? "checkbox" : "radio"} name={name} checked={value.includes(o.value)} onChange={() => toggle(o.value)} />
+              <span className="wk-check__box" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12.5l4.5 4.5L19 7.5" />
+                </svg>
+              </span>
+              <span>{o.label}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </fieldset>
+  );
+}

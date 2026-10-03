@@ -8,11 +8,12 @@ import "./styles/app.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
-import { ripple } from "./lib/effects";
+import { emberTrail, ripple } from "./lib/effects";
 import { applySettings } from "./lib/settings";
 
 applySettings();
 document.addEventListener("pointerdown", ripple);
+document.addEventListener("pointermove", emberTrail);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -48,13 +48,14 @@ export function ripple(e: PointerEvent) {
 let last = 0;
 let live = 0;
 
-/** Sheds embers from the pointer that float up and fade. Use on hero and onboarding areas only. */
+/** Sheds embers from the pointer that float up and fade. Install once on the document. */
 export function emberTrail(e: Pick<PointerEvent, "pointerType" | "clientX" | "clientY" | "timeStamp">) {
   if (e.pointerType !== "mouse" || live >= 24 || e.timeStamp - last < 36 || still()) return;
   last = e.timeStamp;
   live++;
-  const el = particle("wk-trail", e.clientX, e.clientY);
-  el.style.setProperty("--dx", `${(Math.random() - 0.5) * 24}px`);
+  const el = particle(Math.random() < 0.4 ? "wk-trail is-gold" : "wk-trail", e.clientX, e.clientY);
+  el.style.setProperty("--dx", `${(Math.random() - 0.5) * 30}px`);
+  el.style.setProperty("--rise", `${-20 - Math.random() * 30}px`);
   document.body.append(el);
   setTimeout(() => {
     el.remove();

@@ -1,4 +1,4 @@
-import { Mark, Scenery } from "../components/Brand";
+import { Embers, Scenery } from "../components/Brand";
 import { ButtonLink } from "../components/Button";
 import { Icon } from "../components/Icon";
 import type { IconName } from "../components/icons";
@@ -42,7 +42,7 @@ export function Welcome() {
         </div>
         <figure className="welcome-art">
           <div className="welcome-art__pane">
-            <Mark size={96} live label="Wick" />
+            <Embers count={8} />
           </div>
           <figcaption className="aside">
             When the grove goes dark,

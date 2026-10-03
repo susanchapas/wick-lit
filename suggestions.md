@@ -25,6 +25,7 @@ Layout limits used for the numbers below:
 | 12 | Theme preview | Settings, Access | `Controls` → `ChoiceGroup` (Theme) | 160 × 100 | 16:10 | 320 × 200 |
 | 13 | Social share card | All (`index.html`) | `<meta property="og:image">` | — | 1.91:1 | 1200 × 630 |
 | 14 | App icons | All (`index.html`) | `apple-touch-icon`, PWA icons | — | 1:1 | 180, 192, 512 |
+| 15 | How practice works card | Welcome (`/welcome`) | `Welcome` → `.step-card` | 927 × ~150 | ~3:1 (height follows text) | 1856 × 620 |
 
 ## Slot details
 
@@ -116,6 +117,19 @@ Layout limits used for the numbers below:
 - **Page:** all. **File:** `index.html`, `public/`.
 - **Now:** only `favicon.svg`.
 - **Export:** `apple-touch-icon.png` 180 × 180; PWA icons 192 × 192 and 512 × 512 (add a 512 maskable version with the mark in the centre 80%). All 1:1.
+
+### 15. How practice works card
+- **Page:** Welcome. **File:** `src/screens/Welcome.tsx` (`.step-card`).
+- **Use:** an illustration or background pattern for each of the three steps.
+- **Sizes:** the card has no fixed height; padding and text set it. Use the image as a `background-size: cover` layer.
+  - Below 960px: 1 column, full body width (viewport − 32px), up to 927px wide. About 150px tall with hover, about 210px on touch (text always shown).
+  - 960px and up: 3 columns, (1104 − 2 × 16) / 3 ≈ 357px wide, about 108–124px tall.
+- **Export:** 1856 × 620, 3:1. Keep key shapes in the centre 50% of the height; the wide tablet card crops top and bottom. Keep the top-right corner (step number) and left side (icon, title) low in contrast.
+
+### 16. Strategy scene photo
+- **Page:** Field guide. **File:** `src/lib/strategies.ts` (`photo`), shown in `src/screens/FieldGuide.tsx`.
+- **Use:** one Pexels photo per D that matches its practice situation. Loaded from `images.pexels.com`; CSS mutes and fades it into the card.
+- **Now:** party (Direct), club (Distract), transit (Delegate), study table (Delay), phone (Document).
 
 ## General notes
 - Every image in slots 1–12 is decorative except 5, 6 and 8. Use `alt=""` for decorative images; give 5 and 6 a short scene description.

@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router";
 import { Embers } from "./components/Brand";
 import { NavBar } from "./components/NavBar";
-import { emberTrail } from "./lib/effects";
 import { isOnboarded } from "./lib/settings";
 import { Access } from "./screens/Access";
 import { Clearing } from "./screens/Clearing";
@@ -33,10 +32,6 @@ function RouteFocus() {
 }
 
 function Backdrop() {
-  useEffect(() => {
-    addEventListener("pointermove", emberTrail);
-    return () => removeEventListener("pointermove", emberTrail);
-  }, []);
   return (
     <div className="backdrop">
       <Embers count={8} />
