@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import { Scenery } from "../components/Brand";
 import { Button } from "../components/Button";
 import { Notice, Skeleton } from "../components/Feedback";
 import { Icon } from "../components/Icon";
@@ -9,14 +8,14 @@ import { streak, useHistory } from "../lib/history";
 import { useScenarios } from "../lib/useScenarios";
 
 const pins = [
-  [22, 40],
-  [70, 30],
-  [86, 58],
-  [54, 62],
-  [34, 70],
-  [90, 22],
-  [12, 60],
-  [46, 24],
+  [26, 23],
+  [74, 23],
+  [10, 48],
+  [51, 45],
+  [92, 30],
+  [30, 65],
+  [48, 75],
+  [78, 79],
 ];
 
 export function Grove() {
@@ -80,7 +79,6 @@ export function Grove() {
             </Notice>
           ) : data ? (
             <div className="map__ground">
-              <Scenery height={140} />
               <ol className="map__pins">
                 {data.map((s, i) => {
                   const [x, y] = pins[i % pins.length];

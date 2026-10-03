@@ -185,6 +185,19 @@ export function Clearing() {
               Microphone blocked. Allow it in your browser settings, or type your reply instead.
             </p>
           )}
+          <div className="clearing__end">
+            <Button icon="steady" onClick={() => finish(messages)} disabled={!messages.length || phase !== "live"}>
+              End and get scored
+            </Button>
+            {!messages.length && <p className="caption muted">Say or type one reply to get scored.</p>}
+          </div>
+          <ul className="chips center clearing__keys" aria-label="Keyboard shortcuts">
+            {keys.map(([k, v]) => (
+              <li key={k} className="pill">
+                <kbd>{k}</kbd> {v}
+              </li>
+            ))}
+          </ul>
         </div>
         <section className="clearing__talk" aria-label="Conversation">
           {(settings.captions || typing) && (
@@ -233,19 +246,6 @@ export function Clearing() {
             </form>
           )}
         </section>
-        <ul className="chips center clearing__keys" aria-label="Keyboard shortcuts">
-          {keys.map(([k, v]) => (
-            <li key={k} className="pill">
-              <kbd>{k}</kbd> {v}
-            </li>
-          ))}
-        </ul>
-        <div className="clearing__end">
-          <Button icon="steady" onClick={() => finish(messages)} disabled={!messages.length || phase !== "live"}>
-            End and get scored
-          </Button>
-          {!messages.length && <p className="caption muted">Say or type one reply to get scored.</p>}
-        </div>
       </main>
       {paused && (
         <Dialog

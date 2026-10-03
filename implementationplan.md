@@ -49,7 +49,7 @@
 **Settings that change behavior:**
 - **Intensity:** Gentle (characters back down sooner), Realistic (default), Intense (characters argue and escalate).
 - **Default input:** Voice or Text.
-- Theme (Night grove, Dawn, Lantern high contrast), Captions (on by default), Reduce motion, Stage mode, Untimed role-play.
+- Theme (Night grove, Dawn), Captions (on by default), Reduce motion, Stage mode, Untimed role-play.
 
 **Scenarios:** four exist (The Upstairs Invite, The Unattended Drink, The Library Regular, The Group Chat). Two are being written (The Late Train, Closing time at Lou's). Full details are in `wick-team-onboarding.md`, Section 6.
 
@@ -283,7 +283,7 @@ Within each phase, 🟢 Susan's and 🔵 Antony's tasks happen at the same time.
 **Done when:** Antony can download the project and `npm run dev` opens a page.
 
 #### 🟢 S2. App frame + sample data
-1. `styles/tokens.css`: colors and type for Night grove (default), Dawn and Lantern high contrast, from Figma. Switch themes with a `data-theme` attribute on `<html>`.
+1. `styles/tokens.css`: colors and type for Night grove (default) and Dawn, from Figma. Switch themes with a `data-theme` attribute on `<html>`.
 2. `lib/samples.js`: one sample for every endpoint in Section 4, copied exactly.
 3. `lib/api.js`: one function per endpoint (`getScenarios`, `sendTurn`, `getScore`, `getSpeechToken`, `speak`, `saveSession`). Return the sample when `import.meta.env.VITE_USE_SAMPLES === "true"`; otherwise call the backend. Add a 400 ms delay to samples so loading states show.
 4. Screens in this order: Welcome → How practice works (3 cards) → Access and modality → What you're stepping into → The grove → Trails → Content note. First visit runs onboarding; return visits open the grove (save `wick.onboarded` in `localStorage`).
@@ -438,7 +438,7 @@ Text role-play and scoring work start to finish on the test address.
 1. Check all three themes on every screen. Color is never the only signal; pair it with text or an icon.
 2. Reduce motion turns off pulses and screen transitions.
 3. Test at 375 px and on desktop.
-4. Keyboard order through every screen, visible focus outline, captions announced with `aria-live="polite"`, contrast checked in the high-contrast theme.
+4. Keyboard order through every screen, visible focus outline, captions announced with `aria-live="polite"`, and WCAG contrast checked in each theme.
 5. Candle on the grove home: lit image when the streak is active, unlit when it isn't.
 
 **Done when:** a keyboard-only user can complete a session, and nothing breaks at 375 px.

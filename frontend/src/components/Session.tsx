@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Icon } from "./Icon";
 
 const R = 41;
@@ -93,8 +93,12 @@ export interface Line {
 }
 
 export function Transcript({ lines, label, children }: { lines: Line[]; label: string; children?: ReactNode }) {
+  const log = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    log.current?.scrollTo({ top: log.current.scrollHeight, behavior: "smooth" });
+  }, [lines, children]);
   return (
-    <div className="wk-transcript" role="log" aria-live="polite" aria-label={label}>
+    <div ref={log} className="wk-transcript" role="log" aria-live="polite" aria-label={label}>
       {lines.map((l, i) => (
         <div key={i} className={`wk-line${l.role === "you" ? " wk-line--you" : l.role === "note" ? " wk-line--note" : ""}`}>
           {l.role !== "note" && (
