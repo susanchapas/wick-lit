@@ -35,7 +35,7 @@ export type OrbState = "idle" | "listening" | "thinking" | "speaking" | "paused"
 
 const orbCopy: Record<OrbState, { status: string; hint: string; label: string }> = {
   idle: { status: "Ready when you are", hint: "Press to speak, or type your reply.", label: "Start speaking" },
-  listening: { status: "Listening", hint: "Speak when you are ready.", label: "Stop speaking" },
+  listening: { status: "Listening", hint: "Speak when you are ready. Wick sends after you stop.", label: "Stop speaking" },
   thinking: { status: "Thinking", hint: "Your partner is choosing a reply.", label: "Thinking" },
   speaking: { status: "is speaking", hint: "Captions show each line.", label: "Speaking" },
   paused: { status: "Paused", hint: "Nothing is recorded.", label: "Resume role-play" },

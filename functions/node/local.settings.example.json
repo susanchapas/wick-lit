@@ -3,15 +3,16 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "ELEVENLABS_API_KEY": "replace-locally",
-    "ELEVENLABS_VOICE_ID": "replace-locally",
+    "ELEVENLABS_API_KEY": "your-elevenlabs-api-key",
+    "ELEVENLABS_VOICE_ID": "your-elevenlabs-voice-id",
     "ELEVENLABS_STT_MODEL": "scribe_v2",
     "ELEVENLABS_TTS_MODEL": "eleven_flash_v2_5",
-    "GEMINI_API_KEY": "replace-locally",
+    "GEMINI_API_KEY": "your-gemini-api-key",
     "GEMINI_MODEL": "gemini-3.5-flash-lite",
     "GEMINI_FALLBACK_MODEL": "gemini-3.1-flash-lite",
+    "GEMINI_EVALUATION_MODEL": "gemini-3.5-flash-lite",
     "WICK_SESSIONS_TABLE": "WickSessions",
     "WICK_ALLOWED_ORIGINS": "http://localhost:5173",
-    "WICK_RATE_LIMIT_SALT": "replace-with-a-random-local-value"
+    "WICK_RATE_LIMIT_SALT": "your-random-local-value"
   }
 }

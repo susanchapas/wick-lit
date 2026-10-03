@@ -41,10 +41,19 @@ export function Clearing() {
   const [speakingCharacter, setSpeakingCharacter] = useState("Scene");
   const [remaining, setRemaining] = useState(scenario?.durationSeconds ?? 120);
   const recorder = useRef<AudioRecorder | null>(null);
+  const listenerRequest = useRef(0);
+  const listenerStarting = useRef(false);
+  const submitRef = useRef<(text: string) => Promise<void>>(async () => undefined);
+  const recordingRef = useRef<(audio: Blob) => Promise<void>>(async () => undefined);
   const field = useRef<HTMLInputElement>(null);
   const finishing = useRef(false);
   const exit = `/trails/${id}`;
   const timed = !settings.untimed;
+  const liveState = useRef({ credential, mode, paused, typing });
+
+  useEffect(() => {
+    liveState.current = { credential, mode, paused, typing };
+  }, [credential, mode, paused, typing]);
 
   const playCharacterTurns = useCallback(async (activeCredential: SessionCredential, turns: WickTurn[]) => {
     for (const turn of turns) {
@@ -53,36 +62,14 @@ export function Clearing() {
     }
   }, [scenario]);
 
-  useEffect(() => {
-    if (!scenario) return;
-    let live = true;
-    startSession(scenario.id, mode).then(async (started) => {
-      if (!live) return;
-      const nextCredential = { sessionId: started.sessionId, sessionToken: started.sessionToken };
-      setCredential(nextCredential);
-      setSession(started);
-      setRemaining(Math.max(0, Math.ceil((Date.parse(started.conversationDeadline) - Date.now()) / 1000)));
-      setPhase(mode === "voice" ? "speaking" : "live");
-      if (mode === "voice") {
-        try { await playCharacterTurns(nextCredential, started.turns); } catch { setError("The scene audio could not play, but you can continue with captions."); }
-        if (live) setPhase("live");
-      }
-    }).catch(() => {
-      if (live) {
-        setError("The role-play could not start. Check the backend connection and try again.");
-        setPhase("live");
-      }
-    });
-    return () => {
-      live = false;
-      recorder.current?.cancel();
-      silence();
-    };
-  }, [mode, playCharacterTurns, scenario]);
-
   const finish = useCallback(async () => {
     if (!credential || !session || finishing.current) return;
     finishing.current = true;
+    listenerRequest.current += 1;
+    recorder.current?.cancel();
+    recorder.current = null;
+    setListening(false);
+    silence();
     setPhase("thinking");
     setError("");
     try {
@@ -95,8 +82,48 @@ export function Clearing() {
     }
   }, [credential, id, navigate, session]);
 
+  const beginListening = useCallback(async (manual = false) => {
+    const current = liveState.current;
+    if (current.mode !== "voice" || current.paused || (!manual && current.typing) || recorder.current || listenerStarting.current) return;
+    if (manual) {
+      liveState.current.typing = false;
+      setTyping(false);
+    }
+    const request = ++listenerRequest.current;
+    listenerStarting.current = true;
+    try {
+      let activeRecorder: AudioRecorder;
+      activeRecorder = await record({
+        onAutoStop: async (audio) => {
+          if (recorder.current !== activeRecorder) return;
+          recorder.current = null;
+          setListening(false);
+          await recordingRef.current(audio);
+        },
+      });
+      const latest = liveState.current;
+      if (request !== listenerRequest.current || latest.paused || (!manual && latest.typing)) {
+        activeRecorder.cancel();
+        return;
+      }
+      recorder.current = activeRecorder;
+      setBlocked(false);
+      setListening(true);
+      setPhase("live");
+    } catch {
+      if (request !== listenerRequest.current) return;
+      setBlocked(true);
+      liveState.current.typing = true;
+      setTyping(true);
+      setPhase("live");
+      requestAnimationFrame(() => field.current?.focus());
+    } finally {
+      listenerStarting.current = false;
+    }
+  }, []);
+
   const submit = useCallback(async (text: string) => {
-    if (!credential || !text.trim() || phase !== "live" || paused) return;
+    if (!credential || !text.trim() || paused || finishing.current) return;
     setError("");
     setDraft("");
     setPhase("thinking");
@@ -107,20 +134,51 @@ export function Clearing() {
         setPhase("speaking");
         try { await playCharacterTurns(credential, response.characterTurns); } catch { setError("The scene audio could not play, but every response is in the transcript."); }
       }
-      setPhase("live");
       if (response.session.state === "completed") {
         const completed = await endSession(credential);
         navigate(`/trails/${id}/result`, { state: { session: completed } });
+        return;
       }
+      setPhase("live");
+      await beginListening();
     } catch {
       setError("The scene did not reply. Your backend session is still available; try again.");
       setPhase("live");
     }
-  }, [credential, id, mode, navigate, paused, phase, playCharacterTurns]);
+  }, [beginListening, credential, id, mode, navigate, paused, playCharacterTurns]);
+
+  useEffect(() => {
+    submitRef.current = submit;
+  }, [submit]);
+
+  const processRecording = useCallback(async (audio: Blob) => {
+    const activeCredential = liveState.current.credential;
+    if (!activeCredential) return;
+    setListening(false);
+    setPhase("transcribing");
+    try {
+      const text = await transcribeAudio(activeCredential, audio);
+      setPhase("live");
+      await submitRef.current(text);
+    } catch {
+      setPhase("live");
+      setError("Wick could not transcribe that recording. Try speaking again or type your reply.");
+    }
+  }, []);
+
+  useEffect(() => {
+    recordingRef.current = processRecording;
+  }, [processRecording]);
 
   const toggleListen = useCallback(async () => {
-    if (paused) return setPaused(false);
+    if (paused) {
+      liveState.current.paused = false;
+      setPaused(false);
+      await beginListening();
+      return;
+    }
     if (mode !== "voice" || blocked) {
+      liveState.current.typing = true;
       setTyping(true);
       requestAnimationFrame(() => field.current?.focus());
       return;
@@ -129,12 +187,9 @@ export function Clearing() {
       setListening(false);
       setPhase("transcribing");
       try {
-        const audio = await recorder.current.stop();
+        const activeRecorder = recorder.current;
         recorder.current = null;
-        if (!credential) throw new Error("Session not ready");
-        const text = await transcribeAudio(credential, audio);
-        setPhase("live");
-        await submit(text);
+        await processRecording(await activeRecorder.stop());
       } catch {
         recorder.current = null;
         setPhase("live");
@@ -142,16 +197,61 @@ export function Clearing() {
       }
       return;
     }
-    try {
-      recorder.current = await record();
-      setListening(true);
-    } catch {
-      setBlocked(true);
-      setTyping(true);
-    }
-  }, [blocked, credential, listening, mode, paused, submit]);
+    await beginListening(true);
+  }, [beginListening, blocked, listening, mode, paused, processRecording]);
+
+  const typeInstead = useCallback(() => {
+    listenerRequest.current += 1;
+    recorder.current?.cancel();
+    recorder.current = null;
+    setListening(false);
+    liveState.current.typing = true;
+    setTyping(true);
+    setPhase("live");
+    requestAnimationFrame(() => field.current?.focus());
+  }, []);
+
+  const resume = useCallback(() => {
+    liveState.current.paused = false;
+    setPaused(false);
+    void beginListening();
+  }, [beginListening]);
+
+  useEffect(() => {
+    if (!scenario) return;
+    let live = true;
+    startSession(scenario.id, mode).then(async (started) => {
+      if (!live) return;
+      const nextCredential = { sessionId: started.sessionId, sessionToken: started.sessionToken };
+      liveState.current.credential = nextCredential;
+      setCredential(nextCredential);
+      setSession(started);
+      setRemaining(Math.max(0, Math.ceil((Date.parse(started.conversationDeadline) - Date.now()) / 1000)));
+      setPhase(mode === "voice" ? "speaking" : "live");
+      if (mode === "voice") {
+        try { await playCharacterTurns(nextCredential, started.turns); } catch { setError("The scene audio could not play, but you can continue with captions."); }
+        if (live) {
+          setPhase("live");
+          await beginListening();
+        }
+      }
+    }).catch(() => {
+      if (live) {
+        setError("The role-play could not start. Check the backend connection and try again.");
+        setPhase("live");
+      }
+    });
+    return () => {
+      live = false;
+      listenerRequest.current += 1;
+      recorder.current?.cancel();
+      recorder.current = null;
+      silence();
+    };
+  }, [beginListening, mode, playCharacterTurns, scenario]);
 
   const stepOut = useCallback(async () => {
+    listenerRequest.current += 1;
     recorder.current?.cancel();
     silence();
     if (credential) await stepOutSession(credential).catch(() => undefined);
@@ -159,10 +259,12 @@ export function Clearing() {
   }, [credential, exit, navigate]);
 
   const pause = useCallback(() => {
+    listenerRequest.current += 1;
     recorder.current?.cancel();
     recorder.current = null;
     setListening(false);
     silence();
+    liveState.current.paused = true;
     setPaused(true);
   }, []);
 
@@ -182,15 +284,15 @@ export function Clearing() {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLButtonElement || event.metaKey || event.ctrlKey) return;
       const key = event.key.toLowerCase();
       if (key === "p") {
-        if (paused) setPaused(false);
+        if (paused) resume();
         else pause();
       }
-      else if (key === "t") { event.preventDefault(); setTyping(true); requestAnimationFrame(() => field.current?.focus()); }
+      else if (key === "t") { event.preventDefault(); typeInstead(); }
       else if (key === " ") { event.preventDefault(); void toggleListen(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pause, paused, stepOut, toggleListen]);
+  }, [pause, paused, resume, stepOut, toggleListen, typeInstead]);
 
   const orb: OrbState = paused ? "paused" : blocked ? "blocked" : phase === "thinking" || phase === "transcribing" || phase === "starting"
     ? "thinking" : phase === "speaking" ? "speaking" : listening ? "listening" : "idle";
@@ -207,7 +309,7 @@ export function Clearing() {
         <div className="clearing__orb">
           <VoiceOrb state={orb} speaker={speakingCharacter} textMode={mode === "text"} onToggle={() => void toggleListen()} />
           <div className="actions center">
-            {!typing ? <Button icon="direct" onClick={() => { setTyping(true); requestAnimationFrame(() => field.current?.focus()); }}>Type instead</Button> : null}
+            {!typing ? <Button icon="direct" onClick={typeInstead}>Type instead</Button> : null}
             <Button icon="captions" aria-pressed={settings.captions} onClick={() => updateSettings({ captions: !settings.captions })}>Captions {settings.captions ? "on" : "off"}</Button>
           </div>
           {blocked ? <p className="caption danger" role="alert">Microphone blocked. Allow access in your browser settings, or type your reply.</p> : null}
@@ -224,7 +326,7 @@ export function Clearing() {
           </form> : null}
         </section>
       </main>
-      {paused ? <Dialog title="Role-play paused" onClose={() => setPaused(false)} actions={<><Button tone="quiet" onClick={() => void stepOut()}>Step out</Button><Button icon="play" autoFocus onClick={() => setPaused(false)}>Resume role-play</Button></>}>The timer and microphone are stopped. Nothing is being recorded.</Dialog> : null}
+      {paused ? <Dialog title="Role-play paused" onClose={resume} actions={<><Button tone="quiet" onClick={() => void stepOut()}>Step out</Button><Button icon="play" autoFocus onClick={resume}>Resume role-play</Button></>}>The timer and microphone are stopped. Nothing is being recorded.</Dialog> : null}
     </div>
   );
 }

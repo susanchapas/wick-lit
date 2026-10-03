@@ -36,7 +36,7 @@ export function ContentNote() {
             </ul>
             <h2 className="label">Fitting strategies.</h2>
             <ul className="wk-card__ds" aria-label="Strategies you can practice">
-              {s.strategies.map((n) => (
+              {[...s.strategies].sort((a, b) => a - b).map((n) => (
                 <li key={n}>
                   <Strategy n={n} />
                 </li>

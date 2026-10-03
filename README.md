@@ -1,7 +1,7 @@
 # Wick
 
 Wick is a standalone scenario-practice engine with an Azure Functions backend
-and a developer test page. This repository is separate from the earlier
+and a React/Vite frontend. This repository is separate from the earlier
 Handoff prototype.
 
 ## Architecture
@@ -11,10 +11,10 @@ Handoff prototype.
 - Scenarios are JSON definitions loaded into one reusable master roleplay prompt.
 - Text and voice use the same `/message` endpoint and Gemini engine.
 - ElevenLabs is used only for Scribe v2 STT and direct TTS.
-- The browser records the user's microphone separately and retains a user-only
-  Blob for later upload/analysis.
+- The browser records each learner utterance and sends it to the protected Wick
+  STT endpoint; Wick stores only the returned transcript text.
 - Azure Table Storage persists token-protected sessions.
-- Evaluation, scoring, delivery analysis, and Python/librosa changes are deferred.
+- Transcript-grounded qualitative evaluation is returned when a session ends.
 
 ## Local setup
 
@@ -26,12 +26,15 @@ npm run check
 npm run dev:api
 ```
 
-In another terminal:
+The copied `local.settings.json` is ignored by Git. Add the real Gemini and
+ElevenLabs values only to that local file. See
+[docs/LOCAL_SECRET_SETUP.md](docs/LOCAL_SECRET_SETUP.md) for the exact fields
+and safe commit boundary.
+
+In another terminal from the repository root:
 
 ```bash
-cd developer
-npm install
-cp .env.example .env.local
+npm --prefix frontend install
 npm run dev
 ```
 
