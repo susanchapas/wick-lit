@@ -35,7 +35,7 @@ Wick is an AI bystander-intervention coach set in an enchanted grove at night. T
 
 Wick is an AI bystander-intervention coach. People freeze in the moment because they have never practised, so Wick lets them practise: a short voice role-play with an AI that plays the person causing harm, the uncomfortable friend or the passive onlooker, followed by a calm score and coaching built on the five Ds (Direct, Distract, Delegate, Delay, Document). The app is set in an enchanted grove at night, because these moments happen in the dark, at parties and on late walks home. The fantasy is the setting. The scenarios are true to life.
 
-Wick is built on the Enchanted Grove design system. It inherits the three typefaces (Cormorant, Mona Sans, DM Mono), the method of carving surfaces with inset shadows, and the source hues (marigold becomes the lantern amber, plus moss, lichen, dew blue and copper). It narrows them into a quieter product voice and adds a high contrast theme so every text pair meets WCAG AAA.
+Wick is built on the Enchanted Grove design system. It inherits two typefaces (Mona Sans, DM Mono) and pairs them with Faculty Glyphic for display, the method of carving surfaces with inset shadows, and the source hues (marigold becomes the lantern amber, plus moss, lichen, dew blue and copper). It narrows them into a quieter product voice while maintaining WCAG AAA text contrast.
 
 ### The rule: theme the frame, keep the content true to life
 
@@ -49,7 +49,7 @@ The ThemeRule page shows the vocabulary, a do and don't pair and the pitch line.
 
 ### Using this system
 
-- Set the theme on the root element: `<html data-theme="night">` (default), `dawn` for daylight, or `contrast` for Lantern high contrast. Offer all three in Settings, and follow `prefers-color-scheme` on first launch (dark selects `night`).
+- Set the theme on the root element: `<html data-theme="night">` (default) or `dawn` for daylight. Offer both in Settings, and follow `prefers-color-scheme` on first launch (dark selects `night`).
 - Load `tokens.css`, the fonts, `components/bundle.css`, React 18, then `components/bundle.js`. Components live on `window.Wick`.
 - Set `data-motion="still"` on the root when the person turns on Reduce motion; the stylesheet also honours `prefers-reduced-motion`.
 - Build screens from the components first. Reach for tokens directly only for layout.
@@ -81,9 +81,9 @@ Always show a strategy with its number and its name (`Strategy` component). Keep
 ### Visual foundations
 
 - **Colour.** Night forest grounds (`ground`, `ground-raised`, `ground-sunken`) with a single accent, the lantern (`lantern`, `lantern-text`, `flame`). Tiles stand well off the page: `ground-raised` sits 1.9:1 above `ground` at night and 1.4:1 in Dawn, and ornate tiles add a gilded `rim-gilt`. Ornaments use the gilded gradient (`gold-deep`, `gold`, `gold-bright`) and the arcane `gem` (amethyst), both frame-only and never text. Text is `ink` and `ink-muted`. Status is `steady` (blue), `caution` (pale gold) and `danger` (copper). Wick avoids any red and green pair. Your voice is `voice-you` (amber) and the AI's voice is `voice-ai` (blue). Scores use `meter-fill`, a neutral, so no colour ever says good or bad.
-- **Type.** Cormorant for the frame only (`hero`, `title`, `heading`, `aside`). Mona Sans for every content word (`scenario-title`, `dialogue`, `body`, `label`, `caption`, `score`). DM Mono for timers and values (`timer`, `data`, `overline`).
+- **Type.** Faculty Glyphic for the frame only (`hero`, `title`, `heading`, `aside`). Mona Sans for every content word (`scenario-title`, `dialogue`, `body`, `label`, `caption`, `score`). DM Mono for timers and values (`timer`, `data`, `overline`).
 - **Space.** 4px base, generous steps (`space-1` to `space-20`). Targets are at least `target-min` (44px). Text lines stop at `measure` (68ch).
-- **Depth.** Surfaces are carved: `inset-raised` for cards, `inset-frost` for buttons and chips, `inset-well` for fields. Light comes from glows (`glow-lantern`, `glow-soft`, `glow-voice`). Ornate cards and tiles add `rim-gilt`, a gilded double rim, after `inset-raised`; gems take `glow-gem`. Floating layers take one `bleed-night`. Focus is `focus-ring`. The high contrast theme turns every inset into a 2px edge.
+- **Depth.** Surfaces are carved: `inset-raised` for cards, `inset-frost` for buttons and chips, `inset-well` for fields. Light comes from glows (`glow-lantern`, `glow-soft`, `glow-voice`). Ornate cards and tiles add `rim-gilt`, a gilded double rim, after `inset-raised`; gems take `glow-gem`. Floating layers take one `bleed-night`. Focus is `focus-ring`.
 - **Corners and silhouettes.** `radius-md` for controls, `radius-lg` for cards, `radius-xl` for sheets. `radius-round` only for the voice orb, avatars, rings and dots. Trail cards and tiles may take any quest-menu cut: `cut-notch` (chamfered), `cut-scoop` (carved tablet), `cut-gem` (octagon slot), `cut-arch`, `cut-ticket`, `cut-banner` or `cut-pane` (lantern). Wrap cut cards in `wk-cut-wrap` for their shadow and gold hover glow. The role-play, score and safety surfaces keep the plain `cut-soft` card.
 - **Motion.** Light kindles, breathes and settles. `duration-kindle` for hover, `duration-rise` for entrances, `duration-hush` for the score. `ease-lift` may overshoot slightly, on frame controls only. Nothing bounces near a scenario or a score.
 - **States.** Every control has rest, hover, focus, pressed, disabled and, where it applies, loading, error and success. The StateMatrix page shows them all.
@@ -129,7 +129,7 @@ Open with ten seconds of the metaphor, then drop it and get serious. The live de
 | --- | --- | --- |
 | Where | Home title, navigation, empty states, the streak, the pitch | Scenarios, dialogue, scores, coaching, safety notes, errors |
 | Tone | Soft; may use the light metaphor, one line per screen | Plain, specific, kind; a calm trainer beside you |
-| Type | Cormorant for display lines | Mona Sans only |
+| Type | Faculty Glyphic for display lines | Mona Sans only |
 | Example | "Keep your wick lit" | "You used Distract to give Maya a reason to leave the hallway." |
 
 ### Microcopy
@@ -179,7 +179,7 @@ A tag for one of the five Ds, the bystander model taught on campuses: Direct, Di
 
 ## 4. Logo
 
-The Wick mark is a lantern pane holding a single flame on its wick. The wordmark is "wick" set in Cormorant at weight 600, drawn as outlines, with a flame in place of the dot on the i. Copy these files as they are; do not redraw or re-set them.
+The Wick mark is a lantern pane holding a single flame on its wick. The wordmark is "wick" set in Faculty Glyphic at weight 400, drawn as outlines, with a flame in place of the dot on the i. Copy these files as they are; do not redraw or re-set them.
 
 - `wick-mark.svg`: the mark for night grounds. Pane in `ground-raised` night (#133126), flame in `lantern-amber` (#ffbe4d) with a `flame-core` (#fff1c9) center, wick in `parchment` (#f4efe3).
 - `wick-mark-dawn.svg`: the mark for Dawn grounds. The pane deepens to `pine` (#0f2a20) so the flame keeps its glow on parchment.
@@ -188,12 +188,12 @@ The Wick mark is a lantern pane holding a single flame on its wick. The wordmark
 - `wick-lockup.svg` and `wick-lockup-dawn.svg`: mark and wordmark side by side for the app header, the pitch deck and the store listing.
 - `wick-app-icon.svg`: the app icon. The mark on `night-forest` with a soft lantern pool. The platform applies its own corner mask.
 
-Rules: give the mark clear space equal to the height of its flame on every side. Minimum size 20px for the mark and 64px wide for the wordmark. In the high contrast theme use the night files. The logo carries `role="img"` and the label "Wick"; when it sits beside the visible name, hide it from assistive technology.
+Rules: give the mark clear space equal to the height of its flame on every side. Minimum size 20px for the mark and 64px wide for the wordmark. The logo carries `role="img"` and the label "Wick"; when it sits beside the visible name, hide it from assistive technology.
 
 
 ## 5. Colour
 
-Wick has one accent, the lantern, set against a night forest. Every other colour either carries text, separates surfaces, marks a status, names a strategy or a voice, or belongs to the scenery. Three themes share one set of token names: Night grove (`night`, the default), Dawn (`dawn`) and Lantern high contrast (`contrast`).
+Wick has one accent, the lantern, set against a night forest. Every other colour either carries text, separates surfaces, marks a status, names a strategy or a voice, or belongs to the scenery. Two themes share one set of token names: Night grove (`night`, the default) and Dawn (`dawn`).
 
 ### Rules
 
@@ -205,7 +205,6 @@ Wick has one accent, the lantern, set against a night forest. Every other colour
 - Scores, rubric meters and the timer use `meter-fill`, a neutral. Never tint a score by how good it is.
 - `vein` is decorative and sits below 3:1 on purpose. Anything that must be seen as a boundary uses `edge`.
 - The scenery tokens (`tree-far`, `tree-near`, `lantern-pool`) are for the frame only.
-- The high contrast theme replaces shade differences with 2px white inset edges, raises every text pair to 7:1 or more and uses cyan for focus so focus never looks like the primary fill.
 
 
 ### Every colour token
@@ -223,14 +222,14 @@ Wick has one accent, the lantern, set against a night forest. Every other colour
 | `dew-blue` | #a6d8f3 | #a6d8f3 | #a6d8f3 | Source hue inherited from Enchanted Grove. The voice of the AI character and the steady (success) state. Blue keeps success apart from danger without relying on red and green. |
 | `copper` | #f2b38a | #f2b38a | #f2b38a | Source hue inherited from Enchanted Grove. The danger state. Copper reads as serious without alarm red. |
 | `ground` | #020a06 | #e2d9c5 | #000000 | Page ground. Night: the deepest night forest. Dawn: aged parchment, deep enough that cards stand off it. High contrast: black. |
-| `ground-raised` | #1c4535 | #fffdf8 | #000000 | Cards, tiles, sheets, menus, dialogs and toasts. Set well apart from `ground` by lightness (night 2.1:1, Dawn 1.4:1 plus the `rim-gilt` edge) so every tile reads as its own object; the high contrast theme sets it apart with a 2px `edge` inset. |
+| `ground-raised` | #1c4535 | #fffdf8 | #000000 | Cards, tiles, sheets, menus, dialogs and toasts. Set well apart from `ground` by lightness (night 2.1:1, Dawn 1.4:1 plus the `rim-gilt` edge) so every tile reads as its own object. |
 | `ground-sunken` | #010503 | #dad1bc | #000000 | Fields, the transcript well, meter tracks and the track of the wick loader. One stratum below `ground`. |
 | `veil` | #020806 | #1b2a22 | #000000 | Scrim color behind dialogs and sheets, applied at `opacity-scrim`. |
 | `frost` | #21503d | #efe7d6 | #000000 | Fill of the secondary (frost) button, the AI dialogue bubble and selectable chips. Carries `inset-frost`. |
 | `frost-hover` | #275a46 | #e5dbc6 | #1a1a1a | Frost fill under pointer hover. |
 | `sill` | #8fbfa5 | #4d6a5a | #ffffff | The 2px lower edge that `inset-well` paints inside fields, and the off track of switches. At least 3:1 on `ground-sunken` in every theme. |
 | `vein` | #2f5d4b | #c4b99f | #8a8a8a | Decorative hairlines: dividers, table rules, chart gridlines. Below 3:1 on purpose, so it never carries meaning alone. |
-| `edge` | #7aa98f | #5b6f63 | #ffffff | Meaningful boundaries: chart outlines, the meter track edge and every surface edge in the high contrast theme. At least 3:1 against `ground`, `ground-raised` and `ground-sunken`. |
+| `edge` | #7aa98f | #5b6f63 | #ffffff | Meaningful boundaries: chart outlines, the meter track edge and every surface edge. At least 3:1 against `ground`, `ground-raised` and `ground-sunken`. |
 | `ink` | #fbf8f0 | #0f231a | #ffffff | Primary text and headings on `ground`, `ground-raised`, `ground-sunken`, `frost` and `bubble-you`. At least 10:1 in every theme. |
 | `ink-muted` | #e3ece5 | #283a30 | #ececec | Secondary text, metadata, helper text and placeholders on all grounds and on `frost`. At least 7:1 in every theme (WCAG AAA). |
 | `ink-link` | #ffdea6 | #5a2e00 | #ffe27a | Links and quiet buttons on all grounds, always underlined. At least 7:1 in every theme. |
@@ -240,7 +239,7 @@ Wick has one accent, the lantern, set against a night forest. Every other colour
 | `lantern-text` | #ffdfa2 | #542d00 | #ffd700 | The lantern as text: the active navigation label, the streak count, the Direct strategy and frame headings that need warmth. On all grounds, at least 7:1. |
 | `lantern-soft` | #3a2a0f | #f7e6c4 | #000000 | Soft amber ground behind `lantern-text` or `ink`: the selected navigation row, the streak tile and your own dialogue bubble. |
 | `flame` | #ffbe4d | #a85600 | #ffd700 | The flame in the mark, the wick loader head and the streak glyph. Decorative or paired with text; at least 3:1 on `ground` in every theme. |
-| `focus` | #ffe3a3 | #0f231a | #00e5ff | The keyboard focus ring colour, drawn by `focus-ring` with a ground-coloured band inside it. At least 3:1 on every ground in every theme. The high contrast theme uses cyan so focus never looks like the primary fill. |
+| `focus` | #ffe3a3 | #0f231a | #00e5ff | The keyboard focus ring colour, drawn by `focus-ring` with a ground-coloured band inside it. At least 3:1 on every ground in every theme. |
 | `voice-you` | #ffbe4d | #6e3b00 | #ffd700 | Your voice: the listening orb, your waveform and the Speaking label beside you. Always paired with the word Listening or You. |
 | `voice-ai` | #a6d8f3 | #0e3b5e | #9fdfff | The AI character's voice: its waveform and the speaking indicator beside its name. Always paired with the character's name. |
 | `bubble-you` | {lantern-soft} | {lantern-soft} | {lantern-soft} | Fill of your dialogue bubble in the transcript. An alias of `lantern-soft`; text on it is `ink`. |
@@ -265,7 +264,7 @@ Wick has one accent, the lantern, set against a night forest. Every other colour
 | `gem` | #c690f5 | #7b2f92 | #e3a6ff | The arcane gem set into gilded crests, card gems and the arcane band. Amethyst from Enchanted Grove, lifted for night. A frame accent for the mage and wizard feel. Never on scenario, score or safety surfaces. |
 | `gem-text` | #e8cffc | #5e1f72 | #efcbff | The gem as text: the arcane band label and a featured tile name. At least 7:1 on `ground-raised` and `gem-soft`. |
 | `gem-soft` | #3a1d4f | #f3e3f7 | #000000 | Soft arcane ground for the arcane band and featured tile counts. |
-| `tree-far` | #0b2219 | #d0c6b0 | #000000 | The far treeline silhouette in the frame. Decorative, frame only. Hidden in the high contrast theme. |
+| `tree-far` | #0b2219 | #d0c6b0 | #000000 | The far treeline silhouette in the frame. Decorative, frame only. |
 | `tree-near` | #010604 | #bdb197 | #000000 | The near treeline silhouette in the frame. Decorative, frame only. |
 | `lantern-pool` | #ffbe4d | #f0b45a | #000000 | The colour of ambient lantern light pooled behind the frame, used at `opacity-pool` in a radial gradient. Decorative only. |
 
@@ -371,11 +370,11 @@ Text needs 7:1 (WCAG AAA). Focus rings, edges, the flame and the voice colours n
 
 ## 6. Typography
 
-Three faces, all inherited from Enchanted Grove, each with one job.
+Three faces, each with one job. Mona Sans and DM Mono come from Enchanted Grove; Faculty Glyphic replaces Cormorant for display.
 
 | Face | Job | Never |
 | --- | --- | --- |
-| Cormorant (display serif) | The frame: the hero line, screen titles, section headings, one quiet italic line | Scenario titles, dialogue, scores, safety notes, buttons |
+| Faculty Glyphic (display serif) | The frame: the hero line, screen titles, section headings, one quiet aside line | Scenario titles, dialogue, scores, safety notes, buttons |
 | Mona Sans (grotesk) | Every content and interface word | Decorative italics |
 | DM Mono | Timers, rubric values, dates, eyebrows | Sentences |
 
@@ -383,10 +382,10 @@ Three faces, all inherited from Enchanted Grove, each with one job.
 
 | Style | Face | Size / line | Weight | Use |
 | --- | --- | --- | --- | --- |
-| `hero` | Cormorant | 56 / 60 | 500 | One line on home and welcome. 40px phones, 96px stage. |
-| `title` | Cormorant | 40 / 44 | 500 | Screen titles in the frame. 32px phones. |
-| `heading` | Cormorant | 28 / 34 | 600 | Frame section headings. 24px phones. |
-| `aside` | Cormorant italic | 20 / 28 | 500 | One metaphor line in an empty state or welcome. |
+| `hero` | Faculty Glyphic | 56 / 60 | 400 | One line on home and welcome. 40px phones, 96px stage. |
+| `title` | Faculty Glyphic | 40 / 44 | 400 | Screen titles in the frame. 32px phones. |
+| `heading` | Faculty Glyphic | 28 / 34 | 400 | Frame section headings. 24px phones. |
+| `aside` | Faculty Glyphic | 20 / 28 | 400 | One metaphor line in an empty state or welcome. |
 | `score` | Mona Sans | 72 / 72 | 600 | The intervention score, tabular figures. 56px phones, 128px stage. |
 | `scenario-title` | Mona Sans | 24 / 30 | 650 | Scenario titles. |
 | `subtitle` | Mona Sans | 20 / 28 | 600 | Card, dialog and rubric headings. |
@@ -404,15 +403,14 @@ Three faces, all inherited from Enchanted Grove, each with one job.
 - Text never goes below 14px for a sentence. Overlines at 12px are uppercase labels only and always in `ink` or `ink-muted`.
 - Keep lines to `measure` (68ch). Coaching paragraphs sit at 17 to 18px.
 - Use tabular figures for the score, the timer and rubric values so digits do not jump while counting.
-- Cormorant appears at 20px and above only. Below that, its thin strokes lose contrast at night.
+- Faculty Glyphic appears at 20px and above only. It has one weight (400) and no italic; never set it bold or italic, as browsers fake both.
 - Support text resizing to 200% without loss: every component uses relative layout and wraps.
 
 ### Font files and stacks
 
 | Family | File | Weight | Style |
 | --- | --- | --- | --- |
-| Cormorant | `fonts/Cormorant-Variable.woff2` | 300 700 | normal |
-| Cormorant | `fonts/Cormorant-Italic-Variable.woff2` | 300 700 | italic |
+| Faculty Glyphic | `fonts/FacultyGlyphic-Regular.woff2` | 400 | normal |
 | Mona Sans | `fonts/MonaSans-Variable.woff2` | 200 900 | normal |
 | Mona Sans | `fonts/MonaSans-Italic-Variable.woff2` | 200 900 | italic |
 | DM Mono | `fonts/DMMono-Regular.woff2` | 400 | normal |
@@ -420,20 +418,20 @@ Three faces, all inherited from Enchanted Grove, each with one job.
 
 | Role | CSS stack |
 | --- | --- |
-| `--font-display` | "Cormorant", "Cormorant Garamond", Georgia, serif |
+| `--font-display` | "Faculty Glyphic", Georgia, serif |
 | `--font-sans` | "Mona Sans", "Helvetica Neue", Arial, sans-serif |
 | `--font-mono` | "DM Mono", ui-monospace, Menlo, monospace |
 
-All three families are open source under the SIL Open Font License. Cormorant and DM Mono are on Google Fonts; Mona Sans is published by GitHub.
+All three families are open source under the SIL Open Font License. Faculty Glyphic and DM Mono are on Google Fonts; Mona Sans is published by GitHub.
 
 ### Type style details
 
 | Style | Family | Size | Line | Weight | Tracking | Sample | Use |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `hero` | display | 56px | 60px | 500 | -0.01em | Keep your wick lit | The one line on the home screen and the welcome screen. 40px on phones; 96px on the stage breakpoint. |
-| `title` | display | 40px | 44px | 500 | 0 | The grove | Screen titles in the frame: The grove, Trails, Lanterns lit, Field guide. 32px on phones. |
-| `heading` | display | 28px | 34px | 600 | 0 | Trails for tonight | Section headings in the frame. 24px on phones. |
-| `aside` | display | 20px | 28px | 500 italic | 0 | When the grove goes dark, keep your wick lit. | One quiet line in empty states and the welcome screen. Never for instructions or scenario text. |
+| `hero` | display | 56px | 60px | 400 | -0.01em | Keep your wick lit | The one line on the home screen and the welcome screen. 40px on phones; 96px on the stage breakpoint. |
+| `title` | display | 40px | 44px | 400 | 0 | The grove | Screen titles in the frame: The grove, Trails, Lanterns lit, Field guide. 32px on phones. |
+| `heading` | display | 28px | 34px | 400 | 0 | Trails for tonight | Section headings in the frame. 24px on phones. |
+| `aside` | display | 20px | 28px | 400 | 0 | When the grove goes dark, keep your wick lit. | One quiet line in empty states and the welcome screen. Never for instructions or scenario text. |
 | `score` | sans | 72px | 72px | 600 | -0.02em | 78 | The intervention score on the result screen, with tabular figures. 56px on phones; 128px on the stage breakpoint. No other number on the screen is this large. |
 | `scenario-title` | sans | 24px | 30px | 650 | 0 | Dylan keeps refilling Maya's cup | Scenario titles on trail cards, the content note and the result screen. Names and places stay true to life. |
 | `subtitle` | sans | 20px | 28px | 600 | 0 | How you intervened | Card titles, dialog titles and rubric headings. |
@@ -514,7 +512,7 @@ CSS custom properties cannot be read inside media queries, so write breakpoints 
 
 ## 8. Corners, silhouettes, depth, light and layering
 
-Surfaces are carved with inset shadows. Light comes from the lantern. The high contrast theme is the one exception: there every inset becomes a 2px white edge so surfaces stay apart at 3:1 or more.
+Surfaces are carved with inset shadows. Light comes from the lantern.
 
 ### Shadows
 
@@ -613,7 +611,6 @@ Compose shadows with commas: `box-shadow: var(--inset-raised), var(--glow-soft);
 .bubble-you { border-radius: var(--radius-lg) var(--radius-lg) var(--cut-bubble) var(--radius-lg); }
 ```
 
-In the high contrast theme the pane cut is dropped for a plain `radius-lg` card with a 2px white inset edge.
 
 ### Every shadow value
 
@@ -789,7 +786,7 @@ Four tones carved with inset shadows: `lantern` for the one primary action on a 
 **Consumer provides:** `tone` (`lantern`, `frost`, `quiet`, `exit`; default `frost`), children as the visible label, an optional leading `icon` or trailing `iconAfter` (any Wick icon name), `ornate` for gilded flourishes, `size="lg"` for the main call to action on a screen, `loading` with a `loadingLabel` for screen readers, and any native button attributes (`onClick`, `disabled`, `type`, `aria-label`).
 
 - One `lantern` per screen. It is the light you walk toward: "Start role-play", "Light a lantern", "Save reflection". Text on it is `on-lantern`, at least 7:1 in every theme.
-- `frost` uses `frost` with `inset-frost`. Its label identifies it, so it needs no boundary (WCAG 1.4.11); in the high contrast theme `inset-frost` becomes a 2px white edge.
+- `frost` uses `frost` with `inset-frost`. Its label identifies it, so it needs no boundary (WCAG 1.4.11).
 - `quiet` is an underlined text action in `ink-link`. Use it for "Choose another trail" and other ways back.
 - `exit` reads "Step out" with the door icon. It sits on `stratum-exit` and appears on every role-play and content note screen, in the same corner every time. Pressing it ends the session at once with no confirmation.
 - Micro-interactions: hover kindles a glow in `duration-kindle` (`glow-lantern` or `glow-soft`); the lantern's icon flickers on hover; a trailing arrow moves 3px forward; pressing sinks the surface with `inset-press` and 1px of travel in `duration-flicker`; keyboard focus draws `focus-ring`.
@@ -981,7 +978,7 @@ One finished session in Lanterns lit, drawn as a lantern pane that lights when t
 
 **Consumer provides:** `title` (a short plain name for the session), `meta` (date and the strategy used), `lit={false}` for a trail not yet walked, and `ornament={false}` to drop the gilded corners.
 
-- The tile uses the `cut-pane` silhouette: a pointed lantern top over a straight body. In the high contrast theme it becomes a plain `radius-lg` card with a white edge.
+- The tile uses the `cut-pane` silhouette: a pointed lantern top over a straight body.
 - Lighting: the flame kindles with `ease-lift` over `duration-settle`, then flickers slowly, and a pool of `lantern-pool` light warms the pane behind it. This is the one frame reward in Wick, and it marks that practice happened.
 - Never show the score on the tile. The score lives in the session detail, in plain type.
 - An unlit tile shows the flame in `vein`.
@@ -1094,13 +1091,13 @@ A quest-menu tile, like an inventory slot: a gilded, chamfered tile with a soft 
 - Use tiles for navigation through the frame: trail chapters (Parties, Transit, Online, Campus, After), the five Ds in the Field guide, and settings groups.
 - Pips count practice, never performance: "Walked 3 of 4 trails". Never show a score, a rank or a rarity on a tile.
 - Tones mark a category. They never grade.
-- The tile uses `ground-raised` with `inset-raised` and `rim-gilt`; gilded corners at 30px; the icon sits in a sunken gem-cut well. Labels are set in Cormorant at 20px (the frame voice) and the sub line in DM Mono at 12px.
+- The tile uses `ground-raised` with `inset-raised` and `rim-gilt`; gilded corners at 30px; the icon sits in a sunken gem-cut well. Labels are set in Faculty Glyphic at 20px (the frame voice) and the sub line in DM Mono at 12px.
 - Hover lifts the tile 2px with a gold glow; keyboard focus draws a 3px `focus` ring inside the rim. The whole tile is one button or link, named by its label, sub line and count.
 - The sigil turns once every 90 seconds and stops with reduced motion.
 
 ### GildedHeading
 
-A chapter heading for the frame: a gilded crest with an arcane gem, an optional eyebrow, a Cormorant title and a gilded divider.
+A chapter heading for the frame: a gilded crest with an arcane gem, an optional eyebrow, a Faculty Glyphic title and a gilded divider.
 
 **Consumer provides:** `title`, `sub` (eyebrow, three words at most), `level` (heading level, default 2). `GildedDivider` is the divider on its own.
 
@@ -1120,7 +1117,7 @@ The Wick mark drawn inline with theme tokens: a lantern pane holding one flame o
 
 ### Wordmark
 
-"wick" in Cormorant at weight 600, drawn as outlines, with a flame in place of the dot on the i.
+"wick" in Faculty Glyphic at weight 400, drawn as outlines, with a flame in place of the dot on the i.
 
 **Consumer provides:** `height` in px.
 
@@ -1136,7 +1133,7 @@ The frame's landscape: two treelines and a slow pool of lantern light, drawn inl
 
 - Far trees in `tree-far` at `opacity-scenery`; near trees in `tree-near`; the pool in `lantern-pool` at `opacity-pool`, blurred by `blur-glow`, breathing over `duration-night`.
 - Use it in the grove (home) header, the welcome screen and empty states. Never behind a scenario, a transcript, a score or a safety note.
-- Hidden in the high contrast theme. Decorative and hidden from assistive technology.
+- Decorative and hidden from assistive technology.
 
 ### WickRule
 
@@ -1293,7 +1290,7 @@ The frame kit dresses the grove, the trail library, the Field guide, Lanterns li
 
 ### Logo
 
-- The mark is a lantern pane holding one flame on its wick. The wordmark is "wick" in Cormorant 600 drawn as outlines, with a flame for the dot of the i.
+- The mark is a lantern pane holding one flame on its wick. The wordmark is "wick" in Faculty Glyphic 400 drawn as outlines, with a flame for the dot of the i.
 - Files: `wick-mark.svg`, `wick-mark-dawn.svg`, `wick-wordmark.svg`, `wick-wordmark-dawn.svg`, `wick-lockup.svg`, `wick-lockup-dawn.svg`, `wick-app-icon.svg` (Logos group). Inline versions: the `Mark` and `Wordmark` components.
 - Clear space equals the flame height. Minimum 20px for the mark, 64px wide for the wordmark.
 
@@ -1302,7 +1299,6 @@ The frame kit dresses the grove, the trail library, the Field guide, Lanterns li
 - `treeline-far.svg` and `treeline-near.svg`: layered pine rows. Inline: `Scenery`, bound to `tree-far` and `tree-near`.
 - `hanging-lantern.svg`: the welcome screen and the Lanterns lit empty state.
 - `clearing.svg`: a hill with a path opening, for the foot of the welcome screen.
-- Hidden in the high contrast theme.
 
 ### Card silhouettes
 
@@ -1346,7 +1342,7 @@ The frame kit dresses the grove, the trail library, the Field guide, Lanterns li
 
 ### Fonts
 
-Cormorant (variable, roman and italic), Mona Sans (variable, roman and italic) and DM Mono (400 and 500) are included as woff2 files under `fonts/`. All three are open source under the SIL Open Font License.
+Faculty Glyphic (400), Mona Sans (variable, roman and italic) and DM Mono (400 and 500) are included as woff2 files under `fonts/`. All three are open source under the SIL Open Font License.
 
 ### Silhouettes
 
@@ -1357,7 +1353,7 @@ Scenery for the frame: the night grove that surrounds the app. Use them in the w
 - `hanging-lantern.svg`: a lantern on a cord with its pane lit in `lantern-amber` and a `flame-core` flame. The welcome screen and the empty state of Lanterns lit.
 - `clearing.svg`: a low hill with a path opening in the middle, in `tree-far` and `ground-raised`. The foot of the welcome screen and the stage breakpoint.
 
-The bundle's `Scenery` component draws the same treelines inline and binds them to the `tree-far` and `tree-near` tokens, so they follow each theme. In the Dawn theme they turn to pale parchment hills; in the high contrast theme they are hidden. Silhouettes are decorative: mark them `aria-hidden="true"`.
+The bundle's `Scenery` component draws the same treelines inline and binds them to the `tree-far` and `tree-near` tokens, so they follow each theme. In the Dawn theme they turn to pale parchment hills. Silhouettes are decorative: mark them `aria-hidden="true"`.
 
 ### Ornaments
 
@@ -1368,7 +1364,7 @@ Quiet ornaments for the frame. They mark navigation and moments of rest. They ne
 - `ember-row.svg`: three embers, the center one lit. A separator between frame items and the loading mark in tight spaces.
 - `pane-frame.svg`: the lantern pane drawn as a double hairline with mullions. Behind the empty state of Lanterns lit and the welcome illustration.
 
-The bundle draws the rule, bracket and embers inline with theme tokens. Ornaments are decorative: mark them `aria-hidden="true"` and hide them in the high contrast theme when they add noise.
+The bundle draws the rule, bracket and embers inline with theme tokens. Ornaments are decorative: mark them `aria-hidden="true"`.
 
 #### Gilded quest set
 
@@ -1424,7 +1420,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
 ### Appendix A: tokens.css
 
 ```css
-/* Wick tokens. Set data-theme="night" | "dawn" | "contrast" on the root. Font files: fonts/*.woff2 */
+/* Wick tokens. Set data-theme="night" or "dawn" on the root. Font files: fonts/*.woff2 */
 :root, [data-theme="night"] {
   --night-forest: #06140f;
   --pine: #0f2a20;
@@ -1725,20 +1721,19 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
   --ornament-flame: 10px;
   --ornament-bracket: 20px;
   --ornament-ember: 4px;
-  --font-display: "Cormorant", "Cormorant Garamond", Georgia, serif;
+  --font-display: "Faculty Glyphic", Georgia, serif;
   --font-sans: "Mona Sans", "Helvetica Neue", Arial, sans-serif;
   --font-mono: "DM Mono", ui-monospace, Menlo, monospace;
 }
-@font-face { font-family: "Cormorant"; src: url("fonts/Cormorant-Variable.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Cormorant"; src: url("fonts/Cormorant-Italic-Variable.woff2") format("woff2"); font-weight: 300 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Faculty Glyphic"; src: url("fonts/FacultyGlyphic-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "Mona Sans"; src: url("fonts/MonaSans-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: normal; font-display: swap; }
 @font-face { font-family: "Mona Sans"; src: url("fonts/MonaSans-Italic-Variable.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("fonts/DMMono-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
 @font-face { font-family: "DM Mono"; src: url("fonts/DMMono-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-.hero { font-family: var(--font-display); font-size: 56px; line-height: 60px; font-weight: 500; letter-spacing: -0.01em; }
-.title { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 500; }
-.heading { font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 600; }
-.aside { font-family: var(--font-display); font-size: 20px; line-height: 28px; font-weight: 500; font-style: italic; }
+.hero { font-family: var(--font-display); font-size: 56px; line-height: 60px; font-weight: 400; letter-spacing: -0.01em; }
+.title { font-family: var(--font-display); font-size: 40px; line-height: 44px; font-weight: 400; }
+.heading { font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 400; }
+.aside { font-family: var(--font-display); font-size: 20px; line-height: 28px; font-weight: 400; }
 .score { font-family: var(--font-sans); font-size: 72px; line-height: 72px; font-weight: 600; letter-spacing: -0.02em; }
 .scenario-title { font-family: var(--font-sans); font-size: 24px; line-height: 30px; font-weight: 650; }
 .subtitle { font-family: var(--font-sans); font-size: 20px; line-height: 28px; font-weight: 600; }
@@ -1770,10 +1765,6 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
    {
     "id": "dawn",
     "name": "Dawn (light)"
-   },
-   {
-    "id": "contrast",
-    "name": "Lantern high contrast"
    }
   ],
   "tokens": [
@@ -1843,7 +1834,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
      "dawn": "#fffdf8",
      "contrast": "#000000"
     },
-    "usage": "Cards, tiles, sheets, menus, dialogs and toasts. Set well apart from `ground` by lightness (night 2.1:1, Dawn 1.4:1 plus the `rim-gilt` edge) so every tile reads as its own object; the high contrast theme sets it apart with a 2px `edge` inset."
+    "usage": "Cards, tiles, sheets, menus, dialogs and toasts. Set well apart from `ground` by lightness (night 2.1:1, Dawn 1.4:1 plus the `rim-gilt` edge) so every tile reads as its own object."
    },
    {
     "name": "ground-sunken",
@@ -1906,7 +1897,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
      "dawn": "#5b6f63",
      "contrast": "#ffffff"
     },
-    "usage": "Meaningful boundaries: chart outlines, the meter track edge and every surface edge in the high contrast theme. At least 3:1 against `ground`, `ground-raised` and `ground-sunken`."
+    "usage": "Meaningful boundaries: chart outlines, the meter track edge and every surface edge. At least 3:1 against `ground`, `ground-raised` and `ground-sunken`."
    },
    {
     "name": "ink",
@@ -1996,7 +1987,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
      "dawn": "#0f231a",
      "contrast": "#00e5ff"
     },
-    "usage": "The keyboard focus ring colour, drawn by `focus-ring` with a ground-coloured band inside it. At least 3:1 on every ground in every theme. The high contrast theme uses cyan so focus never looks like the primary fill."
+    "usage": "The keyboard focus ring colour, drawn by `focus-ring` with a ground-coloured band inside it. At least 3:1 on every ground in every theme."
    },
    {
     "name": "voice-you",
@@ -2209,7 +2200,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
      "dawn": "#d0c6b0",
      "contrast": "#000000"
     },
-    "usage": "The far treeline silhouette in the frame. Decorative, frame only. Hidden in the high contrast theme."
+    "usage": "The far treeline silhouette in the frame. Decorative, frame only."
    },
    {
     "name": "tree-near",
@@ -2234,16 +2225,10 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
  "type": {
   "fonts": [
    {
-    "family": "Cormorant",
-    "file": "fonts/Cormorant-Variable.woff2",
-    "weight": "300 700",
+    "family": "Faculty Glyphic",
+    "file": "fonts/FacultyGlyphic-Regular.woff2",
+    "weight": "400",
     "style": "normal"
-   },
-   {
-    "family": "Cormorant",
-    "file": "fonts/Cormorant-Italic-Variable.woff2",
-    "weight": "300 700",
-    "style": "italic"
    },
    {
     "family": "Mona Sans",
@@ -2271,7 +2256,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
    }
   ],
   "families": {
-   "display": "\"Cormorant\", \"Cormorant Garamond\", Georgia, serif",
+   "display": "\"Faculty Glyphic\", Georgia, serif",
    "sans": "\"Mona Sans\", \"Helvetica Neue\", Arial, sans-serif",
    "mono": "\"DM Mono\", ui-monospace, Menlo, monospace"
   },
@@ -2279,13 +2264,13 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
    {
     "name": "Frame",
     "family": "display",
-    "note": "Cormorant, inherited from Enchanted Grove. The voice of the frame only: the wordmark, navigation headings and quiet lines in the grove. Scenario content, scores and safety notes never use it.",
+    "note": "Faculty Glyphic, from Google Fonts, replaces the Enchanted Grove Cormorant. One weight, no italic. The voice of the frame only: the wordmark, navigation headings and quiet lines in the grove. Scenario content, scores and safety notes never use it.",
     "styles": [
      {
       "name": "hero",
       "fontSize": "56px",
       "lineHeight": "60px",
-      "fontWeight": 500,
+      "fontWeight": 400,
       "letterSpacing": "-0.01em",
       "sample": "Keep your wick lit",
       "usage": "The one line on the home screen and the welcome screen. 40px on phones; 96px on the stage breakpoint."
@@ -2294,7 +2279,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
       "name": "title",
       "fontSize": "40px",
       "lineHeight": "44px",
-      "fontWeight": 500,
+      "fontWeight": 400,
       "sample": "The grove",
       "usage": "Screen titles in the frame: The grove, Trails, Lanterns lit, Field guide. 32px on phones."
      },
@@ -2302,7 +2287,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
       "name": "heading",
       "fontSize": "28px",
       "lineHeight": "34px",
-      "fontWeight": 600,
+      "fontWeight": 400,
       "sample": "Trails for tonight",
       "usage": "Section headings in the frame. 24px on phones."
      },
@@ -2310,8 +2295,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
       "name": "aside",
       "fontSize": "20px",
       "lineHeight": "28px",
-      "fontWeight": 500,
-      "fontStyle": "italic",
+      "fontWeight": 400,
       "sample": "When the grove goes dark, keep your wick lit.",
       "usage": "One quiet line in empty states and the welcome screen. Never for instructions or scenario text."
      }
@@ -2522,7 +2506,7 @@ Icon-only buttons always carry a plain `aria-label` ("Pause role-play", "Step ou
   ]
  },
  "shadow": {
-  "note": "No outlines and no hard drop shadows. Surfaces are carved with inset shadows; light comes from soft lantern glows; floating layers get one directional bleed. The high contrast theme turns every inset into a 2px edge so surfaces stay apart at 3:1 or more. Compose them: box-shadow: var(--inset-frost), var(--glow-soft).",
+  "note": "No outlines and no hard drop shadows. Surfaces are carved with inset shadows; light comes from soft lantern glows; floating layers get one directional bleed. Compose them: box-shadow: var(--inset-frost), var(--glow-soft).",
   "tokens": [
    {
     "name": "inset-frost",
@@ -3349,7 +3333,6 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-lantern:not(.is-lit) .wk-lantern__flame { color: var(--vein); }
 .wk-lantern__title { position: relative; margin: 0; font: 600 15px/20px var(--font-sans); }
 .wk-lantern__meta { position: relative; margin: 0; font: 400 13px/18px var(--font-mono); color: var(--ink-muted); }
-[data-theme="contrast"] .wk-lantern { clip-path: none; border-radius: var(--radius-lg); }
 
 /* ---------- Field ---------- */
 .wk-field { display: grid; gap: var(--space-2); max-width: 480px; width: 100%; }
@@ -3425,7 +3408,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-empty__art .wk-flame { position: absolute; left: 50%; bottom: 26px; width: 22px; height: 28px; margin-left: -11px; color: var(--vein); transition: color var(--duration-settle) var(--ease-kindle); }
 .wk-empty:hover .wk-empty__art .wk-flame { color: var(--flame); }
 .wk-empty__title { margin: 0; font: 600 20px/28px var(--font-sans); }
-.wk-empty__aside { margin: 0; font: italic 500 20px/28px var(--font-display); color: var(--ink-muted); }
+.wk-empty__aside { margin: 0; font: 400 20px/28px var(--font-display); color: var(--ink-muted); }
 .wk-empty__body { margin: 0; font: 400 16px/24px var(--font-sans); color: var(--ink-muted); }
 
 /* ---------- Frame: mark, scenery, rule ---------- */
@@ -3445,7 +3428,6 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-scenery svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; }
 .wk-scenery__far { fill: var(--tree-far); opacity: var(--opacity-scenery); }
 .wk-scenery__near { fill: var(--tree-near); }
-[data-theme="contrast"] .wk-scenery { display: none; }
 .wk-rule { display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 360px; color: var(--flame); }
 .wk-rule::before, .wk-rule::after { content: ""; flex: 1; height: var(--ornament-rule); background: linear-gradient(to right, transparent, var(--vein)); }
 .wk-rule::after { background: linear-gradient(to left, transparent, var(--vein)); }
@@ -3477,7 +3459,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-doc__over { margin: 0 0 var(--space-2); font: 500 12px/16px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-muted); }
 .wk-doc__title { margin: 0 0 var(--space-3); font: 500 40px/44px var(--font-display); }
 .wk-doc__lead { margin: 0; font: 400 18px/28px var(--font-sans); color: var(--ink-muted); max-width: var(--measure); }
-.wk-doc__h { margin: var(--space-10) 0 var(--space-4); font: 600 28px/34px var(--font-display); }
+.wk-doc__h { margin: var(--space-10) 0 var(--space-4); font: 400 28px/34px var(--font-display); }
 .wk-doc__h3 { margin: 0 0 var(--space-2); font: 600 17px/24px var(--font-sans); }
 .wk-doc__p { margin: 0 0 var(--space-3); font: 400 16px/26px var(--font-sans); color: var(--ink-muted); max-width: var(--measure); }
 .wk-doc__grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
@@ -3549,7 +3531,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 button.wk-qtile, a.wk-qtile { cursor: pointer; text-decoration: none; }
 .wk-qtile-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 60px; height: 60px; background: var(--ground-sunken); box-shadow: var(--inset-well); color: var(--band, var(--ink)); clip-path: polygon(22% 0, 78% 0, 100% 22%, 100% 78%, 78% 100%, 22% 100%, 0 78%, 0 22%); }
 .wk-qtile-icon .wk-icon { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--band, var(--lantern)) 60%, transparent)); }
-.wk-qtile-label { position: relative; z-index: 1; font-family: var(--font-display); font-size: 20px; line-height: 22px; font-weight: 600; }
+.wk-qtile-label { position: relative; z-index: 1; font-family: var(--font-display); font-size: 20px; line-height: 22px; font-weight: 400; }
 .wk-qtile-sub { position: relative; z-index: 1; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
 .wk-qtile-count { position: absolute; z-index: 2; right: 10px; top: 10px; min-width: 22px; padding: 0 6px; border-radius: var(--radius-sm); background: var(--gem-soft); color: var(--gem-text); font-family: var(--font-mono); font-size: 12px; line-height: 20px; box-shadow: var(--inset-frost); }
 .wk-qtile-pips { position: relative; z-index: 1; display: flex; gap: 4px; }
@@ -3590,12 +3572,10 @@ button.wk-qtile:focus-visible, a.wk-qtile:focus-visible { box-shadow: var(--inse
 .wk-qtile-pips i.on { background: var(--gold); box-shadow: 0 0 6px var(--gold-bright); }
 .wk-gilded-head { display: grid; justify-items: center; gap: var(--space-2); text-align: center; }
 .wk-gilded-head__crest { width: var(--ornament-crest); height: calc(var(--ornament-crest) * 0.2286); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 32' width='140' height='32'%3E%3Cg%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M70 3.5 L82.5 16 L70 28.5 L57.5 16 Z'/%3E%3Cpath d='M83 16 C92 8 104 8 110 16'/%3E%3Cpath d='M110 16 C116 24 128 23 130 16'/%3E%3Cpath d='M128.76 15.55 L128.83 15.03 L128.84 14.51 L128.8 14 L128.71 13.51 L128.56 13.03 L128.37 12.58 L128.14 12.16 L127.87 11.77 L127.56 11.41 L127.22 11.1 L126.85 10.83 L126.47 10.6 L126.07 10.42 L125.65 10.28 L125.24 10.2 L124.82 10.15 L124.4 10.15 L124 10.2 L123.61 10.29 L123.24 10.41 L122.89 10.58 L122.56 10.77 L122.27 11 L122 11.25 L121.77 11.52 L121.57 11.81 L121.41 12.12 L121.29 12.43 L121.2 12.75 L121.15 13.07 L121.13 13.39 L121.15 13.7 L121.2 14 L121.28 14.29 L121.39 14.55 L121.53 14.8 L121.69 15.03 L121.86 15.23 L122.06 15.41 L122.27 15.56 L122.48 15.68 L122.71 15.78 L122.93 15.85 L123.16 15.89 L123.38 15.9 L123.6 15.89 L123.8 15.86 L124 15.8 L124.18 15.72 L124.35 15.63 L124.49 15.52 L124.62 15.4 L124.73 15.27 L124.82 15.13 L124.89 14.99 L124.94 14.85 L124.97 14.71 L124.98 14.57 L124.97 14.43 L124.95 14.31'/%3E%3Cpath d='M83 18 C90 25 98 25 101 21'/%3E%3Cpath d='M57 16 C48 8 36 8 30 16'/%3E%3Cpath d='M30 16 C24 24 12 23 10 16'/%3E%3Cpath d='M11.24 15.55 L11.17 15.03 L11.16 14.51 L11.2 14 L11.29 13.51 L11.44 13.03 L11.63 12.58 L11.86 12.16 L12.13 11.77 L12.44 11.41 L12.78 11.1 L13.15 10.83 L13.53 10.6 L13.93 10.42 L14.35 10.28 L14.76 10.2 L15.18 10.15 L15.6 10.15 L16 10.2 L16.39 10.29 L16.76 10.41 L17.11 10.58 L17.44 10.77 L17.73 11 L18 11.25 L18.23 11.52 L18.43 11.81 L18.59 12.12 L18.71 12.43 L18.8 12.75 L18.85 13.07 L18.87 13.39 L18.85 13.7 L18.8 14 L18.72 14.29 L18.61 14.55 L18.47 14.8 L18.31 15.03 L18.14 15.23 L17.94 15.41 L17.73 15.56 L17.52 15.68 L17.29 15.78 L17.07 15.85 L16.84 15.89 L16.62 15.9 L16.4 15.89 L16.2 15.86 L16 15.8 L15.82 15.72 L15.65 15.63 L15.51 15.52 L15.38 15.4 L15.27 15.27 L15.18 15.13 L15.11 14.99 L15.06 14.85 L15.03 14.71 L15.02 14.57 L15.03 14.43 L15.05 14.31'/%3E%3Cpath d='M57 18 C50 25 42 25 39 21'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Cpath d='M70 7 L79 16 L70 25 L61 16 Z'/%3E%3Cpath d='M101 10.5 Q105.21 10.7 108.02 6.66 Q103.1 6.84 101 10.5 Z'/%3E%3Cpath d='M138 16 m-1.6 0 a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0'/%3E%3Cpath d='M39 10.5 Q36.9 6.84 31.98 6.66 Q34.79 10.7 39 10.5 Z'/%3E%3Cpath d='M2 16 m-1.6 0 a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 32' width='140' height='32'%3E%3Cg%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M70 3.5 L82.5 16 L70 28.5 L57.5 16 Z'/%3E%3Cpath d='M83 16 C92 8 104 8 110 16'/%3E%3Cpath d='M110 16 C116 24 128 23 130 16'/%3E%3Cpath d='M128.76 15.55 L128.83 15.03 L128.84 14.51 L128.8 14 L128.71 13.51 L128.56 13.03 L128.37 12.58 L128.14 12.16 L127.87 11.77 L127.56 11.41 L127.22 11.1 L126.85 10.83 L126.47 10.6 L126.07 10.42 L125.65 10.28 L125.24 10.2 L124.82 10.15 L124.4 10.15 L124 10.2 L123.61 10.29 L123.24 10.41 L122.89 10.58 L122.56 10.77 L122.27 11 L122 11.25 L121.77 11.52 L121.57 11.81 L121.41 12.12 L121.29 12.43 L121.2 12.75 L121.15 13.07 L121.13 13.39 L121.15 13.7 L121.2 14 L121.28 14.29 L121.39 14.55 L121.53 14.8 L121.69 15.03 L121.86 15.23 L122.06 15.41 L122.27 15.56 L122.48 15.68 L122.71 15.78 L122.93 15.85 L123.16 15.89 L123.38 15.9 L123.6 15.89 L123.8 15.86 L124 15.8 L124.18 15.72 L124.35 15.63 L124.49 15.52 L124.62 15.4 L124.73 15.27 L124.82 15.13 L124.89 14.99 L124.94 14.85 L124.97 14.71 L124.98 14.57 L124.97 14.43 L124.95 14.31'/%3E%3Cpath d='M83 18 C90 25 98 25 101 21'/%3E%3Cpath d='M57 16 C48 8 36 8 30 16'/%3E%3Cpath d='M30 16 C24 24 12 23 10 16'/%3E%3Cpath d='M11.24 15.55 L11.17 15.03 L11.16 14.51 L11.2 14 L11.29 13.51 L11.44 13.03 L11.63 12.58 L11.86 12.16 L12.13 11.77 L12.44 11.41 L12.78 11.1 L13.15 10.83 L13.53 10.6 L13.93 10.42 L14.35 10.28 L14.76 10.2 L15.18 10.15 L15.6 10.15 L16 10.2 L16.39 10.29 L16.76 10.41 L17.11 10.58 L17.44 10.77 L17.73 11 L18 11.25 L18.23 11.52 L18.43 11.81 L18.59 12.12 L18.71 12.43 L18.8 12.75 L18.85 13.07 L18.87 13.39 L18.85 13.7 L18.8 14 L18.72 14.29 L18.61 14.55 L18.47 14.8 L18.31 15.03 L18.14 15.23 L17.94 15.41 L17.73 15.56 L17.52 15.68 L17.29 15.78 L17.07 15.85 L16.84 15.89 L16.62 15.9 L16.4 15.89 L16.2 15.86 L16 15.8 L15.82 15.72 L15.65 15.63 L15.51 15.52 L15.38 15.4 L15.27 15.27 L15.18 15.13 L15.11 14.99 L15.06 14.85 L15.03 14.71 L15.02 14.57 L15.03 14.43 L15.05 14.31'/%3E%3Cpath d='M57 18 C50 25 42 25 39 21'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Cpath d='M70 7 L79 16 L70 25 L61 16 Z'/%3E%3Cpath d='M101 10.5 Q105.21 10.7 108.02 6.66 Q103.1 6.84 101 10.5 Z'/%3E%3Cpath d='M138 16 m-1.6 0 a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0'/%3E%3Cpath d='M39 10.5 Q36.9 6.84 31.98 6.66 Q34.79 10.7 39 10.5 Z'/%3E%3Cpath d='M2 16 m-1.6 0 a1.6 1.6 0 1 0 3.2 0 a1.6 1.6 0 1 0 -3.2 0'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat; background: radial-gradient(circle at 50% 16px, var(--gem) 0 5.5px, transparent 6px), linear-gradient(90deg, var(--gold-deep), var(--gold-bright) 30%, var(--gold) 50%, var(--gold-bright) 70%, var(--gold-deep)); }
-.wk-gilded-head__title { margin: 0; font: 600 28px/34px var(--font-display); color: var(--ink); }
+.wk-gilded-head__title { margin: 0; font: 400 28px/34px var(--font-display); color: var(--ink); }
 .wk-gilded-head__sub { margin: 0; font: 500 12px/16px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-muted); }
 .wk-btn .wk-btn-orn { margin: 0 -4px; }
 .wk-btn--lantern .wk-btn-orn { background: linear-gradient(90deg, var(--on-lantern), color-mix(in srgb, var(--on-lantern) 70%, var(--gold-deep))); filter: none; }
-[data-theme="contrast"] .wk-ornate::before, [data-theme="contrast"] .wk-ornate::after { background: var(--gold); }
-[data-theme="contrast"] .wk-sigil { opacity: .5; }
 @media (max-width: 599px) { .wk-ornate.wk-card { --orn-size: 40px; } }
 @media (prefers-reduced-motion: reduce) { .wk-cut-wrap { transition: none; } .wk-cut-wrap:hover { transform: none; } .wk-sigil { animation: none; } }
 [data-motion="still"] .wk-cut-wrap { transition: none; } [data-motion="still"] .wk-sigil { animation: none; }
@@ -3808,13 +3788,13 @@ Icon path data (24 by 24 grid, stroke 1.75, round caps and joins, no fill, `stro
 `Logos/wick-wordmark.svg`
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -760 1997 1060" width="499" height="265" role="img" aria-label="Wick"><g fill="#f4efe3"><path d="M454.949462890625 -1.0 306.349853515625 -303.0Q284.89990234375 -346.550048828125 272.6248779296875 -360.2750244140625Q260.349853515625 -374.0 241.349853515625 -374.0Q239.349853515625 -374.0 239.349853515625 -380.0Q239.349853515625 -386.0 241.349853515625 -386.0Q256.349853515625 -386.0 274.66229248046875 -385.0Q292.9747314453125 -384.0 320.749267578125 -384.0Q356.649169921875 -384.0 382.46160888671875 -385.0Q408.2740478515625 -386.0 429.7239990234375 -386.0Q431.9990234375 -386.0 431.9990234375 -380.0Q431.9990234375 -374.0 429.7239990234375 -374.0Q403.0738525390625 -374.0 388.4237060546875 -364.68756103515625Q373.7735595703125 -355.3751220703125 384.3236083984375 -335.0L506.348876953125 -94.2235107421875L463.7745361328125 -22.0L575.249755859375 -292.150634765625Q591.4246826171875 -331.50048828125 574.4246826171875 -352.750244140625Q557.4246826171875 -374.0 513.749267578125 -374.0Q511.0242919921875 -374.0 511.0242919921875 -380.0Q511.0242919921875 -386.0 513.749267578125 -386.0Q537.0242919921875 -386.0 558.5242919921875 -385.0Q580.0242919921875 -384.0 614.0242919921875 -384.0Q637.9241943359375 -384.0 652.3741455078125 -385.0Q666.8240966796875 -386.0 687.7239990234375 -386.0Q690.7239990234375 -386.0 690.7239990234375 -380.0Q690.7239990234375 -374.0 687.7239990234375 -374.0Q661.09912109375 -374.0 640.3867797851562 -354.56268310546875Q619.6744384765625 -335.1253662109375 600.49951171875 -289.7755126953125L476.949462890625 -1.0Q475.6744384765625 3.0 466.31195068359375 3.0Q456.949462890625 3.0 454.949462890625 -1.0ZM212.249755859375 -1.0 63.650146484375 -303.0Q42.2001953125 -348.0 27.0252685546875 -361.0Q11.850341796875 -374.0 -9.049560546875 -374.0Q-12.049560546875 -374.0 -12.049560546875 -380.0Q-12.049560546875 -386.0 -9.049560546875 -386.0Q7.1253662109375 -386.0 27.250244140625 -385.0Q47.3751220703125 -384.0 78.049560546875 -384.0Q113.3994140625 -384.0 139.21185302734375 -385.0Q165.0242919921875 -386.0 187.0242919921875 -386.0Q190.0242919921875 -386.0 190.0242919921875 -380.0Q190.0242919921875 -374.0 187.0242919921875 -374.0Q159.8240966796875 -374.0 143.3240966796875 -366.0Q126.8240966796875 -358.0 138.9990234375 -335.0L264.649169921875 -94.2235107421875L221.0748291015625 -22.0L330.0748291015625 -285.0L354.2244873046875 -280.4246826171875L234.249755859375 -1.0Q233.249755859375 3.0 223.749755859375 3.0Q214.249755859375 3.0 212.249755859375 -1.0Z"/><path d="M743.950439453125 0.0Q741.2254638671875 0.0 741.2254638671875 -6.0Q741.2254638671875 -12.0 743.950439453125 -12.0Q777.70068359375 -12.0 789.1132202148438 -26.08746337890625Q800.5257568359375 -40.1749267578125 800.5257568359375 -81.0V-262.750244140625Q800.5257568359375 -296.5753173828125 793.8882446289062 -312.350341796875Q787.250732421875 -328.1253662109375 769.70068359375 -328.1253662109375Q762.150634765625 -328.1253662109375 752.1005859375 -324.98785400390625Q742.050537109375 -321.850341796875 729.6754150390625 -316.0252685546875Q725.6754150390625 -315.0252685546875 723.1754150390625 -320.88775634765625Q720.6754150390625 -326.750244140625 723.950439453125 -328.0252685546875L867.5247802734375 -394.7249755859375Q869.7998046875 -395.7249755859375 870.7998046875 -395.7249755859375Q874.9747314453125 -395.7249755859375 879.2871704101562 -391.550048828125Q883.599609375 -387.3751220703125 883.599609375 -383.650146484375Q883.599609375 -373.0252685546875 882.599609375 -344.06268310546875Q881.599609375 -315.10009765625 881.599609375 -264.4752197265625V-81.0Q881.599609375 -40.1749267578125 893.099609375 -26.08746337890625Q904.599609375 -12.0 938.6248779296875 -12.0Q941.6248779296875 -12.0 941.6248779296875 -6.0Q941.6248779296875 0.0 938.6248779296875 0.0Q919.449951171875 0.0 894.2750244140625 -1.0Q869.10009765625 -2.0 840.9251708984375 -2.0Q813.750244140625 -2.0 788.5753173828125 -1.0Q763.400390625 0.0 743.950439453125 0.0Z"/><path d="M1218.89990234375 12.0Q1150.1749267578125 12.0 1105.8624877929688 -17.5Q1061.550048828125 -47.0 1040.4625854492188 -92.86248779296875Q1019.3751220703125 -138.7249755859375 1019.3751220703125 -185.7249755859375Q1019.3751220703125 -235.7249755859375 1039.8250732421875 -274.7249755859375Q1060.2750244140625 -313.7249755859375 1093.949951171875 -340.36248779296875Q1127.6248779296875 -367.0 1168.5247802734375 -381.0Q1209.4246826171875 -395.0 1249.3245849609375 -395.0Q1278.049560546875 -395.0 1306.2244873046875 -386.7750244140625Q1334.3994140625 -378.550048828125 1352.849365234375 -363.01263427734375Q1371.29931640625 -347.4752197265625 1371.29931640625 -324.950439453125Q1371.29931640625 -309.3255615234375 1359.0869750976562 -296.4757080078125Q1346.8746337890625 -283.6258544921875 1323.449951171875 -283.6258544921875Q1301.4752197265625 -283.6258544921875 1288.5753173828125 -295.5257568359375Q1275.6754150390625 -307.4256591796875 1268.2254638671875 -328.30029296875Q1259.850341796875 -350.3751220703125 1249.150146484375 -362.3250732421875Q1238.449951171875 -374.2750244140625 1212.249755859375 -374.2750244140625Q1164.29931640625 -374.2750244140625 1137.0116577148438 -330.86248779296875Q1109.7239990234375 -287.449951171875 1109.7239990234375 -217.6248779296875Q1109.7239990234375 -167.349853515625 1125.549072265625 -125.0247802734375Q1141.3741455078125 -82.69970703125 1176.3367309570312 -57.3746337890625Q1211.29931640625 -32.049560546875 1269.1243896484375 -32.049560546875Q1298.0242919921875 -32.049560546875 1320.449462890625 -39.18707275390625Q1342.8746337890625 -46.3245849609375 1367.049560546875 -60.5247802734375Q1369.3245849609375 -62.5247802734375 1372.8245849609375 -58.5247802734375Q1376.3245849609375 -54.5247802734375 1374.049560546875 -52.5247802734375Q1339.3245849609375 -20.7998046875 1302.8746337890625 -4.39990234375Q1266.4246826171875 12.0 1218.89990234375 12.0Z"/><path d="M1448.650146484375 0.0Q1446.3751220703125 0.0 1446.3751220703125 -6.0Q1446.3751220703125 -12.0 1448.650146484375 -12.0Q1482.400390625 -12.0 1494.0379028320312 -26.08746337890625Q1505.6754150390625 -40.1749267578125 1505.6754150390625 -81.0V-592.0252685546875Q1505.6754150390625 -626.5753173828125 1499.400390625 -642.350341796875Q1493.1253662109375 -658.1253662109375 1475.850341796875 -658.1253662109375Q1461.30029296875 -658.1253662109375 1435.10009765625 -646.0252685546875Q1431.8250732421875 -644.750244140625 1428.9625854492188 -650.750244140625Q1426.10009765625 -656.750244140625 1428.650146484375 -657.750244140625L1567.49951171875 -724.0Q1570.49951171875 -725.0 1572.49951171875 -725.0Q1576.6744384765625 -725.0 1581.349365234375 -721.1875610351562Q1586.0242919921875 -717.3751220703125 1586.0242919921875 -713.650146484375V-81.0Q1586.0242919921875 -40.1749267578125 1597.6618041992188 -26.08746337890625Q1609.29931640625 -12.0 1643.3245849609375 -12.0Q1646.7745361328125 -12.0 1646.7745361328125 -6.0Q1646.7745361328125 0.0 1643.3245849609375 0.0Q1623.8746337890625 0.0 1599.19970703125 -1.0Q1574.5247802734375 -2.0 1546.349853515625 -2.0Q1518.449951171875 -2.0 1493.1375122070312 -1.0Q1467.8250732421875 0.0 1448.650146484375 0.0ZM1700.3751220703125 0.0Q1697.650146484375 0.0 1697.650146484375 -6.0Q1697.650146484375 -12.0 1700.3751220703125 -12.0Q1730.400390625 -12.0 1738.50048828125 -23.1749267578125Q1746.6005859375 -34.349853515625 1732.7755126953125 -53.0L1609.850341796875 -214.050537109375L1670.4246826171875 -260.0L1807.1243896484375 -81.0Q1835.5743408203125 -43.449951171875 1863.0369262695312 -27.7249755859375Q1890.49951171875 -12.0 1918.3245849609375 -12.0Q1921.049560546875 -12.0 1921.049560546875 -6.0Q1921.049560546875 0.0 1918.3245849609375 0.0Q1898.8746337890625 0.0 1873.8372192382812 -1.0Q1848.7998046875 -2.0 1820.6248779296875 -2.0Q1781.449951171875 -2.0 1752.7750244140625 -1.0Q1724.10009765625 0.0 1700.3751220703125 0.0ZM1556.349853515625 -155.3255615234375 1550.89990234375 -169.6754150390625 1693.3255615234375 -298.5753173828125Q1724.90087890625 -326.2254638671875 1720.750732421875 -350.11273193359375Q1716.6005859375 -374.0 1676.650146484375 -374.0Q1674.3751220703125 -374.0 1674.3751220703125 -380.0Q1674.3751220703125 -386.0 1676.650146484375 -386.0Q1702.10009765625 -386.0 1727.9125366210938 -385.0Q1753.7249755859375 -384.0 1797.349853515625 -384.0Q1837.249755859375 -384.0 1861.0621948242188 -385.0Q1884.8746337890625 -386.0 1906.3245849609375 -386.0Q1909.049560546875 -386.0 1909.049560546875 -380.0Q1909.049560546875 -374.0 1906.3245849609375 -374.0Q1881.8746337890625 -374.0 1849.5748291015625 -365.91253662109375Q1817.2750244140625 -357.8250732421875 1783.2001953125 -340.150146484375Q1749.1253662109375 -322.4752197265625 1717.1253662109375 -294.1253662109375Z"/></g><path fill="#ffbe4d" d="M831.9 -710.0C879.9 -634.4 906.9 -575.0 906.9 -515.6C906.9 -467.0 872.4 -440.0 831.9 -440.0C791.4 -440.0 756.9 -467.0 756.9 -515.6C756.9 -580.4 804.9 -618.2 831.9 -710.0Z"/><path fill="#fff1c9" d="M831.9 -592.0C856.8 -552.8 870.9 -522.0 870.9 -491.2C870.9 -466.0 852.9 -452.0 831.9 -452.0C810.8 -452.0 792.9 -466.0 792.9 -491.2C792.9 -524.8 817.8 -544.4 831.9 -592.0Z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-25 -1083 2335 1510" width="584" height="378" role="img" aria-label="Wick"><path fill="#f4efe3" d="M890 -550Q874 -526 859 -499Q844 -472 829 -436.5Q814 -401 796 -350L672 0H582L451 -370L320 0H230L106 -350Q88 -401 73.5 -436.5Q59 -472 45.5 -499Q32 -526 15 -550H144Q148 -526 154 -500Q160 -474 170 -440.5Q180 -407 196 -358L279 -113L361 -358Q386 -431 398 -472.5Q410 -514 417 -550H496Q500 -526 506 -500Q512 -474 522 -440.5Q532 -407 548 -358L631 -113L713 -358Q738 -431 750 -472.5Q762 -514 769 -550Z M999 -222V-330Q999 -384 995 -418.5Q991 -453 983 -477Q975 -501 961 -523V-529L1094 -557V-222Q1094 -166 1096.5 -110Q1099 -54 1112 0H981Q994 -54 996.5 -110Q999 -166 999 -222Z M1677 -108Q1666 -86 1641.5 -57.5Q1617 -29 1574.5 -7.5Q1532 14 1467 14Q1411 14 1361.5 -8Q1312 -30 1273.5 -69Q1235 -108 1213.5 -160.5Q1192 -213 1192 -274Q1192 -335 1213.5 -388Q1235 -441 1273.5 -480.5Q1312 -520 1361.5 -542Q1411 -564 1467 -564Q1529 -564 1573.5 -547Q1618 -530 1647 -506L1644 -392H1637Q1615 -429 1574.5 -456.5Q1534 -484 1467 -484Q1413 -484 1373.5 -457Q1334 -430 1312 -383Q1290 -336 1290 -274Q1290 -211 1318.5 -164Q1347 -117 1393 -91.5Q1439 -66 1490 -66Q1546 -66 1582.5 -86Q1619 -106 1641 -139Z M2131 -132Q2163 -97 2195.5 -66Q2228 -35 2270 0H2131Q2129 -6 2114 -26Q2099 -46 2076 -71L1865 -296V-222Q1865 -166 1867.5 -110Q1870 -54 1883 0H1752Q1765 -54 1767.5 -110Q1770 -166 1770 -222V-553Q1770 -607 1766 -641.5Q1762 -676 1754 -700Q1746 -724 1732 -746V-752L1865 -780V-299L2023 -468Q2050 -499 2067.5 -521Q2085 -543 2088 -550H2227Q2195 -523 2168.5 -499Q2142 -475 2117 -450L1974 -298Z"/><path fill="#ffbe4d" d="M1036.5 -1011.7C1104.9 -903.9 1143.4 -819.3 1143.4 -734.7C1143.4 -665.4 1094.2 -626.9 1036.5 -626.9C978.8 -626.9 929.6 -665.4 929.6 -734.7C929.6 -827 998 -880.9 1036.5 -1011.7Z"/><path fill="#fff1c9" d="M1036.5 -843.5C1072 -787.7 1092.1 -743.8 1092.1 -699.9C1092.1 -664 1066.4 -644 1036.5 -644C1006.4 -644 980.9 -664 980.9 -699.9C980.9 -747.8 1016.4 -775.7 1036.5 -843.5Z"/></svg>
 ```
 
 `Logos/wick-lockup.svg`
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 64" width="375" height="128" role="img" aria-label="Wick"><path fill="#133126" d="M32 4C42.5 9.5 52 18.5 52 31V58A2 2 0 0 1 50 60H14A2 2 0 0 1 12 58V31C12 18.5 21.5 9.5 32 4Z"/><path fill="#ffbe4d" d="M32 16C36.6 22.6 42 27.4 42 35.6C42 42.4 37.6 47 32 47C26.4 47 22 42.4 22 35.6C22 29.4 26.4 25.4 28.4 21.4C29.4 24.6 30.6 26.2 32.2 27C33 23.6 32.9 19.6 32 16Z"/><path fill="#fff1c9" d="M32 30C34.2 33 36 35 36 38.2C36 41 34.2 43 32 43C29.8 43 28 41 28 38.2C28 35.4 30.2 33.4 32 30Z"/><path fill="none" stroke="#f4efe3" stroke-width="2.5" stroke-linecap="round" d="M32 43V52"/><g transform="translate(74 6) scale(0.05283) translate(40 760)"><g fill="#f4efe3"><path d="M454.949462890625 -1.0 306.349853515625 -303.0Q284.89990234375 -346.550048828125 272.6248779296875 -360.2750244140625Q260.349853515625 -374.0 241.349853515625 -374.0Q239.349853515625 -374.0 239.349853515625 -380.0Q239.349853515625 -386.0 241.349853515625 -386.0Q256.349853515625 -386.0 274.66229248046875 -385.0Q292.9747314453125 -384.0 320.749267578125 -384.0Q356.649169921875 -384.0 382.46160888671875 -385.0Q408.2740478515625 -386.0 429.7239990234375 -386.0Q431.9990234375 -386.0 431.9990234375 -380.0Q431.9990234375 -374.0 429.7239990234375 -374.0Q403.0738525390625 -374.0 388.4237060546875 -364.68756103515625Q373.7735595703125 -355.3751220703125 384.3236083984375 -335.0L506.348876953125 -94.2235107421875L463.7745361328125 -22.0L575.249755859375 -292.150634765625Q591.4246826171875 -331.50048828125 574.4246826171875 -352.750244140625Q557.4246826171875 -374.0 513.749267578125 -374.0Q511.0242919921875 -374.0 511.0242919921875 -380.0Q511.0242919921875 -386.0 513.749267578125 -386.0Q537.0242919921875 -386.0 558.5242919921875 -385.0Q580.0242919921875 -384.0 614.0242919921875 -384.0Q637.9241943359375 -384.0 652.3741455078125 -385.0Q666.8240966796875 -386.0 687.7239990234375 -386.0Q690.7239990234375 -386.0 690.7239990234375 -380.0Q690.7239990234375 -374.0 687.7239990234375 -374.0Q661.09912109375 -374.0 640.3867797851562 -354.56268310546875Q619.6744384765625 -335.1253662109375 600.49951171875 -289.7755126953125L476.949462890625 -1.0Q475.6744384765625 3.0 466.31195068359375 3.0Q456.949462890625 3.0 454.949462890625 -1.0ZM212.249755859375 -1.0 63.650146484375 -303.0Q42.2001953125 -348.0 27.0252685546875 -361.0Q11.850341796875 -374.0 -9.049560546875 -374.0Q-12.049560546875 -374.0 -12.049560546875 -380.0Q-12.049560546875 -386.0 -9.049560546875 -386.0Q7.1253662109375 -386.0 27.250244140625 -385.0Q47.3751220703125 -384.0 78.049560546875 -384.0Q113.3994140625 -384.0 139.21185302734375 -385.0Q165.0242919921875 -386.0 187.0242919921875 -386.0Q190.0242919921875 -386.0 190.0242919921875 -380.0Q190.0242919921875 -374.0 187.0242919921875 -374.0Q159.8240966796875 -374.0 143.3240966796875 -366.0Q126.8240966796875 -358.0 138.9990234375 -335.0L264.649169921875 -94.2235107421875L221.0748291015625 -22.0L330.0748291015625 -285.0L354.2244873046875 -280.4246826171875L234.249755859375 -1.0Q233.249755859375 3.0 223.749755859375 3.0Q214.249755859375 3.0 212.249755859375 -1.0Z"/><path d="M743.950439453125 0.0Q741.2254638671875 0.0 741.2254638671875 -6.0Q741.2254638671875 -12.0 743.950439453125 -12.0Q777.70068359375 -12.0 789.1132202148438 -26.08746337890625Q800.5257568359375 -40.1749267578125 800.5257568359375 -81.0V-262.750244140625Q800.5257568359375 -296.5753173828125 793.8882446289062 -312.350341796875Q787.250732421875 -328.1253662109375 769.70068359375 -328.1253662109375Q762.150634765625 -328.1253662109375 752.1005859375 -324.98785400390625Q742.050537109375 -321.850341796875 729.6754150390625 -316.0252685546875Q725.6754150390625 -315.0252685546875 723.1754150390625 -320.88775634765625Q720.6754150390625 -326.750244140625 723.950439453125 -328.0252685546875L867.5247802734375 -394.7249755859375Q869.7998046875 -395.7249755859375 870.7998046875 -395.7249755859375Q874.9747314453125 -395.7249755859375 879.2871704101562 -391.550048828125Q883.599609375 -387.3751220703125 883.599609375 -383.650146484375Q883.599609375 -373.0252685546875 882.599609375 -344.06268310546875Q881.599609375 -315.10009765625 881.599609375 -264.4752197265625V-81.0Q881.599609375 -40.1749267578125 893.099609375 -26.08746337890625Q904.599609375 -12.0 938.6248779296875 -12.0Q941.6248779296875 -12.0 941.6248779296875 -6.0Q941.6248779296875 0.0 938.6248779296875 0.0Q919.449951171875 0.0 894.2750244140625 -1.0Q869.10009765625 -2.0 840.9251708984375 -2.0Q813.750244140625 -2.0 788.5753173828125 -1.0Q763.400390625 0.0 743.950439453125 0.0Z"/><path d="M1218.89990234375 12.0Q1150.1749267578125 12.0 1105.8624877929688 -17.5Q1061.550048828125 -47.0 1040.4625854492188 -92.86248779296875Q1019.3751220703125 -138.7249755859375 1019.3751220703125 -185.7249755859375Q1019.3751220703125 -235.7249755859375 1039.8250732421875 -274.7249755859375Q1060.2750244140625 -313.7249755859375 1093.949951171875 -340.36248779296875Q1127.6248779296875 -367.0 1168.5247802734375 -381.0Q1209.4246826171875 -395.0 1249.3245849609375 -395.0Q1278.049560546875 -395.0 1306.2244873046875 -386.7750244140625Q1334.3994140625 -378.550048828125 1352.849365234375 -363.01263427734375Q1371.29931640625 -347.4752197265625 1371.29931640625 -324.950439453125Q1371.29931640625 -309.3255615234375 1359.0869750976562 -296.4757080078125Q1346.8746337890625 -283.6258544921875 1323.449951171875 -283.6258544921875Q1301.4752197265625 -283.6258544921875 1288.5753173828125 -295.5257568359375Q1275.6754150390625 -307.4256591796875 1268.2254638671875 -328.30029296875Q1259.850341796875 -350.3751220703125 1249.150146484375 -362.3250732421875Q1238.449951171875 -374.2750244140625 1212.249755859375 -374.2750244140625Q1164.29931640625 -374.2750244140625 1137.0116577148438 -330.86248779296875Q1109.7239990234375 -287.449951171875 1109.7239990234375 -217.6248779296875Q1109.7239990234375 -167.349853515625 1125.549072265625 -125.0247802734375Q1141.3741455078125 -82.69970703125 1176.3367309570312 -57.3746337890625Q1211.29931640625 -32.049560546875 1269.1243896484375 -32.049560546875Q1298.0242919921875 -32.049560546875 1320.449462890625 -39.18707275390625Q1342.8746337890625 -46.3245849609375 1367.049560546875 -60.5247802734375Q1369.3245849609375 -62.5247802734375 1372.8245849609375 -58.5247802734375Q1376.3245849609375 -54.5247802734375 1374.049560546875 -52.5247802734375Q1339.3245849609375 -20.7998046875 1302.8746337890625 -4.39990234375Q1266.4246826171875 12.0 1218.89990234375 12.0Z"/><path d="M1448.650146484375 0.0Q1446.3751220703125 0.0 1446.3751220703125 -6.0Q1446.3751220703125 -12.0 1448.650146484375 -12.0Q1482.400390625 -12.0 1494.0379028320312 -26.08746337890625Q1505.6754150390625 -40.1749267578125 1505.6754150390625 -81.0V-592.0252685546875Q1505.6754150390625 -626.5753173828125 1499.400390625 -642.350341796875Q1493.1253662109375 -658.1253662109375 1475.850341796875 -658.1253662109375Q1461.30029296875 -658.1253662109375 1435.10009765625 -646.0252685546875Q1431.8250732421875 -644.750244140625 1428.9625854492188 -650.750244140625Q1426.10009765625 -656.750244140625 1428.650146484375 -657.750244140625L1567.49951171875 -724.0Q1570.49951171875 -725.0 1572.49951171875 -725.0Q1576.6744384765625 -725.0 1581.349365234375 -721.1875610351562Q1586.0242919921875 -717.3751220703125 1586.0242919921875 -713.650146484375V-81.0Q1586.0242919921875 -40.1749267578125 1597.6618041992188 -26.08746337890625Q1609.29931640625 -12.0 1643.3245849609375 -12.0Q1646.7745361328125 -12.0 1646.7745361328125 -6.0Q1646.7745361328125 0.0 1643.3245849609375 0.0Q1623.8746337890625 0.0 1599.19970703125 -1.0Q1574.5247802734375 -2.0 1546.349853515625 -2.0Q1518.449951171875 -2.0 1493.1375122070312 -1.0Q1467.8250732421875 0.0 1448.650146484375 0.0ZM1700.3751220703125 0.0Q1697.650146484375 0.0 1697.650146484375 -6.0Q1697.650146484375 -12.0 1700.3751220703125 -12.0Q1730.400390625 -12.0 1738.50048828125 -23.1749267578125Q1746.6005859375 -34.349853515625 1732.7755126953125 -53.0L1609.850341796875 -214.050537109375L1670.4246826171875 -260.0L1807.1243896484375 -81.0Q1835.5743408203125 -43.449951171875 1863.0369262695312 -27.7249755859375Q1890.49951171875 -12.0 1918.3245849609375 -12.0Q1921.049560546875 -12.0 1921.049560546875 -6.0Q1921.049560546875 0.0 1918.3245849609375 0.0Q1898.8746337890625 0.0 1873.8372192382812 -1.0Q1848.7998046875 -2.0 1820.6248779296875 -2.0Q1781.449951171875 -2.0 1752.7750244140625 -1.0Q1724.10009765625 0.0 1700.3751220703125 0.0ZM1556.349853515625 -155.3255615234375 1550.89990234375 -169.6754150390625 1693.3255615234375 -298.5753173828125Q1724.90087890625 -326.2254638671875 1720.750732421875 -350.11273193359375Q1716.6005859375 -374.0 1676.650146484375 -374.0Q1674.3751220703125 -374.0 1674.3751220703125 -380.0Q1674.3751220703125 -386.0 1676.650146484375 -386.0Q1702.10009765625 -386.0 1727.9125366210938 -385.0Q1753.7249755859375 -384.0 1797.349853515625 -384.0Q1837.249755859375 -384.0 1861.0621948242188 -385.0Q1884.8746337890625 -386.0 1906.3245849609375 -386.0Q1909.049560546875 -386.0 1909.049560546875 -380.0Q1909.049560546875 -374.0 1906.3245849609375 -374.0Q1881.8746337890625 -374.0 1849.5748291015625 -365.91253662109375Q1817.2750244140625 -357.8250732421875 1783.2001953125 -340.150146484375Q1749.1253662109375 -322.4752197265625 1717.1253662109375 -294.1253662109375Z"/></g><path fill="#ffbe4d" d="M831.9 -710.0C879.9 -634.4 906.9 -575.0 906.9 -515.6C906.9 -467.0 872.4 -440.0 831.9 -440.0C791.4 -440.0 756.9 -467.0 756.9 -515.6C756.9 -580.4 804.9 -618.2 831.9 -710.0Z"/><path fill="#fff1c9" d="M831.9 -592.0C856.8 -552.8 870.9 -522.0 870.9 -491.2C870.9 -466.0 852.9 -452.0 831.9 -452.0C810.8 -452.0 792.9 -466.0 792.9 -491.2C792.9 -524.8 817.8 -544.4 831.9 -592.0Z"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 169 64" width="338" height="128" role="img" aria-label="Wick"><path fill="#133126" d="M32 4C42.5 9.5 52 18.5 52 31V58A2 2 0 0 1 50 60H14A2 2 0 0 1 12 58V31C12 18.5 21.5 9.5 32 4Z"/><path fill="#ffbe4d" d="M32 16C36.6 22.6 42 27.4 42 35.6C42 42.4 37.6 47 32 47C26.4 47 22 42.4 22 35.6C22 29.4 26.4 25.4 28.4 21.4C29.4 24.6 30.6 26.2 32.2 27C33 23.6 32.9 19.6 32 16Z"/><path fill="#fff1c9" d="M32 30C34.2 33 36 35 36 38.2C36 41 34.2 43 32 43C29.8 43 28 41 28 38.2C28 35.4 30.2 33.4 32 30Z"/><path fill="none" stroke="#f4efe3" stroke-width="2.5" stroke-linecap="round" d="M32 43V52"/><g transform="translate(74 6) scale(0.03709) translate(25 1083)"><path fill="#f4efe3" d="M890 -550Q874 -526 859 -499Q844 -472 829 -436.5Q814 -401 796 -350L672 0H582L451 -370L320 0H230L106 -350Q88 -401 73.5 -436.5Q59 -472 45.5 -499Q32 -526 15 -550H144Q148 -526 154 -500Q160 -474 170 -440.5Q180 -407 196 -358L279 -113L361 -358Q386 -431 398 -472.5Q410 -514 417 -550H496Q500 -526 506 -500Q512 -474 522 -440.5Q532 -407 548 -358L631 -113L713 -358Q738 -431 750 -472.5Q762 -514 769 -550Z M999 -222V-330Q999 -384 995 -418.5Q991 -453 983 -477Q975 -501 961 -523V-529L1094 -557V-222Q1094 -166 1096.5 -110Q1099 -54 1112 0H981Q994 -54 996.5 -110Q999 -166 999 -222Z M1677 -108Q1666 -86 1641.5 -57.5Q1617 -29 1574.5 -7.5Q1532 14 1467 14Q1411 14 1361.5 -8Q1312 -30 1273.5 -69Q1235 -108 1213.5 -160.5Q1192 -213 1192 -274Q1192 -335 1213.5 -388Q1235 -441 1273.5 -480.5Q1312 -520 1361.5 -542Q1411 -564 1467 -564Q1529 -564 1573.5 -547Q1618 -530 1647 -506L1644 -392H1637Q1615 -429 1574.5 -456.5Q1534 -484 1467 -484Q1413 -484 1373.5 -457Q1334 -430 1312 -383Q1290 -336 1290 -274Q1290 -211 1318.5 -164Q1347 -117 1393 -91.5Q1439 -66 1490 -66Q1546 -66 1582.5 -86Q1619 -106 1641 -139Z M2131 -132Q2163 -97 2195.5 -66Q2228 -35 2270 0H2131Q2129 -6 2114 -26Q2099 -46 2076 -71L1865 -296V-222Q1865 -166 1867.5 -110Q1870 -54 1883 0H1752Q1765 -54 1767.5 -110Q1770 -166 1770 -222V-553Q1770 -607 1766 -641.5Q1762 -676 1754 -700Q1746 -724 1732 -746V-752L1865 -780V-299L2023 -468Q2050 -499 2067.5 -521Q2085 -543 2088 -550H2227Q2195 -523 2168.5 -499Q2142 -475 2117 -450L1974 -298Z"/><path fill="#ffbe4d" d="M1036.5 -1011.7C1104.9 -903.9 1143.4 -819.3 1143.4 -734.7C1143.4 -665.4 1094.2 -626.9 1036.5 -626.9C978.8 -626.9 929.6 -665.4 929.6 -734.7C929.6 -827 998 -880.9 1036.5 -1011.7Z"/><path fill="#fff1c9" d="M1036.5 -843.5C1072 -787.7 1092.1 -743.8 1092.1 -699.9C1092.1 -664 1066.4 -644 1036.5 -644C1006.4 -644 980.9 -664 980.9 -699.9C980.9 -747.8 1016.4 -775.7 1036.5 -843.5Z"/></g></svg>
 ```
 
 `Silhouettes/hanging-lantern.svg`
