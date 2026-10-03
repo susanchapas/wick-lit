@@ -8,7 +8,7 @@ export function Trails() {
       <header className="section">
         <h1 className="title">Trails</h1>
         <WickRule />
-        <p className="muted prose">Choose a trail to practise. Each one takes about a minute.</p>
+        <p className="muted prose">Choose a trail to practice. Each one takes about a minute.</p>
       </header>
       <TrailList />
     </>

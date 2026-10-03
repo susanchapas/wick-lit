@@ -31,7 +31,7 @@ export function ContentNote() {
           <p className="caption muted">
             About {s.minutes} min · {s.location} · {s.characters.join(", ")}
           </p>
-          <ul className="wk-card__ds" aria-label="Strategies you can practise">
+          <ul className="wk-card__ds" aria-label="Strategies you can practice">
             {s.strategies.map((n) => (
               <li key={n}>
                 <Strategy n={n} />

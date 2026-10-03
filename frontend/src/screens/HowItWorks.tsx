@@ -11,7 +11,7 @@ const steps: { icon: IconName; title: string; text: string }[] = [
   },
   {
     icon: "mic",
-    title: "Practise in the clearing",
+    title: "Practice in the clearing",
     text: "Speak or type to the people in the scene. It takes about a minute. You can step out at any time.",
   },
   {
