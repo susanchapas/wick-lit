@@ -8,6 +8,7 @@ import { addLantern, setReflection, useHistory } from "../lib/history";
 import { useSettings } from "../lib/settings";
 import type { Message, ScoreResponse } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
+import { withPeriod } from "../lib/text";
 
 interface SessionState {
   transcript: Message[];
@@ -72,7 +73,7 @@ export function Result() {
     return (
       <>
         <title>Coaching result · Wick</title>
-        <h1 className="title">Coaching result</h1>
+        <h1 className="title">Coaching result.</h1>
         <Notice tone="danger" title="Scoring unavailable right now." action={retry}>
           Your conversation is below. You can read it back, or try the trail again later.
         </Notice>
@@ -89,7 +90,7 @@ export function Result() {
     return (
       <>
         <title>Coaching result · Wick</title>
-        <h1 className="wk-sr">Coaching result</h1>
+        <h1 className="wk-sr">Coaching result.</h1>
         <div className="result-loading">
           <WickLoader label="Scoring your intervention" />
         </div>
@@ -117,7 +118,7 @@ export function Result() {
             <span className="wk-sr">
               Score {result.total} out of 100.{" "}
             </span>
-            {result.headline}
+            {withPeriod(result.headline)}
           </h1>
           <p className="wk-score__summary">{result.strengths[0]}</p>
         </div>
@@ -132,7 +133,7 @@ export function Result() {
       <div className="rubric-grid">
         <section className="wk-card panel" aria-labelledby="worked">
           <h2 id="worked" className="label">
-            What worked
+            What worked.
           </h2>
           <ul className="bullets">
             {result.strengths.map((s) => (
@@ -142,7 +143,7 @@ export function Result() {
         </section>
         <section className="wk-card panel" aria-labelledby="next">
           <h2 id="next" className="label">
-            Try next time
+            Try next time.
           </h2>
           <ul className="bullets">
             {result.improvements.map((s) => (

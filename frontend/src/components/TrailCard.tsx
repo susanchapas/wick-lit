@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import type { Scenario } from "../lib/types";
 import { Icon } from "./Icon";
-import { Strategy } from "./Strategy";
+import { withPeriod } from "../lib/text";
 
 const bands: Record<string, string> = {
   "House party": "lantern",
@@ -37,7 +37,7 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
         )}
       </p>
       <Heading className="wk-card__title">
-        <Link to={`/trails/${s.id}`}>{s.title}</Link>
+        <Link to={`/trails/${s.id}`}>{withPeriod(s.title)}</Link>
       </Heading>
       <p className="wk-card__body">{s.setup}</p>
       <p className="wk-card__meta">
@@ -51,19 +51,6 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
         <Icon name="info" size={20} />
         <span>Content note: {s.contentTags.join(", ").toLowerCase()}</span>
       </p>
-      <ul className="wk-card__ds" aria-label="Strategies">
-        {s.strategies.map((n) => (
-          <li key={n}>
-            <Strategy n={n} />
-          </li>
-        ))}
-      </ul>
-      <div className="wk-card__foot" aria-hidden="true">
-        <span className="wk-card__go">
-          View content note
-          <Icon name="arrow" size={20} />
-        </span>
-      </div>
     </article>
   );
 }

@@ -54,7 +54,7 @@ export function Settings() {
         </section>
         <section className="wk-card panel" aria-labelledby="comfort">
           <h2 id="comfort" className="label">
-            Comfort
+            Comfort.
           </h2>
           <Switch label="Captions" hint="Show every spoken line as text." checked={s.captions} onChange={(captions) => updateSettings({ captions })} />
           <Switch
@@ -74,7 +74,7 @@ export function Settings() {
       <section className="wk-card panel data-panel" aria-labelledby="data">
         <div className="section">
           <h2 id="data" className="subtitle">
-            Your practice data
+            Your practice data.
           </h2>
           <p className="muted">
             Results stay private. Voice audio is deleted after 24 hours. You can clear your practice history and

@@ -9,6 +9,7 @@ import { updateSettings, useSettings } from "../lib/settings";
 import { canListen, listen, play, silence } from "../lib/speech";
 import type { Message } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
+import { withPeriod } from "../lib/text";
 
 const TOTAL = 60;
 const keys = [
@@ -165,7 +166,7 @@ export function Clearing() {
       <main className="clearing">
         <header className="clearing__head">
           <p className="aside">The clearing</p>
-          <h1 className="subtitle">{scenario?.title ?? "Setting the scene"}</h1>
+          <h1 className="subtitle">{withPeriod(scenario?.title ?? "Setting the scene")}</h1>
         </header>
         <div className="clearing__orb">
           <VoiceOrb state={orb} speaker={speaker} onToggle={toggleListen} />

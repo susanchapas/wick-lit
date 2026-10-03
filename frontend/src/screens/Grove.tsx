@@ -59,7 +59,7 @@ export function Grove() {
         <div className="section">
           <p className="overline eyebrow">Grove map</p>
           <h2 id="map-title" className="heading">
-            Trailheads for tonight
+            Trailheads for tonight.
           </h2>
           <p className="muted">Choose a trailhead to read its content note and start your practice.</p>
         </div>

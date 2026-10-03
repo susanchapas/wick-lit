@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router";
+import { Embers } from "./components/Brand";
 import { NavBar } from "./components/NavBar";
+import { emberTrail } from "./lib/effects";
 import { isOnboarded } from "./lib/settings";
 import { Access } from "./screens/Access";
 import { Clearing } from "./screens/Clearing";
@@ -30,6 +32,18 @@ function RouteFocus() {
   return null;
 }
 
+function Backdrop() {
+  useEffect(() => {
+    addEventListener("pointermove", emberTrail);
+    return () => removeEventListener("pointermove", emberTrail);
+  }, []);
+  return (
+    <div className="backdrop">
+      <Embers count={8} />
+    </div>
+  );
+}
+
 const RequireOnboarded = () => (isOnboarded() ? <Outlet /> : <Navigate to="/welcome" replace />);
 
 function Shell() {
@@ -50,6 +64,7 @@ export function App() {
   return (
     <BrowserRouter>
       <RouteFocus />
+      <Backdrop />
       <Routes>
         <Route path="welcome" element={<Welcome />} />
         <Route path="welcome/access" element={<Access />} />

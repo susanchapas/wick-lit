@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { withPeriod } from "../lib/text";
 
 interface PageHeadProps {
   overline: string;
@@ -12,7 +13,7 @@ export function PageHead({ overline, title, lead, aside }: PageHeadProps) {
     <header className="page-head">
       <div className="section">
         <p className="overline eyebrow">{overline}</p>
-        <h1 className="title">{title}</h1>
+        <h1 className="title">{withPeriod(title)}</h1>
         <p className="body-lg muted prose">{lead}</p>
       </div>
       {aside}

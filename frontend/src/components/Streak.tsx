@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
+import { withPeriod } from "../lib/text";
 
 const flame = "M12 3C14.6 6.4 18 8.9 18 13.6A6 6 0 0 1 6 13.6C6 10.6 7.8 8.6 9.2 6.4C9.8 8.2 10.7 9.2 11.8 9.6C12.6 7.6 12.6 5.3 12 3Z";
 
@@ -24,7 +25,7 @@ export function StreakCard({ count, days, aside, children }: StreakCardProps) {
         <div className="section">
           <p className="overline eyebrow">Candle streak</p>
           <h2 id="streak-title" className="heading">
-            {count > 0 ? `${count}-day flame` : "Your wick is ready when you are."}
+            {withPeriod(count > 0 ? `${count}-day flame` : "Your wick is ready when you are.")}
           </h2>
         </div>
         <p className="data muted streak__aside">{aside}</p>
@@ -61,7 +62,7 @@ export function LanternTile({ title, meta, date }: LanternTileProps) {
         <Icon name="flame" size={20} />
         Lantern lit
       </span>
-      <h3 className="wk-lantern__title">{title}</h3>
+      <h3 className="wk-lantern__title">{withPeriod(title)}</h3>
       <p className="wk-lantern__meta">{meta}</p>
       <p className="wk-lantern__meta">{date}</p>
     </article>

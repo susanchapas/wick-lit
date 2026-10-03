@@ -89,6 +89,7 @@ kbd { font: 500 13px/16px var(--font-mono); }
 .wk-tabs__tab[aria-selected="true"] { background: var(--frost); box-shadow: var(--inset-frost), inset 0 -2px 0 var(--lantern); }
 
 .onboard { display: grid; grid-template-rows: auto 1fr auto; min-height: 100dvh; background: radial-gradient(ellipse 60% 40% at 50% 100%, color-mix(in srgb, var(--lantern-pool) 18%, transparent), transparent); }
+.backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 70% 50% at 50% 100%, color-mix(in srgb, var(--lantern-pool) 22%, transparent), transparent), radial-gradient(ellipse 40% 30% at 85% 10%, color-mix(in srgb, var(--gem) 10%, transparent), transparent); }
 .onboard .wk-scenery__pool { display: none; }
 .onboard-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-3); padding: var(--space-4); }
 .onboard-head > :first-child:not(.onboard-head__brand) { justify-self: start; }

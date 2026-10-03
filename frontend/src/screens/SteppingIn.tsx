@@ -32,7 +32,7 @@ export function SteppingIn() {
       <section className="wk-card panel" aria-labelledby="awareness">
         <h2 id="awareness" className="overline eyebrow-row">
           <Icon name="caution" size={20} />
-          Content awareness
+          Content awareness.
         </h2>
         <p className="subtitle">
           The people you practice with are AI characters playing a role. They will say pressuring, dismissive, even
@@ -42,7 +42,7 @@ export function SteppingIn() {
         <div className="icon-row">
           <Icon name="step-out" size={20} />
           <div>
-            <h3 className="label">You stay in control</h3>
+            <h3 className="label">You stay in control.</h3>
             <p className="muted">
               You can step out at any moment. Nothing is saved unless you finish. Voice audio is deleted after 24 hours.
             </p>

@@ -33,16 +33,16 @@ export function FieldGuide() {
               <h2 className="subtitle icon-row">
                 <Strategy n={d.n} plain />
                 <Icon name={d.id} size={20} className="muted" />
-                <span className="wk-sr">: {d.meaning}</span>
+                <span className="wk-sr">: {d.meaning}</span>.
               </h2>
               <p className="muted">{d.meaning}</p>
               <div className="guide-grid">
                 <div className="well">
-                  <h3 className="overline eyebrow">When to use</h3>
+                  <h3 className="overline eyebrow">When to use.</h3>
                   <p>{d.when}</p>
                 </div>
                 <div className="well">
-                  <h3 className="overline eyebrow">When not to use</h3>
+                  <h3 className="overline eyebrow">When not to use.</h3>
                   <p>{d.whenNot}</p>
                 </div>
               </div>
