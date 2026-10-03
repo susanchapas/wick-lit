@@ -28,6 +28,7 @@ export const icons = {
   "arrow": "M5 12H19 M13.5 6.5L19 12L13.5 17.5",
   "chevron": "M9.5 6L15.5 12L9.5 18",
   "check": "M5.5 12.5L10 17L18.5 7.5",
+  "lock": "M6.5 10.5H17.5A1.5 1.5 0 0 1 19 12V19A1.5 1.5 0 0 1 17.5 20.5H6.5A1.5 1.5 0 0 1 5 19V12A1.5 1.5 0 0 1 6.5 10.5Z M8 10.5V7.5A4 4 0 0 1 16 7.5V10.5 M12 14.5V16.5",
 } as const;
 
 export type IconName = keyof typeof icons;

@@ -1,13 +1,14 @@
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Button, ButtonLink } from "../components/Button";
-import { Notice } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { PageHead } from "../components/PageHead";
-import { guideSteps, strategies } from "../lib/strategies";
+import { burst } from "../lib/effects";
+import { guideSteps, pexels, strategies } from "../lib/strategies";
 import type { Scenario } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
 import { Complete } from "./guide/Complete";
 import { Learn } from "./guide/Learn";
+import { Overview } from "./guide/Overview";
 import { Practice } from "./guide/Practice";
 import { Recognize } from "./guide/Recognize";
 import { SeeIt } from "./guide/SeeIt";
@@ -29,14 +30,25 @@ function load(): Progress {
   return { steps: strategies.map(() => 0), notes: strategies.map(() => "") };
 }
 
-const tabId = (i: number) => `guide-tab-${strategies[i].id}`;
+const OVERVIEW = -1;
+const tabId = (i: number) => `guide-tab-${strategies[i]?.id ?? "overview"}`;
 
 export function FieldGuide() {
   const { data } = useScenarios();
   const [progress, setProgress] = useState(load);
   const resume = Math.max(0, progress.steps.findIndex((s) => s < DONE));
-  const [active, setActive] = useState(resume);
-  const isOpen = (i: number) => i === 0 || progress.steps[i - 1] === DONE;
+  const [active, setActive] = useState(() => (progress.steps[0] > 0 ? resume : OVERVIEW));
+  const isOpen = (i: number) => (i === 0 ? progress.steps[0] > 0 : progress.steps[i - 1] === DONE);
+  const open = strategies.filter((_, i) => isOpen(i)).length;
+  const opened = useRef(open);
+
+  useEffect(() => {
+    if (open > opened.current) {
+      const tile = document.getElementById(tabId(open - 1));
+      if (tile) burst(tile);
+    }
+    opened.current = open;
+  }, [open]);
   const stepOf = (i: number) => (i === active && isOpen(i) ? Math.max(progress.steps[i], 1) : progress.steps[i]);
 
   const save = (i: number, step: number, note?: string) =>
@@ -52,21 +64,23 @@ export function FieldGuide() {
     });
 
   const go = (i: number) => {
+    if (!isOpen(i)) return;
     setActive(i);
     document.getElementById(tabId(i))?.focus();
   };
 
   const onKey = (e: KeyboardEvent<HTMLElement>) => {
     const i = Number((e.target as HTMLElement).dataset.i);
-    const last = strategies.length - 1;
-    const next = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: last }[e.key];
+    const count = strategies.length + 1;
+    const next = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: OVERVIEW, End: count - 2 }[e.key];
     if (next === undefined) return;
     e.preventDefault();
-    document.getElementById(tabId((next + strategies.length) % strategies.length))?.focus();
+    document.getElementById(tabId(((next + 1 + count) % count) - 1))?.focus();
   };
 
   const d = strategies[active];
-  const trails = data?.filter((s) => (s.strategies as number[]).includes(d.n)) ?? [];
+  const trails = (d && data?.filter((s) => (s.strategies as number[]).includes(d.n))) || [];
+  const done = progress.steps.filter((s) => s === DONE).length;
 
   return (
     <>
@@ -77,10 +91,31 @@ export function FieldGuide() {
         lead="Five short lessons, about a minute each: learn a strategy, see it, recognize it in three rounds, then practice it."
       />
       <div className="section guide">
-        <p className="caption muted">Read any D at any time. Finish each D to open practice for the next one.</p>
+        <p className="caption muted">Finish each D to open the next one.</p>
         <div className="guide-tiles" role="tablist" aria-label="The five Ds" onKeyDown={onKey}>
+          <button
+            id={tabId(OVERVIEW)}
+            data-i={OVERVIEW}
+            type="button"
+            role="tab"
+            aria-selected={active === OVERVIEW}
+            aria-controls="guide-panel"
+            tabIndex={active === OVERVIEW ? 0 : -1}
+            className="guide-tile guide-tile--overview"
+            onClick={() => setActive(OVERVIEW)}
+          >
+            <Icon name="guide" className="guide-tile__icon" />
+            <span className="guide-tile__name">Overview</span>
+            <span className="guide-tile__state">
+              {done} of {strategies.length} done
+            </span>
+            <span className="guide-tile__bar" aria-hidden="true">
+              <i style={{ width: `${(done / strategies.length) * 100}%` }} />
+            </span>
+          </button>
           {strategies.map((s, i) => {
             const step = stepOf(i);
+            const locked = !isOpen(i);
             return (
               <button
                 key={s.id}
@@ -92,13 +127,13 @@ export function FieldGuide() {
                 aria-controls="guide-panel"
                 tabIndex={i === active ? 0 : -1}
                 className={`guide-tile wk-d--${s.id}`}
-                data-locked={!isOpen(i) || undefined}
-                onClick={() => setActive(i)}
+                aria-disabled={locked}
+                onClick={() => go(i)}
               >
-                <Icon name={s.id} className="guide-tile__icon" />
+                <Icon name={locked ? "lock" : s.id} className="guide-tile__icon" />
                 <span className="guide-tile__name">{s.name}</span>
                 <span className="guide-tile__state">
-                  {!isOpen(i) ? "Locked" : step === DONE ? "Done" : `${(step / DONE) * 100}%`}
+                  {locked ? "Locked" : step === DONE ? "Done" : `${(step / DONE) * 100}%`}
                 </span>
                 <span className="guide-tile__bar" aria-hidden="true">
                   <i style={{ width: `${(step / DONE) * 100}%` }} />
@@ -107,25 +142,61 @@ export function FieldGuide() {
             );
           })}
         </div>
-        <Module
-          key={d.id}
-          i={active}
-          step={stepOf(active)}
-          note={progress.notes[active]}
-          locked={!isOpen(active)}
-          trails={trails}
-          onSave={(step, note) => save(active, step, note)}
-          onGo={go}
-          resume={resume}
-        />
+        {d ? (
+          <Module
+            key={d.id}
+            i={active}
+            step={stepOf(active)}
+            note={progress.notes[active]}
+            trails={trails}
+            onSave={(step, note) => save(active, step, note)}
+            onGo={go}
+          />
+        ) : (
+          <Overview steps={progress.steps} isOpen={isOpen} labelledBy={tabId(OVERVIEW)} onGo={go} />
+        )}
       </div>
-      <Notice tone="info" title="Follow the person’s lead.">
-        In a real moment, the five Ds are options, not a checklist. Choose based on safety, the context, and what the
-        person affected wants.
-      </Notice>
-      <ButtonLink tone="lantern" icon="trail" to="/trails" className="self-start">
-        Choose a trail to practice
-      </ButtonLink>
+      <section className="guide-head" aria-labelledby="guide-lead">
+        <figure className="guide-photo">
+          <img src={pexels(6383164)} alt="" width={960} height={600} loading="lazy" />
+          <figcaption>Photo: Liza Summer, Pexels</figcaption>
+        </figure>
+        <div className="guide-head__body">
+          <div className="guide-head__id">
+            <span className="guide-head__icon guide-lead__icon">
+              <Icon name="info" />
+            </span>
+            <h2 className="heading" id="guide-lead">
+              Follow the person’s lead.
+            </h2>
+          </div>
+          <p className="muted prose">
+            In a real moment, the five Ds are options, not a checklist. Choose based on safety, the context, and what
+            the person affected wants.
+          </p>
+        </div>
+      </section>
+      <div className="actions">
+        {active === OVERVIEW && done < strategies.length && (
+          <Button
+            tone="lantern"
+            iconAfter="arrow"
+            onClick={() => {
+              if (progress.steps[0] === 0) save(0, 1);
+              setActive(resume);
+            }}
+          >
+            {progress.steps[0] > 0 ? "Continue with" : "Start with"} {strategies[resume].name}
+          </Button>
+        )}
+        <ButtonLink
+          tone={active === OVERVIEW && done < strategies.length ? "quiet" : "lantern"}
+          icon="trail"
+          to="/trails"
+        >
+          Choose a trail to practice
+        </ButtonLink>
+      </div>
     </>
   );
 }
@@ -134,14 +205,12 @@ interface ModuleProps {
   i: number;
   step: number;
   note: string;
-  locked: boolean;
   trails: Scenario[];
-  resume: number;
   onSave: (step: number, note?: string) => void;
   onGo: (i: number) => void;
 }
 
-function Module({ i, step, note, locked, trails, resume, onSave, onGo }: ModuleProps) {
+function Module({ i, step, note, trails, onSave, onGo }: ModuleProps) {
   const d = strategies[i];
   const next = strategies[i + 1];
   const [celebrate, setCelebrate] = useState(false);
@@ -156,7 +225,7 @@ function Module({ i, step, note, locked, trails, resume, onSave, onGo }: ModuleP
       <header className="guide-head">
         <figure className="guide-photo">
           <img
-            src={`https://images.pexels.com/photos/${d.photo.id}/pexels-photo-${d.photo.id}.jpeg?auto=compress&cs=tinysrgb&w=960&h=600&fit=crop`}
+            src={pexels(d.photo.id)}
             alt=""
             width={960}
             height={600}
@@ -176,15 +245,15 @@ function Module({ i, step, note, locked, trails, resume, onSave, onGo }: ModuleP
             <p className="muted">{d.meaning}</p>
           </div>
         </div>
-        {!locked && <StepTrail step={step} label={`${d.name}: ${step} of ${DONE} steps done`} />}
+        <StepTrail step={step} label={`${d.name}: ${step} of ${DONE} steps done`} />
         </div>
       </header>
 
       <Learn
         d={d}
-        done={!locked && step >= 2}
+        done={step >= 2}
         onNext={
-          !locked && step < 2
+          step < 2
             ? () => {
                 onSave(2);
                 setFocus(`${d.id}-see`);
@@ -192,22 +261,8 @@ function Module({ i, step, note, locked, trails, resume, onSave, onGo }: ModuleP
             : undefined
         }
       />
-      {(locked || step >= 2) && <SeeIt d={d} done={!locked} trails={trails} />}
+      {step >= 2 && <SeeIt d={d} done trails={trails} />}
 
-      {locked ? (
-        <section className="wk-card guide-act guide-locked" aria-labelledby={`${d.id}-locked`}>
-          <h3 className="aside" id={`${d.id}-locked`}>
-            Recognize and practice
-          </h3>
-          <p className="muted prose">
-            These open when you finish {strategies[resume].name}. You can read about {d.name} now.
-          </p>
-          <Button tone="quiet" iconAfter="arrow" className="self-start" onClick={() => onGo(resume)}>
-            Go to {strategies[resume].name}
-          </Button>
-        </section>
-      ) : (
-        <>
           {step >= 2 && (
             <Recognize
               d={d}
@@ -232,8 +287,6 @@ function Module({ i, step, note, locked, trails, resume, onSave, onGo }: ModuleP
           {step >= DONE && (
             <Complete d={d} next={next} trail={trails[0]} celebrate={celebrate} onNext={next ? () => onGo(i + 1) : undefined} />
           )}
-        </>
-      )}
     </div>
   );
 }

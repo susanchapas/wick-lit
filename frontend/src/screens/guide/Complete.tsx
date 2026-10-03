@@ -19,8 +19,8 @@ export function Complete({ d, next, trail, celebrate, onNext }: CompleteProps) {
   useEffect(() => {
     if (!celebrate || !mark.current) return;
     document.getElementById(`${d.id}-done`)?.focus();
-    burst(mark.current);
-  }, [celebrate, d.id]);
+    if (!next) burst(mark.current);
+  }, [celebrate, d.id, next]);
 
   return (
     <section className="wk-card wk-ornate guide-done" aria-labelledby={`${d.id}-done`}>

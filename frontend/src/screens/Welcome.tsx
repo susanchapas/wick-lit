@@ -35,7 +35,7 @@ export function Welcome() {
             followed by calm, transcript-grounded feedback.
           </p>
           <div className="actions">
-            <ButtonLink tone="lantern" size="lg" ornate to="/welcome/access" icon="arrow">
+            <ButtonLink tone="lantern" size="lg" ornate to="/welcome/access">
               Begin with Wick
             </ButtonLink>
           </div>

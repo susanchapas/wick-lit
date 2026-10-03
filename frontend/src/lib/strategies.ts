@@ -208,6 +208,9 @@ export const strategies = [
   },
 ] as const;
 
+export const pexels = (id: number) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=960&h=600&fit=crop`;
+
 export const guideSteps = ["Learn", "See it", "Recognize", "Practice"];
 
 export type StrategyInfo = (typeof strategies)[number];
