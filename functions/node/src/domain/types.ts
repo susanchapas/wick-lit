@@ -13,6 +13,37 @@ export interface WickTurn {
   createdAt: string;
 }
 
+export const dimensionStatuses = ["demonstrated", "partly_demonstrated", "not_demonstrated", "insufficient_evidence"] as const;
+export type DimensionStatus = (typeof dimensionStatuses)[number];
+
+export interface FeedbackDimension {
+  status: DimensionStatus;
+  evidence: { turnId: string; quote: string }[];
+  rationale: string;
+}
+
+export interface FeedbackResult {
+  dimensions: {
+    clearAction: FeedbackDimension;
+    safety: FeedbackDimension;
+    supportAndChoice: FeedbackDimension;
+  };
+  identifiedStrategies: {
+    number: 1 | 2 | 3 | 4 | 5;
+    name: "Direct" | "Distract" | "Delegate" | "Delay" | "Document";
+    evidence: { turnId: string; quote: string }[];
+  }[];
+  strength: string;
+  nextStep: string;
+  summary: string;
+  metadata: {
+    scenarioVersion: string;
+    evaluatorModel: string;
+    evaluatedAt: string;
+    audioMetricsIncluded: false;
+  };
+}
+
 export interface WickSession {
   sessionId: string;
   tokenHash: string;
@@ -29,4 +60,5 @@ export interface WickSession {
   nextTurnNumber: number;
   model?: string;
   failureCode?: string;
+  evaluation?: FeedbackResult;
 }

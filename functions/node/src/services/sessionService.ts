@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { AppError } from "../domain/errors";
 import type { ConversationMode, WickSession, WickTurn } from "../domain/types";
+import { evaluateTranscript } from "../evaluation/feedback";
 import { generateRoleplayResponse } from "../roleplay/generateResponse";
 import type { RoleplayGenerator } from "../roleplay/types";
 import { getScenario } from "../scenarios";
@@ -120,8 +121,11 @@ export async function endSession(store: SessionStore, sessionId: string, token: 
   if (!isTerminal(session.state)) {
     session.state = "completed";
     session.endedAt = new Date().toISOString();
-    await store.put(session);
   }
+  if (session.state === "completed" && !session.evaluation) {
+    session.evaluation = await evaluateTranscript(session.turns, getScenario(session.scenarioId)!);
+  }
+  await store.put(session);
   return publicSession(session);
 }
 
@@ -181,6 +185,7 @@ function publicSession(session: WickSession) {
     conversationDeadline: session.conversationDeadline,
     endedAt: session.endedAt,
     turns: session.turns,
+    evaluation: session.evaluation,
   };
 }
 

@@ -14,6 +14,9 @@ export interface ScenarioDefinition {
   character_behavior: string[];
   completion_guidance: string[];
   duration_seconds: number;
+  content_tags: string[];
+  content_note: string;
+  strategies: number[];
 }
 
 const partyHesitantFriend = partyHesitantFriendJson satisfies ScenarioDefinition;
@@ -31,9 +34,14 @@ export function publicScenarios() {
     scenarioVersion: scenario.scenario_version,
     title: scenario.title,
     description: scenario.description,
+    setting: scenario.setting,
+    userRole: scenario.user_role,
     character: scenario.character,
     firstMessage: scenario.first_message,
     durationSeconds: scenario.duration_seconds,
+    contentTags: scenario.content_tags,
+    contentNote: scenario.content_note,
+    strategies: scenario.strategies,
     modes: ["text", "voice"] as const,
   }));
 }

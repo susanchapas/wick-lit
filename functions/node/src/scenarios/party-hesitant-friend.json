@@ -36,5 +36,8 @@
     "The conversation may conclude naturally after the user gives a specific, realistic plan and responds to at least one meaningful hesitation or follow-up.",
     "Do not force completion if the user's plan is still vague."
   ],
-  "duration_seconds": 120
+  "duration_seconds": 120,
+  "content_tags": ["social pressure", "bystander intervention"],
+  "content_note": "This practice includes social pressure and a guest who appears uncomfortable. You can step out at any time.",
+  "strategies": [1, 2, 3, 4, 5]
 }
