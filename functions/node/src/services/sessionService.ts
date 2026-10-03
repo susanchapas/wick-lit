@@ -23,14 +23,20 @@ export async function createSession(
   await store.consumeRateLimit(rateLimitIdentity, 20, 60 * 60);
   const credential = createSessionCredential();
   const now = new Date();
-  const openingTurn: WickTurn = {
-    turnId: "t1",
-    role: "character",
-    speaker: scenario.character.id,
-    text: scenario.first_message,
-    sourceMedium: input.mode === "voice" ? "audio" : "text",
-    createdAt: now.toISOString(),
-  };
+  const characterIds = new Set(scenario.characters.map((character) => character.id));
+  const openingTurns: WickTurn[] = scenario.opening_dialogue.map((line, index) => {
+    if (!characterIds.has(line.speaker)) {
+      throw new AppError(500, "invalid_scenario", "The scenario opening references an unknown character.");
+    }
+    return {
+      turnId: `t${index + 1}`,
+      role: "character",
+      speaker: line.speaker,
+      text: line.text,
+      sourceMedium: input.mode === "voice" ? "audio" : "text",
+      createdAt: new Date(now.getTime() + index).toISOString(),
+    };
+  });
   const session: WickSession = {
     sessionId: randomUUID(),
     tokenHash: credential.tokenHash,
@@ -42,8 +48,8 @@ export async function createSession(
     createdAt: now.toISOString(),
     conversationDeadline: new Date(now.getTime() + scenario.duration_seconds * 1000).toISOString(),
     expiresAt: new Date(now.getTime() + 30 * 60 * 1000).toISOString(),
-    turns: [openingTurn],
-    nextTurnNumber: 2,
+    turns: openingTurns,
+    nextTurnNumber: openingTurns.length + 1,
   };
   await store.create(session);
   return { ...publicSession(session), sessionToken: credential.token };
@@ -72,11 +78,13 @@ export async function addMessage(
   }
 
   const scenario = getScenario(session.scenarioId)!;
+  const userTurnNumber = session.turns.filter((turn) => turn.role === "user").length + 1;
   const generated = await generate({
     scenario,
     conversationHistory: session.turns,
     latestUserMessage: text,
     currentState: session.roleplayState,
+    userTurnNumber,
   });
   const now = new Date().toISOString();
   const userTurn: WickTurn = {
@@ -87,29 +95,37 @@ export async function addMessage(
     sourceMedium: storedMedium,
     createdAt: now,
   };
-  const characterTurn: WickTurn = {
+  const scenarioCharacterIds = new Set(scenario.characters.map((character) => character.id));
+  if (generated.responses.some((response) => !scenarioCharacterIds.has(response.speaker))) {
+    throw new AppError(502, "invalid_character_response", "The scene returned an unknown character.", true);
+  }
+  const characterTurns: WickTurn[] = generated.responses.map((response) => ({
     turnId: `t${session.nextTurnNumber++}`,
     role: "character",
-    speaker: scenario.character.id,
-    text: generated.response,
+    speaker: response.speaker,
+    text: response.text,
     sourceMedium: session.mode === "voice" ? "audio" : "text",
     createdAt: new Date().toISOString(),
-  };
-  session.turns.push(userTurn, characterTurn);
+  }));
+  session.turns.push(userTurn, ...characterTurns);
   session.roleplayState = generated.state;
   session.model = generated.model;
-  if (generated.scenarioComplete) {
+  const reachedTurnLimit = userTurnNumber >= scenario.turn_limit;
+  const completionAllowed = generated.endReason === "learner_stop"
+    || userTurnNumber >= scenario.minimum_turns_before_completion;
+  if (reachedTurnLimit || (generated.scenarioComplete && completionAllowed)) {
     session.state = "completed";
     session.endedAt = new Date().toISOString();
   }
   await store.put(session);
   console.log("Gemini roleplay response generated", {
     sessionId: session.sessionId,
-    turnId: characterTurn.turnId,
-    characters: characterTurn.text.length,
+    turnIds: characterTurns.map((turn) => turn.turnId),
+    speakers: characterTurns.map((turn) => turn.speaker),
+    characters: characterTurns.reduce((total, turn) => total + turn.text.length, 0),
     model: generated.model,
   });
-  return { userTurn, characterTurn, session: publicSession(session) };
+  return { userTurn, characterTurns, session: publicSession(session) };
 }
 
 export async function getSession(store: SessionStore, sessionId: string, token: string | undefined) {

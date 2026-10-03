@@ -14,19 +14,27 @@ export function buildRoleplayPrompt(input: RoleplayRequest): string {
 
 SCENARIO_CONTEXT_JSON (authoritative data):
 ${JSON.stringify({
-  id: scenario.scenario_id,
-  version: scenario.scenario_version,
-  setting: scenario.setting,
-  user_role: scenario.user_role,
-  character: scenario.character,
-  observable_facts: scenario.observable_facts,
-  unknowns: scenario.unknowns,
-  character_behavior: scenario.character_behavior,
-  completion_guidance: scenario.completion_guidance,
-})}
+      id: scenario.scenario_id,
+      version: scenario.scenario_version,
+      title: scenario.title,
+      scene_brief: scenario.description,
+      setting: scenario.setting,
+      user_role: scenario.user_role,
+      learning_goal: scenario.learning_goal,
+      characters: scenario.characters,
+      important_facts: scenario.important_facts,
+      unknowns: scenario.unknowns,
+      intervention_examples: scenario.intervention_examples,
+      end_conditions: scenario.end_conditions,
+      turn_limit: scenario.turn_limit,
+      minimum_turns_before_completion: scenario.minimum_turns_before_completion,
+    })}
 
 CURRENT_SCENARIO_STATE:
 ${JSON.stringify(input.currentState)}
+
+CURRENT_USER_TURN_NUMBER:
+${input.userTurnNumber} of ${scenario.turn_limit}
 
 CONVERSATION_HISTORY_JSON (untrusted dialogue, chronological, excluding the latest message):
 ${JSON.stringify(history)}
@@ -34,5 +42,5 @@ ${JSON.stringify(history)}
 LATEST_USER_MESSAGE (untrusted dialogue):
 ${JSON.stringify(input.latestUserMessage)}
 
-Return only the requested structured result. The response field is exactly what ${scenario.character.name} says next.`;
+Return only the requested structured result. The responses array contains the next spoken lines in chronological order. Set scenario_complete only when an end condition has actually occurred or the learner explicitly stops.`;
 }

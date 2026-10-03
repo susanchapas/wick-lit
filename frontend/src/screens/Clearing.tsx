@@ -7,17 +7,19 @@ import { SessionBar } from "../components/SessionBar";
 import { endSession, sendTurn, startSession, stepOutSession, transcribeAudio } from "../lib/api";
 import { updateSettings, useSettings } from "../lib/settings";
 import { canListen, playTurn, record, silence, type AudioRecorder } from "../lib/speech";
-import type { Mode, SessionCredential, WickSession } from "../lib/types";
+import type { Mode, Scenario, SessionCredential, WickSession, WickTurn } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
 import { withPeriod } from "../lib/text";
 
 const keys = [["Space", "speaks"], ["P", "pauses"], ["T", "types"], ["Esc", "steps out"]];
 
-const transcriptLines = (session?: WickSession | null): Line[] => [
+const speakerName = (scenario: Scenario | undefined, speaker: string) => scenario?.characterNames[speaker] ?? speaker;
+
+const transcriptLines = (session?: WickSession | null, scenario?: Scenario): Line[] => [
   { role: "note", text: "Role-play started" },
   ...(session?.turns.map((turn): Line => turn.role === "user"
     ? { role: "you", text: turn.text }
-    : { role: "ai", speaker: turn.speaker === "alex" ? "Alex" : turn.speaker, text: turn.text }) ?? []),
+    : { role: "ai", speaker: speakerName(scenario, turn.speaker), text: turn.text }) ?? []),
 ];
 
 export function Clearing() {
@@ -36,12 +38,20 @@ export function Clearing() {
   const [typing, setTyping] = useState(mode === "text");
   const [error, setError] = useState("");
   const [draft, setDraft] = useState("");
+  const [speakingCharacter, setSpeakingCharacter] = useState("Scene");
   const [remaining, setRemaining] = useState(scenario?.durationSeconds ?? 120);
   const recorder = useRef<AudioRecorder | null>(null);
   const field = useRef<HTMLInputElement>(null);
   const finishing = useRef(false);
   const exit = `/trails/${id}`;
   const timed = !settings.untimed;
+
+  const playCharacterTurns = useCallback(async (activeCredential: SessionCredential, turns: WickTurn[]) => {
+    for (const turn of turns) {
+      setSpeakingCharacter(speakerName(scenario, turn.speaker));
+      await playTurn(activeCredential, turn.turnId);
+    }
+  }, [scenario]);
 
   useEffect(() => {
     if (!scenario) return;
@@ -54,7 +64,7 @@ export function Clearing() {
       setRemaining(Math.max(0, Math.ceil((Date.parse(started.conversationDeadline) - Date.now()) / 1000)));
       setPhase(mode === "voice" ? "speaking" : "live");
       if (mode === "voice") {
-        try { await playTurn(nextCredential, started.turns[0].turnId); } catch { setError("Alex's voice could not play, but you can continue with captions."); }
+        try { await playCharacterTurns(nextCredential, started.turns); } catch { setError("The scene audio could not play, but you can continue with captions."); }
         if (live) setPhase("live");
       }
     }).catch(() => {
@@ -68,7 +78,7 @@ export function Clearing() {
       recorder.current?.cancel();
       silence();
     };
-  }, [mode, scenario]);
+  }, [mode, playCharacterTurns, scenario]);
 
   const finish = useCallback(async () => {
     if (!credential || !session || finishing.current) return;
@@ -95,7 +105,7 @@ export function Clearing() {
       setSession(response.session);
       if (mode === "voice") {
         setPhase("speaking");
-        try { await playTurn(credential, response.characterTurn.turnId); } catch { setError("Alex's voice could not play, but the response is in the transcript."); }
+        try { await playCharacterTurns(credential, response.characterTurns); } catch { setError("The scene audio could not play, but every response is in the transcript."); }
       }
       setPhase("live");
       if (response.session.state === "completed") {
@@ -103,10 +113,10 @@ export function Clearing() {
         navigate(`/trails/${id}/result`, { state: { session: completed } });
       }
     } catch {
-      setError("Alex did not reply. Your backend session is still available; try again.");
+      setError("The scene did not reply. Your backend session is still available; try again.");
       setPhase("live");
     }
-  }, [credential, id, mode, navigate, paused, phase]);
+  }, [credential, id, mode, navigate, paused, phase, playCharacterTurns]);
 
   const toggleListen = useCallback(async () => {
     if (paused) return setPaused(false);
@@ -195,7 +205,7 @@ export function Clearing() {
       <main className="clearing">
         <header className="clearing__head"><p className="aside">The clearing</p><h1 className="subtitle">{withPeriod(scenario?.title ?? "Setting the scene")}</h1></header>
         <div className="clearing__orb">
-          <VoiceOrb state={orb} speaker="Alex" textMode={mode === "text"} onToggle={() => void toggleListen()} />
+          <VoiceOrb state={orb} speaker={speakingCharacter} textMode={mode === "text"} onToggle={() => void toggleListen()} />
           <div className="actions center">
             {!typing ? <Button icon="direct" onClick={() => { setTyping(true); requestAnimationFrame(() => field.current?.focus()); }}>Type instead</Button> : null}
             <Button icon="captions" aria-pressed={settings.captions} onClick={() => updateSettings({ captions: !settings.captions })}>Captions {settings.captions ? "on" : "off"}</Button>
@@ -205,12 +215,12 @@ export function Clearing() {
           <ul className="chips center clearing__keys" aria-label="Keyboard shortcuts">{keys.map(([key, value]) => <li key={key} className="pill"><kbd>{key}</kbd> {value}</li>)}</ul>
         </div>
         <section className="clearing__talk" aria-label="Conversation">
-          {(settings.captions || typing) ? <Transcript lines={transcriptLines(session)} label="Live captions">{phase === "thinking" || phase === "transcribing" ? <Pending speaker={phase === "transcribing" ? "Wick" : "Alex"} /> : null}</Transcript> : null}
+          {(settings.captions || typing) ? <Transcript lines={transcriptLines(session, scenario)} label="Live captions">{phase === "thinking" || phase === "transcribing" ? <Pending speaker={phase === "transcribing" ? "Wick" : "The scene"} /> : null}</Transcript> : null}
           <p className="caption muted">The transcript and conversation state come from your private Wick backend session.</p>
           {error ? <Notice tone="danger" title={error} action={<Button onClick={() => setError("")}>Dismiss</Button>} /> : null}
           {typing ? <form className="wk-field reply" onSubmit={(event) => { event.preventDefault(); void submit(draft); }}>
             <label className="wk-field__label" htmlFor="reply">Your reply</label>
-            <div className="reply__row"><input ref={field} id="reply" className="wk-field__control" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Tell Alex what you want to do…" disabled={paused || phase !== "live" || !credential} autoComplete="off" /><Button type="submit" icon="arrow" disabled={phase !== "live" || paused || !draft.trim() || !credential}>Send</Button></div>
+            <div className="reply__row"><input ref={field} id="reply" className="wk-field__control" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="What do you say or do?" disabled={paused || phase !== "live" || !credential} autoComplete="off" /><Button type="submit" icon="arrow" disabled={phase !== "live" || paused || !draft.trim() || !credential}>Send</Button></div>
           </form> : null}
         </section>
       </main>

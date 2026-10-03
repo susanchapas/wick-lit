@@ -6,11 +6,13 @@ export interface RoleplayRequest {
   conversationHistory: WickTurn[];
   latestUserMessage: string;
   currentState: string;
+  userTurnNumber: number;
 }
 
 export interface RoleplayResponse {
-  response: string;
+  responses: { speaker: string; text: string }[];
   scenarioComplete: boolean;
+  endReason: "resolved" | "learner_stop" | null;
   state: string;
   model: string;
 }

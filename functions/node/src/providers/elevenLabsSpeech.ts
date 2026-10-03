@@ -43,7 +43,7 @@ export async function transcribeUserAudio(input: TranscriptionInput): Promise<st
 export async function synthesizeCharacterSpeech(text: string): Promise<SpeechAudio> {
   const voiceId = process.env.ELEVENLABS_VOICE_ID;
   if (!voiceId) {
-    throw new AppError(503, "elevenlabs_voice_not_configured", "Alex's voice is not configured on the server.");
+    throw new AppError(503, "elevenlabs_voice_not_configured", "Character voice is not configured on the server.");
   }
   console.log("ElevenLabs TTS request started", { characters: text.length });
   const response = await request(

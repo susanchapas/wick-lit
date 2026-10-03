@@ -37,7 +37,7 @@ export function Result() {
   const retry = <ButtonLink tone="lantern" icon="replay" to={`/trails/${id}/clearing`}>Try again</ButtonLink>;
   const lines = session.turns.map((turn) => turn.role === "user"
     ? { role: "you" as const, text: turn.text }
-    : { role: "ai" as const, speaker: turn.speaker === "alex" ? "Alex" : turn.speaker, text: turn.text });
+    : { role: "ai" as const, speaker: scenario?.characterNames[turn.speaker] ?? turn.speaker, text: turn.text });
 
   if (!evaluation) return <><title>Coaching result · Wick</title><h1 className="title">Coaching result.</h1><Notice tone="danger" title="Feedback is unavailable for this session." action={retry}>Your backend transcript is preserved below.</Notice><Transcript label="Your conversation" lines={lines} /></>;
 

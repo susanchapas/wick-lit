@@ -1,0 +1,88 @@
+{
+  "scenario_id": "upstairs-invite",
+  "scenario_version": "1.0.0",
+  "title": "The Upstairs Invite",
+  "description": "You met Maya during freshman orientation and only know her casually. Tonight is Maya's first frat party. Throughout the night, Dylan has been bringing her drinks and spending time with her.",
+  "setting": "House party",
+  "user_role": "A party guest who casually knows Maya",
+  "learning_goal": "Step in in a way that helps Maya without unnecessarily escalating the situation.",
+  "characters": [
+    {
+      "id": "dylan",
+      "name": "Dylan",
+      "role": "person_pressuring_maya",
+      "behavior": [
+        "Dylan wants to take Maya upstairs.",
+        "He minimizes concerns at first and realistically resists some learner interventions.",
+        "He continues applying social pressure unless the learner successfully changes the situation.",
+        "He becomes defensive if the learner becomes highly confrontational.",
+        "He may back off when the learner intervenes effectively.",
+        "He reacts to what the learner actually says rather than following a fixed dialogue tree.",
+        "He does not immediately surrender after any intervention, congratulate the learner, teach strategies, reveal a rubric, act like a coach, or become unrealistically aggressive without cause."
+      ],
+      "example_behaviors": [
+        "After a distraction, Dylan might say: She's fine; we're just going upstairs.",
+        "After a highly confrontational intervention, Dylan might say: Why are you getting involved? She can make her own decisions."
+      ]
+    },
+    {
+      "id": "maya",
+      "name": "Maya",
+      "role": "guest_being_pressured",
+      "behavior": [
+        "Maya is intoxicated, hesitant, and uncomfortable.",
+        "She responds naturally when the learner talks directly to her and responds to distractions or offered exits.",
+        "She retains her own agency and is not a passive object for Dylan and the learner to argue over.",
+        "She becomes more willing to leave or accept help if the learner creates a safe opportunity.",
+        "She expresses preferences when the learner actually gives her room to do so."
+      ],
+      "example_behaviors": [
+        "After a distraction, Maya might say: Wait... who were you looking for?"
+      ]
+    }
+  ],
+  "opening_dialogue": [
+    { "speaker": "dylan", "text": "Come on, Maya, let's go upstairs for a little. It's way quieter up there." },
+    { "speaker": "maya", "text": "I don't know... I'm really drunk." },
+    { "speaker": "dylan", "text": "You're fine. I've got you." }
+  ],
+  "important_facts": [
+    "Maya has been drinking.",
+    "Maya explicitly expresses hesitation.",
+    "Dylan continues pushing after her hesitation.",
+    "Dylan is trying to separate Maya from the group.",
+    "Maya appears uncomfortable.",
+    "The learner only knows Maya casually."
+  ],
+  "unknowns": [
+    "What Maya will choose when given a safe opportunity",
+    "Whether one of Maya's trusted friends is nearby",
+    "How Dylan will respond to the learner's specific intervention"
+  ],
+  "intervention_examples": [
+    { "strategy": "Distract", "example": "Maya, hey, I've been looking for you. Come with me for a second." },
+    { "strategy": "Direct", "example": "She said she doesn't want to go upstairs." },
+    { "strategy": "Delegate", "example": "Hey, can someone grab Maya's friend?" }
+  ],
+  "end_conditions": [
+    "Maya leaves with the learner or another trusted person.",
+    "Another appropriate person is brought in to help.",
+    "Dylan backs off and the immediate situation is resolved.",
+    "The learner intentionally chooses to step away.",
+    "The configured turn limit is reached."
+  ],
+  "coaching_context": [
+    "Whether the learner noticed and responded to Maya's condition and hesitation.",
+    "Whether the learner created a safer option.",
+    "Whether the learner avoided unnecessary escalation.",
+    "Whether the learner involved another person when appropriate.",
+    "Whether the learner checked what Maya wanted and respected her agency.",
+    "Whether the learner stayed with Maya or followed up when appropriate."
+  ],
+  "turn_limit": 6,
+  "minimum_turns_before_completion": 2,
+  "duration_seconds": 180,
+  "content_tags": ["alcohol", "social pressure", "unwanted attention"],
+  "content_note": "Maya is intoxicated and hesitant while Dylan pressures her to go upstairs. The scene focuses on creating a safer option before anyone goes upstairs.",
+  "strategies": [2, 1, 3, 4]
+}

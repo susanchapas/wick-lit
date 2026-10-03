@@ -43,8 +43,8 @@ export async function getScenarios(): Promise<Scenario[]> {
       title: string;
       description: string;
       setting: string;
-      character: { name: string };
-      firstMessage: string;
+      characters: { id: string; name: string; role: string }[];
+      openingDialogue: { speaker: string; text: string }[];
       durationSeconds: number;
       contentTags: string[];
       contentNote: string;
@@ -59,11 +59,11 @@ export async function getScenarios(): Promise<Scenario[]> {
     setup: scenario.description,
     location: scenario.setting,
     minutes: Math.max(1, Math.ceil(scenario.durationSeconds / 60)),
-    characters: [scenario.character.name, "You"],
+    characters: [...scenario.characters.map((character) => character.name), "You"],
+    characterNames: Object.fromEntries(scenario.characters.map((character) => [character.id, character.name])),
     strategies: scenario.strategies,
     contentTags: scenario.contentTags,
     contentNote: scenario.contentNote,
-    firstMessage: scenario.firstMessage,
     durationSeconds: scenario.durationSeconds,
     modes: scenario.modes,
   }));

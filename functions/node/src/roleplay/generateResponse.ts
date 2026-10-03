@@ -6,8 +6,12 @@ import { buildRoleplayPrompt } from "./buildPrompt";
 import type { RoleplayGenerator, RoleplayResponse } from "./types";
 
 const outputSchema = z.object({
-  response: z.string().trim().min(1).max(600),
+  responses: z.array(z.object({
+    speaker: z.string().trim().min(1).max(80),
+    text: z.string().trim().min(1).max(400),
+  })).min(1).max(4),
   scenario_complete: z.boolean(),
+  end_reason: z.enum(["none", "resolved", "learner_stop"]),
   state: z.string().trim().min(1).max(80),
 });
 
@@ -15,11 +19,25 @@ const responseJsonSchema = {
   type: "object",
   additionalProperties: false,
   properties: {
-    response: { type: "string", description: "The character's next 1-3 spoken sentences." },
+    responses: {
+      type: "array",
+      minItems: 1,
+      maxItems: 4,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          speaker: { type: "string", description: "A scenario character ID." },
+          text: { type: "string", description: "That character's next short spoken utterance." },
+        },
+        required: ["speaker", "text"],
+      },
+    },
     scenario_complete: { type: "boolean" },
+    end_reason: { type: "string", enum: ["none", "resolved", "learner_stop"], description: "Use none unless scenario_complete is true." },
     state: { type: "string", description: "A short internal scenario-state label." },
   },
-  required: ["response", "scenario_complete", "state"],
+  required: ["responses", "scenario_complete", "end_reason", "state"],
 };
 
 export const generateRoleplayResponse: RoleplayGenerator = async (input) => {
@@ -48,12 +66,17 @@ export const generateRoleplayResponse: RoleplayGenerator = async (input) => {
       });
       if (!result.text) throw new Error("Gemini returned no text");
       const parsed = outputSchema.parse(JSON.parse(result.text));
-      if (/\b(good answer|correct|you passed|scoring|rubric)\b/i.test(parsed.response)) {
+      const characterIds = new Set(input.scenario.characters.map((character) => character.id));
+      if (parsed.responses.some((response) => !characterIds.has(response.speaker))) {
+        throw new Error("Gemini returned an unknown scenario character");
+      }
+      if (parsed.responses.some((response) => /\b(good answer|correct|you passed|scoring|rubric)\b/i.test(response.text))) {
         throw new Error("Gemini left roleplay character");
       }
       return {
-        response: parsed.response,
+        responses: parsed.responses,
         scenarioComplete: parsed.scenario_complete,
+        endReason: parsed.end_reason === "none" ? null : parsed.end_reason,
         state: parsed.state,
         model,
       } satisfies RoleplayResponse;
@@ -65,7 +88,7 @@ export const generateRoleplayResponse: RoleplayGenerator = async (input) => {
   }
 
   console.error("Gemini roleplay generation failed", safeProviderError(lastError));
-  throw new AppError(502, "gemini_request_failed", "Alex could not respond. Please retry your message.", true);
+  throw new AppError(502, "gemini_request_failed", "The scene could not respond. Please retry your message.", true);
 };
 
 function isTemporary(error: unknown): boolean {

@@ -11,10 +11,10 @@ export interface Scenario {
   location: string;
   minutes: number;
   characters: string[];
+  characterNames: Record<string, string>;
   strategies: StrategyNumber[];
   contentTags: string[];
   contentNote: string;
-  firstMessage: string;
   durationSeconds: number;
   modes: Mode[];
 }
@@ -72,7 +72,7 @@ export interface StartedSession extends WickSession, SessionCredential {}
 
 export interface TurnResponse {
   userTurn: WickTurn;
-  characterTurn: WickTurn;
+  characterTurns: WickTurn[];
   session: WickSession;
 }
 

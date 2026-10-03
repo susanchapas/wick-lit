@@ -1,4 +1,17 @@
-import partyHesitantFriendJson from "./party-hesitant-friend.json";
+import upstairsInviteJson from "./upstairs-invite.json";
+
+export interface ScenarioCharacter {
+  id: string;
+  name: string;
+  role: string;
+  behavior: string[];
+  example_behaviors: string[];
+}
+
+export interface ScenarioDialogueLine {
+  speaker: string;
+  text: string;
+}
 
 export interface ScenarioDefinition {
   scenario_id: string;
@@ -7,21 +20,25 @@ export interface ScenarioDefinition {
   description: string;
   setting: string;
   user_role: string;
-  character: { id: string; name: string; role: string };
-  observable_facts: string[];
+  learning_goal: string;
+  characters: ScenarioCharacter[];
+  opening_dialogue: ScenarioDialogueLine[];
+  important_facts: string[];
   unknowns: string[];
-  first_message: string;
-  character_behavior: string[];
-  completion_guidance: string[];
+  intervention_examples: { strategy: string; example: string }[];
+  end_conditions: string[];
+  coaching_context: string[];
+  turn_limit: number;
+  minimum_turns_before_completion: number;
   duration_seconds: number;
   content_tags: string[];
   content_note: string;
   strategies: number[];
 }
 
-const partyHesitantFriend = partyHesitantFriendJson satisfies ScenarioDefinition;
+const upstairsInvite = upstairsInviteJson satisfies ScenarioDefinition;
 const scenarios = new Map<string, ScenarioDefinition>([
-  [partyHesitantFriend.scenario_id, partyHesitantFriend],
+  [upstairsInvite.scenario_id, upstairsInvite],
 ]);
 
 export function getScenario(id: string): ScenarioDefinition | undefined {
@@ -36,8 +53,8 @@ export function publicScenarios() {
     description: scenario.description,
     setting: scenario.setting,
     userRole: scenario.user_role,
-    character: scenario.character,
-    firstMessage: scenario.first_message,
+    characters: scenario.characters.map(({ id, name, role }) => ({ id, name, role })),
+    openingDialogue: scenario.opening_dialogue,
     durationSeconds: scenario.duration_seconds,
     contentTags: scenario.content_tags,
     contentNote: scenario.content_note,

@@ -7,12 +7,12 @@ route after creation. Never put it in URLs, analytics, or persistent storage.
 ## Conversation flow
 
 1. `GET /api/scenarios`
-2. `POST /api/sessions` with `{ "scenarioId": "party-hesitant-friend", "mode": "text" | "voice" }`
-3. Render the opening character turn returned in `turns`.
+2. `POST /api/sessions` with `{ "scenarioId": "upstairs-invite", "mode": "text" | "voice" }`
+3. Render the ordered opening character turns returned in `turns`.
 4. Text: send the user's message directly to `message`.
 5. Voice: upload the utterance to `transcribe`, then send the returned exact text to `message`.
-6. Render the returned user and character turns.
-7. Voice: request `speech` for the returned character turn and play the audio.
+6. Render the returned user turn and ordered `characterTurns`.
+7. Voice: request `speech` for each returned character turn and play the audio in order.
 8. End with `end` or `step-out`.
 
 Gemini produces every character response. Wick owns the transcript and scenario
@@ -23,25 +23,25 @@ it does not choose dialogue.
 
 ### `GET /api/scenarios`
 
-Returns public scenario metadata, opening message, supported modes, and duration.
+Returns public scenario metadata, characters, opening dialogue, supported modes, and duration.
 
 ### `POST /api/sessions`
 
-Returns `201` with a token-protected session and canonical opening turn:
+Returns `201` with a token-protected session and canonical opening turns:
 
 ```json
 {
   "sessionId": "uuid",
   "sessionToken": "opaque-secret",
-  "scenarioId": "party-hesitant-friend",
+  "scenarioId": "upstairs-invite",
   "scenarioVersion": "1.0.0",
   "mode": "text",
   "state": "active",
   "turns": [{
     "turnId": "t1",
     "role": "character",
-    "speaker": "alex",
-    "text": "I noticed it too, but they might know each other. What do you want me to do?",
+    "speaker": "dylan",
+    "text": "Come on, Maya, let's go upstairs for a little. It's way quieter up there.",
     "sourceMedium": "text",
     "createdAt": "2026-10-03T16:00:00.000Z"
   }]
@@ -55,7 +55,7 @@ Returns `201` with a token-protected session and canonical opening turn:
 ```
 
 Voice uses `sourceMedium: "audio"`. The response contains `userTurn`,
-`characterTurn`, and the current public session. Turn IDs increment as `t1`,
+`characterTurns`, and the current public session. Turn IDs increment as `t1`,
 `t2`, `t3`, and are stable in storage.
 
 ### `POST /api/sessions/{sessionId}/transcribe`
@@ -75,7 +75,7 @@ Returns the canonical transcript and session state.
 
 ### `POST /api/sessions/{sessionId}/end`
 
-Ends the session as `completed`. No scoring or evaluation is performed.
+Ends the session as `completed` and returns the existing transcript-grounded evaluation.
 
 ### `POST /api/sessions/{sessionId}/step-out`
 
