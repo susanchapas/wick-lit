@@ -139,6 +139,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-card__body { margin: 0; color: var(--ink-muted); font: 400 16px/24px var(--font-sans); }
 .wk-card__meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font: 450 14px/20px var(--font-sans); color: var(--ink-muted); }
 .wk-card__meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.wk-card__time { color: var(--lantern-text); }
 .wk-card__ds { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .wk-card__lit { display: inline-flex; align-items: center; gap: var(--space-1); color: var(--lantern-text); font: 600 14px/20px var(--font-sans); }
 .wk-card__note { display: flex; gap: var(--space-2); font: 450 14px/20px var(--font-sans); color: var(--ink-muted); padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); background: var(--ground-sunken); }
@@ -363,7 +364,8 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-burst i:nth-child(4n+3) { color: var(--flame-core); }
 .wk-burst i:nth-child(4n) { color: var(--gem); }
 .wk-burst i.is-star { width: 10px; height: 10px; margin: -5px; border-radius: 0; clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); }
-.wk-trail { position: fixed; z-index: var(--stratum-signal); width: 4px; height: 4px; margin: -2px; border-radius: var(--radius-round); background: var(--lantern-pool); box-shadow: 0 0 6px 1px var(--lantern-pool); pointer-events: none; animation: wk-float var(--duration-spark) var(--ease-kindle) forwards; }
+.wk-trail { position: fixed; z-index: var(--stratum-signal); width: 5px; height: 5px; margin: -2.5px; border-radius: var(--radius-round); color: var(--lantern-pool); background: currentColor; box-shadow: 0 0 8px 2px currentColor; pointer-events: none; animation: wk-float var(--duration-spark) var(--ease-kindle) forwards; }
+.wk-trail.is-gold { color: var(--gold-bright); }
 .wk-rule { display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 360px; color: var(--flame); }
 .wk-rule::before, .wk-rule::after { content: ""; flex: 1; height: var(--ornament-rule); background: linear-gradient(to right, transparent, var(--vein)); }
 .wk-rule::after { background: linear-gradient(to left, transparent, var(--vein)); }

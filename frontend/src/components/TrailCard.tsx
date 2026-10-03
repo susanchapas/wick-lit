@@ -26,7 +26,7 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
       <span className={`wk-band wk-band--${bands[s.location] ?? "moss"}`} aria-hidden="true" />
       <span className="wk-glint" aria-hidden="true" />
       <p className="wk-card__over">
-        <span>
+        <span className="wk-card__time">
           Trail {String(index + 1).padStart(2, "0")} · {s.location}
         </span>
         {lit && (
@@ -45,7 +45,6 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
           <Icon name="timer" size={20} />
           About {s.minutes} min
         </span>
-        <span>{s.characters.join(", ")}</span>
       </p>
       <p className="wk-card__note">
         <Icon name="info" size={20} />
