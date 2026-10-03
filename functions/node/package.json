@@ -1,0 +1,32 @@
+{
+  "name": "wick-node-functions",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/functions/*.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "check": "npm run build && npm test",
+    "clean": "rimraf dist",
+    "dev:api": "tsx src/tools/devServer.ts",
+    "prestart": "npm run build",
+    "start": "func start",
+    "test": "vitest run",
+    "verify:agent": "tsx src/tools/verifyAgent.ts"
+  },
+  "dependencies": {
+    "@azure/data-tables": "^13.3.2",
+    "@azure/functions": "4.16.5",
+    "@google/genai": "^2.27.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "rimraf": "^6.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.2",
+    "vitest": "^5.0.3"
+  }
+}

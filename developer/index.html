@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Standalone developer test page for Wick conversations" />
+    <title>Wick conversation test</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">Developer test page</p>
+        <h1>Practice asking a friend for help</h1>
+        <p class="lede">
+          At a party, Morgan looks uncomfortable while Dylan repeatedly pressures her to stay.
+          You speak to your friend Alex to enlist help.
+        </p>
+      </header>
+
+      <section class="panel controls" aria-labelledby="setup-heading">
+        <div>
+          <h2 id="setup-heading">Conversation setup</h2>
+          <p class="muted">The mode stays fixed after you start. Text does not request microphone access.</p>
+        </div>
+        <fieldset id="mode-picker">
+          <legend>Mode</legend>
+          <label><input type="radio" name="mode" value="text" checked /> Text</label>
+          <label><input type="radio" name="mode" value="voice" /> Voice</label>
+        </fieldset>
+        <div class="button-row">
+          <button id="start" class="primary" type="button">Start</button>
+          <button id="finish" type="button" disabled>Finish</button>
+          <button id="step-out" class="quiet" type="button" disabled>Step out</button>
+        </div>
+        <button id="retry-text" class="secondary hidden" type="button">
+          Start a new Text session
+        </button>
+      </section>
+
+      <section class="panel status-panel" aria-live="polite">
+        <div>
+          <span class="status-label">Status</span>
+          <strong id="status">Ready</strong>
+        </div>
+        <span id="timer" class="timer">02:00</span>
+      </section>
+
+      <section class="panel conversation-panel" aria-labelledby="conversation-heading">
+        <h2 id="conversation-heading">Conversation</h2>
+        <ol id="messages" class="messages" aria-live="polite"></ol>
+        <form id="message-form" class="message-form">
+          <label class="sr-only" for="message">Message Alex</label>
+          <input id="message" maxlength="1000" placeholder="Tell Alex what you want to do…" disabled />
+          <button id="send" class="primary" type="submit" disabled>Send</button>
+        </form>
+      </section>
+
+      <section id="feedback-panel" class="panel hidden" aria-labelledby="feedback-heading">
+        <h2 id="feedback-heading">Feedback</h2>
+        <div id="feedback"></div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

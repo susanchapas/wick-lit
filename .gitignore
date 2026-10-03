@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.python_packages/
+.venv/
+.azurite/
+__pycache__/
+*.pyc
+local.settings.json
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode/settings.json

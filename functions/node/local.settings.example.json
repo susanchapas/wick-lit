@@ -1,0 +1,15 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "ELEVENLABS_API_KEY": "replace-locally",
+    "ELEVENLABS_ASK_A_FRIEND_AGENT_ID": "agent_replace_locally",
+    "GEMINI_API_KEY": "replace-locally",
+    "GEMINI_MODEL": "gemini-3.8-flash",
+    "GEMINI_FALLBACK_MODEL": "gemini-3.5-flash",
+    "WICK_SESSIONS_TABLE": "WickSessions",
+    "WICK_ALLOWED_ORIGINS": "http://localhost:5173",
+    "WICK_RATE_LIMIT_SALT": "replace-with-a-random-local-value"
+  }
+}
