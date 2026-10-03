@@ -96,13 +96,16 @@ kbd { font: 500 13px/16px var(--font-mono); }
 .guide-tile[aria-selected="true"] { background: var(--frost); box-shadow: var(--inset-frost), inset 0 -2px 0 var(--d); }
 .guide-tile__icon { grid-row: span 2; color: var(--d); }
 .guide-tile[aria-selected="true"] .guide-tile__icon { animation: wk-kindle var(--duration-drift) var(--ease-lift); }
-.guide-tile[data-locked] .guide-tile__icon { opacity: .5; }
+.guide-tile[aria-disabled="true"], .guide-trail[aria-disabled="true"] { opacity: .5; filter: grayscale(1); cursor: not-allowed; }
+.guide-tile[aria-disabled="true"]:hover { background: var(--ground-raised); transform: none; }
+.guide-trail[aria-disabled="true"]:hover { background: none; }
 .guide-tile__name { font: 600 16px/20px var(--font-sans); }
 .guide-tile__state { font: 400 12px/16px var(--font-mono); color: var(--ink-muted); }
 .guide-tile__bar { grid-column: 1 / -1; height: 3px; margin-top: var(--space-1); border-radius: var(--radius-xs); background: var(--meter-track); overflow: hidden; }
 .guide-tile__bar i { display: block; height: 100%; background: var(--d); transition: width var(--duration-settle) var(--ease-settle); }
+.guide-tile--overview { --d: var(--lantern); }
 @media (min-width: 960px) {
-  .guide-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-inline: 0; padding-inline: 0; overflow: visible; }
+  .guide-tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-inline: 0; padding-inline: 0; overflow: visible; }
   .guide-tile { min-width: 0; }
 }
 
@@ -157,6 +160,11 @@ kbd { font: 500 13px/16px var(--font-mono); }
 .guide-trail small { color: var(--ink-muted); font: 400 13px/18px var(--font-sans); }
 .guide-trail__arrow { color: var(--ink-muted); transition: transform var(--duration-kindle) var(--ease-kindle); }
 .guide-trail:hover .guide-trail__arrow { transform: translateX(3px); }
+button.guide-trail { width: 100%; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
+.guide-overview__icon { color: var(--d); }
+.guide-lead__icon { color: var(--lantern-text); }
+.guide-overview__bar { display: block; height: 6px; margin: 0; }
+.guide-overview__progress { display: grid; gap: var(--space-2); --d: var(--lantern); }
 
 .quiz { display: grid; gap: var(--space-4); animation: wk-rise var(--duration-rise) var(--ease-kindle) both; }
 .quiz__qs { display: grid; gap: var(--space-6); }
@@ -174,7 +182,6 @@ kbd { font: 500 13px/16px var(--font-mono); }
 .quiz-q[data-state="right"] .quiz-q__state { color: var(--steady); }
 .quiz-q[data-state="wrong"] .quiz-q__state { color: var(--caution); }
 .guide-starters .pill--toggle { white-space: normal; text-align: left; }
-.guide-locked { justify-items: start; }
 
 .guide-done { max-width: none; justify-items: center; text-align: center; }
 .guide-done__mark { display: grid; place-items: center; width: 96px; height: 96px; border-radius: var(--radius-round); background: radial-gradient(closest-side, color-mix(in srgb, var(--lantern-pool) 45%, transparent), transparent); animation: wk-kindle var(--duration-settle) var(--ease-lift) both; }
