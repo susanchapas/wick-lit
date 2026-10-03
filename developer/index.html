@@ -3,24 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Standalone developer test page for Wick conversations" />
+    <meta name="description" content="Standalone Wick roleplay test page" />
     <title>Wick conversation test</title>
   </head>
   <body>
     <main class="shell">
       <header>
-        <p class="eyebrow">Developer test page</p>
+        <p class="eyebrow">Wick roleplay engine</p>
         <h1>Practice asking a friend for help</h1>
-        <p class="lede">
-          At a party, Morgan looks uncomfortable while Dylan repeatedly pressures her to stay.
-          You speak to your friend Alex to enlist help.
-        </p>
+        <p class="lede">At a party, you and Alex notice another guest appears uncomfortable while someone keeps pressing them to stay.</p>
       </header>
 
       <section class="panel controls" aria-labelledby="setup-heading">
         <div>
           <h2 id="setup-heading">Conversation setup</h2>
-          <p class="muted">The mode stays fixed after you start. Text does not request microphone access.</p>
+          <p class="muted">Gemini plays Alex in both modes. Voice requests microphone access only after you start.</p>
         </div>
         <fieldset id="mode-picker">
           <legend>Mode</legend>
@@ -32,9 +29,6 @@
           <button id="finish" type="button" disabled>Finish</button>
           <button id="step-out" class="quiet" type="button" disabled>Step out</button>
         </div>
-        <button id="retry-text" class="secondary hidden" type="button">
-          Start a new Text session
-        </button>
       </section>
 
       <section class="panel status-panel" aria-live="polite">
@@ -53,11 +47,17 @@
           <input id="message" maxlength="1000" placeholder="Tell Alex what you want to do…" disabled />
           <button id="send" class="primary" type="submit" disabled>Send</button>
         </form>
+        <div id="voice-controls" class="voice-controls hidden">
+          <button id="record-turn" class="primary" type="button" disabled>Start speaking</button>
+          <span id="recording-status" class="muted">Your microphone is recorded separately from Alex.</span>
+        </div>
+        <audio id="alex-audio" class="alex-audio hidden" controls></audio>
       </section>
 
-      <section id="feedback-panel" class="panel hidden" aria-labelledby="feedback-heading">
-        <h2 id="feedback-heading">Feedback</h2>
-        <div id="feedback"></div>
+      <section id="session-data" class="panel hidden" aria-labelledby="session-data-heading">
+        <h2 id="session-data-heading">Session data ready</h2>
+        <p id="transcript-summary" class="muted"></p>
+        <a id="recording-download" class="download hidden" download="wick-user-recording.webm">Download user-only recording</a>
       </section>
     </main>
     <script type="module" src="/src/main.ts"></script>

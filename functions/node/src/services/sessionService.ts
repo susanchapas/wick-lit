@@ -1,15 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
 
 import { AppError } from "../domain/errors";
-import type { ConversationMode, WickSession } from "../domain/types";
-import { evaluateTranscript } from "../evaluation/feedback";
-import {
-  ConversationProcessingError,
-  createTemporaryAuthorization,
-  getCompletedTranscript,
-  verifyAgentDefinition,
-} from "../providers/elevenLabs";
-import { ASK_A_FRIEND, getScenario } from "../scenarios/askAFriend";
+import type { ConversationMode, WickSession, WickTurn } from "../domain/types";
+import { generateRoleplayResponse } from "../roleplay/generateResponse";
+import type { RoleplayGenerator } from "../roleplay/types";
+import { getScenario } from "../scenarios";
 import { assertSessionAccess, createSessionCredential } from "../security/sessionAccess";
 import type { SessionStore } from "../storage/sessionStore";
 
@@ -19,278 +14,178 @@ export async function createSession(
   rateLimitIdentity: string,
 ) {
   const scenario = getScenario(input.scenarioId);
-  if (!scenario) {
-    throw new AppError(400, "invalid_scenario", "The scenario ID is not supported.");
-  }
+  if (!scenario) throw new AppError(400, "invalid_scenario", "The scenario ID is not supported.");
   if (input.mode !== "text" && input.mode !== "voice") {
     throw new AppError(400, "invalid_mode", "Mode must be text or voice.");
   }
 
-  await store.consumeRateLimit(rateLimitIdentity, 8, 60 * 60);
-  const verification = await verifyAgentDefinition();
-  const authorization = await createTemporaryAuthorization(input.mode);
+  await store.consumeRateLimit(rateLimitIdentity, 20, 60 * 60);
   const credential = createSessionCredential();
   const now = new Date();
-  const deadline = new Date(now.getTime() + scenario.durationSeconds * 1000);
-  const expires = new Date(now.getTime() + 30 * 60 * 1000);
+  const openingTurn: WickTurn = {
+    turnId: "t1",
+    role: "character",
+    speaker: scenario.character.id,
+    text: scenario.first_message,
+    sourceMedium: input.mode === "voice" ? "audio" : "text",
+    createdAt: now.toISOString(),
+  };
   const session: WickSession = {
     sessionId: randomUUID(),
     tokenHash: credential.tokenHash,
-    scenarioId: scenario.id,
-    scenarioVersion: scenario.version,
-    rubricVersion: scenario.rubricVersion,
+    scenarioId: scenario.scenario_id,
+    scenarioVersion: scenario.scenario_version,
     mode: input.mode as ConversationMode,
-    state: "authorized",
+    state: "active",
+    roleplayState: "opening",
     createdAt: now.toISOString(),
-    conversationDeadline: deadline.toISOString(),
-    expiresAt: expires.toISOString(),
-    providerConversationId: authorization.providerConversationId,
-    providerVersionId: verification.versionId,
+    conversationDeadline: new Date(now.getTime() + scenario.duration_seconds * 1000).toISOString(),
+    expiresAt: new Date(now.getTime() + 30 * 60 * 1000).toISOString(),
+    turns: [openingTurn],
+    nextTurnNumber: 2,
   };
   await store.create(session);
+  return { ...publicSession(session), sessionToken: credential.token };
+}
 
-  return {
-    sessionId: session.sessionId,
-    sessionToken: credential.token,
-    scenarioId: session.scenarioId,
-    scenarioVersion: session.scenarioVersion,
-    mode: session.mode,
-    state: session.state,
-    conversationDeadline: session.conversationDeadline,
-    authorization:
-      authorization.type === "signed_url"
-        ? {
-            type: authorization.type,
-            signedUrl: authorization.value,
-            expiresInSeconds: authorization.expiresInSeconds,
-          }
-        : {
-            type: authorization.type,
-            conversationToken: authorization.value,
-            expiresInSeconds: authorization.expiresInSeconds,
-          },
+export async function addMessage(
+  store: SessionStore,
+  sessionId: string,
+  token: string | undefined,
+  input: { text: string; sourceMedium?: string },
+  generate: RoleplayGenerator = generateRoleplayResponse,
+) {
+  const session = await requireSession(store, sessionId, token);
+  assertActive(session);
+  const text = input.text.trim();
+  if (!text || text.length > 1_000) {
+    throw new AppError(400, "invalid_message", "Message text must be between 1 and 1,000 characters.");
+  }
+  const sourceMedium = input.sourceMedium ?? session.mode;
+  const storedMedium = sourceMedium === "voice" ? "audio" : sourceMedium;
+  if (storedMedium !== "text" && storedMedium !== "audio") {
+    throw new AppError(400, "invalid_source_medium", "The message source is invalid.");
+  }
+  if ((session.mode === "text" && storedMedium !== "text") || (session.mode === "voice" && storedMedium !== "audio")) {
+    throw new AppError(400, "invalid_source_medium", "The message source does not match the session mode.");
+  }
+
+  const scenario = getScenario(session.scenarioId)!;
+  const generated = await generate({
+    scenario,
+    conversationHistory: session.turns,
+    latestUserMessage: text,
+    currentState: session.roleplayState,
+  });
+  const now = new Date().toISOString();
+  const userTurn: WickTurn = {
+    turnId: `t${session.nextTurnNumber++}`,
+    role: "user",
+    speaker: "user",
+    text,
+    sourceMedium: storedMedium,
+    createdAt: now,
   };
-}
-
-export async function attachProviderConversation(
-  store: SessionStore,
-  sessionId: string,
-  token: string | undefined,
-  providerConversationId: string,
-) {
-  if (!/^[A-Za-z0-9_-]{8,128}$/.test(providerConversationId)) {
-    throw new AppError(
-      400,
-      "invalid_provider_conversation_id",
-      "The provider conversation ID is invalid.",
-    );
-  }
-  const session = await requireSession(store, sessionId, token);
-  if (session.providerConversationId && session.providerConversationId !== providerConversationId) {
-    throw new AppError(
-      409,
-      "provider_conversation_already_attached",
-      "A different provider conversation is already attached.",
-    );
-  }
-  if (isTerminal(session.state)) {
-    throw new AppError(409, "session_ended", "The session has already ended.");
-  }
-  session.providerConversationId = providerConversationId;
-  session.state = "conversing";
-  await store.put(session);
-  return publicStatus(session);
-}
-
-export async function finishSession(
-  store: SessionStore,
-  sessionId: string,
-  token: string | undefined,
-) {
-  const session = await requireSession(store, sessionId, token);
-  if (session.state === "completed") return publicResult(session);
-  if (["stepped_out", "disconnected", "failed", "expired"].includes(session.state)) {
-    throw new AppError(
-      409,
-      "session_not_completable",
-      `A ${session.state} session cannot be evaluated.`,
-    );
-  }
-  if (!session.providerConversationId) {
-    throw new AppError(
-      409,
-      "provider_conversation_missing",
-      "The ElevenLabs conversation has not been attached.",
-    );
-  }
-
-  session.state = "processing";
-  await store.put(session);
-  return processSession(store, session);
-}
-
-export async function getSessionResult(
-  store: SessionStore,
-  sessionId: string,
-  token: string | undefined,
-) {
-  const session = await requireSession(store, sessionId, token);
-  if (session.state === "processing") {
-    return processSession(store, session);
-  }
-  return publicResult(session);
-}
-
-export async function stepOutSession(
-  store: SessionStore,
-  sessionId: string,
-  token: string | undefined,
-) {
-  const session = await requireSession(store, sessionId, token);
-  if (session.state === "completed") {
-    throw new AppError(409, "session_already_completed", "Feedback is already complete.");
-  }
-  session.state = "stepped_out";
-  delete session.feedback;
-  await store.put(session);
-  return publicStatus(session);
-}
-
-export async function disconnectSession(
-  store: SessionStore,
-  sessionId: string,
-  token: string | undefined,
-) {
-  const session = await requireSession(store, sessionId, token);
-  if (!isTerminal(session.state) && session.state !== "processing") {
-    session.state = "disconnected";
-    await store.put(session);
-  }
-  return publicStatus(session);
-}
-
-async function processSession(store: SessionStore, session: WickSession) {
-  if (!session.providerConversationId) {
-    throw new AppError(409, "provider_conversation_missing", "No conversation is attached.");
-  }
-  if ((session.processingAttempts ?? 0) >= 40) {
-    session.state = "failed";
-    session.failureCode = "transcript_processing_timeout";
-    await store.put(session);
-    throw new AppError(
-      504,
-      "transcript_processing_timeout",
-      "The transcript did not finish processing in time.",
-      true,
-    );
-  }
-  session.processingAttempts = (session.processingAttempts ?? 0) + 1;
-  await store.put(session);
-
-  try {
-    const providerResult = await retryTranscript(session.providerConversationId);
-    assertProviderTiming(session, providerResult.startedAt);
-    session.transcript = providerResult.transcript;
-    session.providerVersionId = providerResult.providerVersionId ?? session.providerVersionId;
-    session.feedback = await evaluateTranscript(providerResult.transcript);
+  const characterTurn: WickTurn = {
+    turnId: `t${session.nextTurnNumber++}`,
+    role: "character",
+    speaker: scenario.character.id,
+    text: generated.response,
+    sourceMedium: session.mode === "voice" ? "audio" : "text",
+    createdAt: new Date().toISOString(),
+  };
+  session.turns.push(userTurn, characterTurn);
+  session.roleplayState = generated.state;
+  session.model = generated.model;
+  if (generated.scenarioComplete) {
     session.state = "completed";
-    delete session.failureCode;
+    session.endedAt = new Date().toISOString();
+  }
+  await store.put(session);
+  console.log("Gemini roleplay response generated", {
+    sessionId: session.sessionId,
+    turnId: characterTurn.turnId,
+    characters: characterTurn.text.length,
+    model: generated.model,
+  });
+  return { userTurn, characterTurn, session: publicSession(session) };
+}
+
+export async function getSession(store: SessionStore, sessionId: string, token: string | undefined) {
+  return publicSession(await requireSession(store, sessionId, token));
+}
+
+export async function endSession(store: SessionStore, sessionId: string, token: string | undefined) {
+  const session = await requireSession(store, sessionId, token);
+  if (!isTerminal(session.state)) {
+    session.state = "completed";
+    session.endedAt = new Date().toISOString();
     await store.put(session);
-    return publicResult(session);
-  } catch (error) {
-    if (error instanceof ConversationProcessingError) {
-      await store.put(session);
-      return publicResult(session);
-    }
-    if (error instanceof AppError && !error.retryable) {
-      session.state = "failed";
-      session.failureCode = error.code;
-      await store.put(session);
-    } else {
-      await store.put(session);
-      return publicResult(session);
-    }
-    throw error;
   }
+  return publicSession(session);
 }
 
-async function retryTranscript(providerConversationId: string) {
-  const delays = [0, 600, 1_400];
-  let lastError: unknown;
-  for (const delay of delays) {
-    if (delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
-    try {
-      return await getCompletedTranscript(providerConversationId);
-    } catch (error) {
-      lastError = error;
-      if (!(error instanceof ConversationProcessingError)) throw error;
-    }
+export async function stepOutSession(store: SessionStore, sessionId: string, token: string | undefined) {
+  const session = await requireSession(store, sessionId, token);
+  if (!isTerminal(session.state)) {
+    session.state = "stepped_out";
+    session.endedAt = new Date().toISOString();
+    await store.put(session);
   }
-  throw lastError;
+  return publicSession(session);
 }
 
-async function requireSession(
+export async function getCharacterTurn(
   store: SessionStore,
   sessionId: string,
   token: string | undefined,
-) {
-  if (!/^[0-9a-f-]{36}$/i.test(sessionId)) {
-    throw new AppError(404, "session_not_found", "The session was not found.");
+  turnId: string,
+): Promise<WickTurn> {
+  const session = await requireSession(store, sessionId, token);
+  const turn = session.turns.find((candidate) => candidate.turnId === turnId);
+  if (!turn || turn.role !== "character") {
+    throw new AppError(404, "character_turn_not_found", "The character turn was not found.");
   }
+  return turn;
+}
+
+async function requireSession(store: SessionStore, sessionId: string, token: string | undefined) {
+  if (!/^[0-9a-f-]{36}$/i.test(sessionId)) throw new AppError(404, "session_not_found", "The session was not found.");
   const session = await store.get(sessionId);
-  if (!session) {
-    throw new AppError(404, "session_not_found", "The session was not found.");
-  }
+  if (!session) throw new AppError(404, "session_not_found", "The session was not found.");
   assertSessionAccess(session.tokenHash, token);
   if (Date.parse(session.expiresAt) <= Date.now() && !isTerminal(session.state)) {
     session.state = "expired";
+    session.endedAt = new Date().toISOString();
     await store.put(session);
   }
   return session;
 }
 
-function assertProviderTiming(session: WickSession, startedAt?: string) {
-  if (!startedAt) return;
-  const started = Date.parse(startedAt);
-  const earliest = Date.parse(session.createdAt) - 60_000;
-  const latest = Date.parse(session.expiresAt);
-  if (started < earliest || started > latest) {
-    throw new AppError(
-      403,
-      "provider_conversation_mismatch",
-      "The provider conversation does not belong to this Wick session.",
-    );
+function assertActive(session: WickSession) {
+  if (session.state !== "active") throw new AppError(409, "session_ended", "This session has ended.");
+  if (Date.parse(session.conversationDeadline) <= Date.now()) {
+    throw new AppError(409, "session_time_expired", "The conversation time has ended.");
   }
 }
 
-function publicStatus(session: WickSession) {
+function publicSession(session: WickSession) {
   return {
     sessionId: session.sessionId,
     scenarioId: session.scenarioId,
+    scenarioVersion: session.scenarioVersion,
     mode: session.mode,
     state: session.state,
+    roleplayState: session.roleplayState,
+    createdAt: session.createdAt,
     conversationDeadline: session.conversationDeadline,
-  };
-}
-
-function publicResult(session: WickSession) {
-  return {
-    ...publicStatus(session),
-    processingAttempts: session.processingAttempts ?? 0,
-    ...(session.state === "processing"
-      ? { retryAfterSeconds: 3 }
-      : {}),
-    ...(session.state === "completed"
-      ? { transcript: session.transcript, feedback: session.feedback }
-      : {}),
-    ...(session.failureCode ? { failureCode: session.failureCode } : {}),
+    endedAt: session.endedAt,
+    turns: session.turns,
   };
 }
 
 function isTerminal(state: WickSession["state"]) {
-  return ["completed", "stepped_out", "disconnected", "failed", "expired"].includes(
-    state,
-  );
+  return ["completed", "stepped_out", "failed", "expired"].includes(state);
 }
 
 export function rateLimitIdentity(ip: string | undefined): string {

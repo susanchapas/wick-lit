@@ -1,45 +1,69 @@
 import { describe, expect, it } from "vitest";
 
-import { AppError } from "../domain/errors";
-import type { WickSession } from "../domain/types";
-import { createSessionCredential } from "../security/sessionAccess";
-import {
-  attachProviderConversation,
-  createSession,
-} from "../services/sessionService";
+import type { RoleplayGenerator } from "../roleplay/types";
+import { addMessage, createSession, getSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
 
-describe("session service validation", () => {
-  it("rejects an invalid scenario before calling providers", async () => {
-    await expect(
-      createSession(
-        new MemorySessionStore(),
-        { scenarioId: "not-real", mode: "text" },
-        "test-client",
-      ),
-    ).rejects.toMatchObject({ code: "invalid_scenario", status: 400 });
+const generator: RoleplayGenerator = async ({ conversationHistory, latestUserMessage }) => ({
+  response: `What if that makes things worse after you say: ${latestUserMessage}`,
+  scenarioComplete: false,
+  state: `turn_${conversationHistory.length}`,
+  model: "test-model",
+});
+
+describe("Wick-owned session flow", () => {
+  it("rejects an invalid scenario without calling a provider", async () => {
+    await expect(createSession(
+      new MemorySessionStore(),
+      { scenarioId: "not-real", mode: "text" },
+      "test-client",
+    )).rejects.toMatchObject({ code: "invalid_scenario", status: 400 });
   });
 
-  it("does not allow a provider ID to bypass session access", async () => {
+  it("creates a stable opening turn and appends a canonical user/character pair", async () => {
     const store = new MemorySessionStore();
-    const credential = createSessionCredential();
-    const session: WickSession = {
-      sessionId: "27c2cff5-bcce-481a-9f03-0c94d53a5d21",
-      tokenHash: credential.tokenHash,
-      scenarioId: "ask-a-friend",
-      scenarioVersion: "ask-a-friend-v1",
-      rubricVersion: "bystander-rubric-v1",
-      mode: "text",
-      state: "authorized",
-      createdAt: new Date().toISOString(),
-      conversationDeadline: new Date(Date.now() + 120_000).toISOString(),
-      expiresAt: new Date(Date.now() + 1_800_000).toISOString(),
-    };
-    await store.create(session);
+    const started = await createSession(
+      store,
+      { scenarioId: "party-hesitant-friend", mode: "text" },
+      "test-client",
+    );
+    expect(started.turns).toMatchObject([{ turnId: "t1", role: "character", speaker: "alex" }]);
 
-    await expect(
-      attachProviderConversation(store, session.sessionId, "wrong", "conv_12345678"),
-    ).rejects.toBeInstanceOf(AppError);
-    expect((await store.get(session.sessionId))?.providerConversationId).toBeUndefined();
+    const message = await addMessage(
+      store,
+      started.sessionId,
+      started.sessionToken,
+      { text: "Come with me and let's ask if they want to step outside." },
+      generator,
+    );
+    expect(message.userTurn).toMatchObject({ turnId: "t2", role: "user", sourceMedium: "text" });
+    expect(message.characterTurn).toMatchObject({ turnId: "t3", role: "character", speaker: "alex" });
+
+    const session = await getSession(store, started.sessionId, started.sessionToken);
+    expect(session.turns.map((turn) => turn.turnId)).toEqual(["t1", "t2", "t3"]);
+  });
+
+  it("does not allow a session token from another session", async () => {
+    const store = new MemorySessionStore();
+    const first = await createSession(store, { scenarioId: "party-hesitant-friend", mode: "text" }, "a");
+    const second = await createSession(store, { scenarioId: "party-hesitant-friend", mode: "text" }, "b");
+    await expect(getSession(store, first.sessionId, second.sessionToken)).rejects.toMatchObject({
+      code: "invalid_session_token",
+      status: 403,
+    });
+  });
+
+  it("keeps voice sessions on the same roleplay engine with audio source turns", async () => {
+    const store = new MemorySessionStore();
+    const started = await createSession(store, { scenarioId: "party-hesitant-friend", mode: "voice" }, "voice");
+    const result = await addMessage(
+      store,
+      started.sessionId,
+      started.sessionToken,
+      { text: "Let's check in with them together.", sourceMedium: "audio" },
+      generator,
+    );
+    expect(result.userTurn.sourceMedium).toBe("audio");
+    expect(result.characterTurn.sourceMedium).toBe("audio");
   });
 });

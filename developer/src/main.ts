@@ -1,357 +1,375 @@
-import { Conversation, type Conversation as ConversationInstance } from "@elevenlabs/client";
 import "./style.css";
 
 type Mode = "text" | "voice";
-type SessionState =
-  | "authorized"
-  | "conversing"
-  | "processing"
-  | "completed"
-  | "stepped_out"
-  | "disconnected"
-  | "failed"
-  | "expired";
+type SessionState = "active" | "completed" | "stepped_out" | "failed" | "expired";
 
-interface StartResponse {
+interface WickTurn {
+  turnId: string;
+  role: "user" | "character";
+  speaker: string;
+  text: string;
+  sourceMedium: "text" | "audio";
+  createdAt: string;
+}
+
+interface WickSession {
   sessionId: string;
-  sessionToken: string;
+  sessionToken?: string;
+  scenarioId: string;
   mode: Mode;
   state: SessionState;
   conversationDeadline: string;
-  authorization:
-    | { type: "signed_url"; signedUrl: string; expiresInSeconds: number }
-    | { type: "conversation_token"; conversationToken: string; expiresInSeconds: number };
+  turns: WickTurn[];
 }
 
-interface ResultResponse {
-  sessionId: string;
-  state: SessionState;
-  retryAfterSeconds?: number;
-  transcript?: Array<{ id: string; role: "user" | "agent"; text: string }>;
-  feedback?: {
-    dimensions: Record<string, {
-      status: string;
-      rationale: string;
-      evidence: Array<{ turnId: string; quote: string }>;
-    }>;
-    identifiedStrategies: Array<{ number: number; name: string }>;
-    strength: string;
-    nextStep: string;
-    summary: string;
-  };
+interface MessageResponse {
+  userTurn: WickTurn;
+  characterTurn: WickTurn;
+  session: WickSession;
 }
 
 const startButton = element<HTMLButtonElement>("start");
 const finishButton = element<HTMLButtonElement>("finish");
 const stepOutButton = element<HTMLButtonElement>("step-out");
-const retryTextButton = element<HTMLButtonElement>("retry-text");
 const statusElement = element<HTMLElement>("status");
 const timerElement = element<HTMLElement>("timer");
 const messagesElement = element<HTMLOListElement>("messages");
 const messageForm = element<HTMLFormElement>("message-form");
 const messageInput = element<HTMLInputElement>("message");
 const sendButton = element<HTMLButtonElement>("send");
-const feedbackPanel = element<HTMLElement>("feedback-panel");
-const feedbackElement = element<HTMLElement>("feedback");
 const modePicker = element<HTMLFieldSetElement>("mode-picker");
+const voiceControls = element<HTMLElement>("voice-controls");
+const recordTurnButton = element<HTMLButtonElement>("record-turn");
+const recordingStatus = element<HTMLElement>("recording-status");
+const audioElement = element<HTMLAudioElement>("alex-audio");
+const sessionData = element<HTMLElement>("session-data");
+const transcriptSummary = element<HTMLElement>("transcript-summary");
+const recordingDownload = element<HTMLAnchorElement>("recording-download");
 
-let providerConversation: ConversationInstance | undefined;
-let session: StartResponse | undefined;
-let intentionalEnd = false;
-let currentProviderMode: "speaking" | "listening" = "listening";
-let deadlineTimer: number | undefined;
+let session: WickSession | undefined;
+let token: string | undefined;
+let recorder: UserOnlyRecorder | undefined;
+let userOnlyRecording: Blob | undefined;
+let busy = false;
 let countdownTimer: number | undefined;
-const renderedMessages = new Map<string, HTMLLIElement>();
-const optimisticUserMessages: Array<{ id: string; text: string; confirmed: boolean }> = [];
-let localMessageNumber = 0;
+let currentAudioUrl: string | undefined;
+let recordingUrl: string | undefined;
+const renderedTurns = new Set<string>();
 
 startButton.addEventListener("click", () => void startSelectedMode());
-retryTextButton.addEventListener("click", () => {
-  const textChoice = document.querySelector<HTMLInputElement>('input[name="mode"][value="text"]');
-  if (textChoice) textChoice.checked = true;
-  retryTextButton.classList.add("hidden");
-  void startSelectedMode();
-});
-finishButton.addEventListener("click", () => void finishSession());
-stepOutButton.addEventListener("click", () => void stepOut());
+finishButton.addEventListener("click", () => void finishSession(false));
+stepOutButton.addEventListener("click", () => void finishSession(true));
+recordTurnButton.addEventListener("click", () => void toggleRecording());
 messageForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const text = messageInput.value.trim();
-  if (!text || !providerConversation || session?.mode !== "text") return;
-  const localId = `user-local-${++localMessageNumber}`;
-  optimisticUserMessages.push({ id: localId, text, confirmed: false });
-  renderMessage(localId, "user", text);
-  providerConversation.sendUserMessage(text);
-  messageInput.value = "";
-  messageInput.focus();
+  if (text) void sendMessage(text, "text");
 });
-messageInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    messageForm.requestSubmit();
-  }
-});
-messageInput.addEventListener("input", () => providerConversation?.sendUserActivity());
 window.addEventListener("beforeunload", () => {
-  stopMedia();
-  if (providerConversation) void providerConversation.endSession();
-  if (session && !intentionalEnd) {
-    void api(`/sessions/${session.sessionId}/disconnect`, {
-      method: "POST",
-      keepalive: true,
-    }).catch(() => undefined);
-  }
+  recorder?.dispose();
+  revokeUrls();
 });
 
 async function startSelectedMode() {
   resetPage();
   const mode = selectedMode();
-  setStatus(mode === "text" ? "Authorizing text session…" : "Waiting for microphone permission…");
   setSetupDisabled(true);
-
+  setStatus(mode === "voice" ? "Waiting for microphone permission…" : "Starting scenario…");
   try {
-    session = await api<StartResponse>("/sessions", {
+    if (mode === "voice") {
+      recorder = new UserOnlyRecorder();
+      await recorder.start();
+      recordingStatus.textContent = "Microphone ready — only your mic is being recorded.";
+    }
+    const started = await api<WickSession & { sessionToken: string }>("/sessions", {
       method: "POST",
-      body: JSON.stringify({ scenarioId: "ask-a-friend", mode }),
+      body: JSON.stringify({ scenarioId: "party-hesitant-friend", mode }),
     }, false);
-    startCountdown(session.conversationDeadline);
-
-    const callbacks = {
-      onConnect: ({ conversationId }: { conversationId: string }) => {
-        void attachConversation(conversationId).catch((error) => setStatus(errorMessage(error)));
-      },
-      onMessage: ({ message, role, event_id }: { message: string; role: "user" | "agent"; event_id: number }) => {
-        if (role === "user") {
-          const optimistic = optimisticUserMessages.find(
-            (item) => !item.confirmed && item.text === message,
-          );
-          if (optimistic) {
-            optimistic.confirmed = true;
-            return;
-          }
-        }
-        renderMessage(`${role}-${event_id}`, role, message);
-      },
-      onStatusChange: ({ status }: { status: string }) => setStatus(statusLabel(status)),
-      onModeChange: ({ mode: providerMode }: { mode: "speaking" | "listening" }) => {
-        currentProviderMode = providerMode;
-        if (session?.mode === "voice") setStatus(providerMode === "speaking" ? "Alex is speaking" : "Listening");
-      },
-      onError: () => setStatus("Conversation error"),
-      onDisconnect: (details: { reason: string }) => {
-        stopMedia();
-        if (!intentionalEnd && session) {
-          setStatus("Disconnected unexpectedly");
-          setConversationControls(false);
-          void api(`/sessions/${session.sessionId}/disconnect`, { method: "POST" }).catch(() => undefined);
-        } else if (details.reason === "error") {
-          setStatus("Conversation ended with an error");
-        }
-      },
-    };
-
-    if (session.authorization.type === "signed_url") {
-      providerConversation = await Conversation.startSession({
-        signedUrl: session.authorization.signedUrl,
-        connectionType: "websocket",
-        textOnly: true,
-        overrides: { conversation: { textOnly: true } },
-        ...callbacks,
-      });
+    session = started;
+    token = started.sessionToken;
+    renderTurns(started.turns);
+    startCountdown(started.conversationDeadline);
+    setActiveControls(true);
+    if (mode === "voice") {
+      await playCharacterTurn(started.turns[0]);
+      setStatus("Ready — press Start speaking");
     } else {
-      providerConversation = await Conversation.startSession({
-        conversationToken: session.authorization.conversationToken,
-        connectionType: "webrtc",
-        textOnly: false,
-        ...callbacks,
-      });
+      setStatus("Ready — type your response");
+      messageInput.focus();
     }
-    await attachConversation(providerConversation.getId());
-    setConversationControls(true);
-    setStatus(mode === "text" ? "Connected — type your response" : "Connected — microphone active");
-  } catch (error) {
-    const denied = isMicrophoneDenial(error);
-    setStatus(denied ? "Microphone access was denied" : errorMessage(error));
-    if (session) {
-      await api(`/sessions/${session.sessionId}/disconnect`, { method: "POST" }).catch(() => undefined);
-    }
-    intentionalEnd = true;
-    await endProviderConversation();
-    intentionalEnd = false;
-    session = undefined;
-    stopMedia();
-    setSetupDisabled(false);
-    if (denied) retryTextButton.classList.remove("hidden");
-  }
-}
-
-async function attachConversation(providerConversationId: string) {
-  if (!session) return;
-  await api(`/sessions/${session.sessionId}/connect`, {
-    method: "POST",
-    body: JSON.stringify({ providerConversationId }),
-  });
-}
-
-async function finishSession() {
-  if (!session || intentionalEnd) return;
-  intentionalEnd = true;
-  setStatus("Ending conversation…");
-  setConversationControls(false);
-  clearTimers();
-  await endProviderConversation();
-  try {
-    const result = await api<ResultResponse>(`/sessions/${session.sessionId}/finish`, {
-      method: "POST",
-    });
-    await handleResult(result);
   } catch (error) {
     setStatus(errorMessage(error));
+    await recorder?.stop().catch(() => undefined);
+    recorder = undefined;
+    setSetupDisabled(false);
   }
 }
 
-async function handleResult(result: ResultResponse): Promise<void> {
-  if (result.state === "processing") {
-    setStatus("Transcript is processing…");
-    const delay = Math.max(1, result.retryAfterSeconds ?? 3) * 1000;
-    await new Promise((resolve) => window.setTimeout(resolve, delay));
-    if (!session) return;
-    const next = await api<ResultResponse>(`/sessions/${session.sessionId}/result`);
-    return handleResult(next);
+async function sendMessage(text: string, sourceMedium: "text" | "audio") {
+  if (!session || busy) return;
+  busy = true;
+  setActiveControls(false);
+  setStatus("Alex is thinking…");
+  try {
+    const result = await api<MessageResponse>(`/sessions/${session.sessionId}/message`, {
+      method: "POST",
+      body: JSON.stringify({ text, sourceMedium }),
+    });
+    session = { ...result.session, sessionToken: token };
+    messageInput.value = "";
+    renderTurns([result.userTurn, result.characterTurn]);
+    if (session.mode === "voice") {
+      await playCharacterTurn(result.characterTurn);
+      setStatus(session.state === "active" ? "Ready — press Start speaking" : "Scenario complete");
+    } else {
+      setStatus(session.state === "active" ? "Ready — type your response" : "Scenario complete");
+    }
+    if (session.state !== "active") {
+      clearCountdown();
+      await finishLocalRecording();
+      setSetupDisabled(false);
+    }
+  } catch (error) {
+    setStatus(errorMessage(error));
+  } finally {
+    busy = false;
+    setActiveControls(session?.state === "active");
   }
-  if (result.state === "completed" && result.feedback) {
-    setStatus("Feedback ready");
-    renderFeedback(result.feedback);
-    setSetupDisabled(false);
+}
+
+async function toggleRecording() {
+  if (!recorder || !session || busy) return;
+  if (!recorder.isCapturing) {
+    recorder.beginUtterance();
+    recordTurnButton.textContent = "Stop speaking";
+    recordingStatus.textContent = "Recording your response…";
+    setStatus("Listening…");
     return;
   }
-  setStatus(`Session ended: ${result.state.replaceAll("_", " ")}`);
+
+  busy = true;
+  setActiveControls(false);
+  try {
+    setStatus("Preparing your recording…");
+    const utterance = await recorder.endUtterance();
+    console.info("Wick user utterance captured", { bytes: utterance.size, type: utterance.type });
+    recordingStatus.textContent = "Transcribing your response…";
+    const form = new FormData();
+    form.set("audio", utterance, fileNameFor(utterance.type));
+    const transcript = await api<{ text: string }>(`/sessions/${session.sessionId}/transcribe`, {
+      method: "POST",
+      body: form,
+    });
+    recordingStatus.textContent = `Transcript: “${transcript.text}”`;
+    await sendMessageWhileBusy(transcript.text);
+  } catch (error) {
+    setStatus(`${errorMessage(error)} Press Start speaking to retry.`);
+    recordingStatus.textContent = "That utterance was not added to the transcript.";
+  } finally {
+    busy = false;
+    recordTurnButton.textContent = "Start speaking";
+    setActiveControls(session?.state === "active");
+  }
 }
 
-async function stepOut() {
-  if (!session || intentionalEnd) return;
-  intentionalEnd = true;
-  setConversationControls(false);
-  clearTimers();
-  await endProviderConversation();
+async function sendMessageWhileBusy(text: string) {
+  if (!session) return;
+  setStatus("Alex is thinking…");
+  const result = await api<MessageResponse>(`/sessions/${session.sessionId}/message`, {
+    method: "POST",
+    body: JSON.stringify({ text, sourceMedium: "audio" }),
+  });
+  session = { ...result.session, sessionToken: token };
+  renderTurns([result.userTurn, result.characterTurn]);
+  await playCharacterTurn(result.characterTurn);
+  setStatus(session.state === "active" ? "Ready — press Start speaking" : "Scenario complete");
+  if (session.state !== "active") {
+    clearCountdown();
+    await finishLocalRecording();
+    setSetupDisabled(false);
+  }
+}
+
+async function playCharacterTurn(turn: WickTurn) {
+  if (!session) return;
+  setStatus("Alex is speaking…");
+  const response = await authenticatedFetch(`/sessions/${session.sessionId}/turns/${turn.turnId}/speech`, { method: "POST" });
+  if (!response.ok) throw new Error(await responseError(response));
+  const blob = await response.blob();
+  console.info("Wick TTS audio received", { bytes: blob.size, type: blob.type });
+  if (!blob.size) throw new Error("Alex's audio was empty.");
+  if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+  currentAudioUrl = URL.createObjectURL(blob);
+  audioElement.src = currentAudioUrl;
+  audioElement.classList.remove("hidden");
   try {
-    await api(`/sessions/${session.sessionId}/step-out`, { method: "POST" });
-    setStatus("Stepped out — no feedback was created");
+    await audioElement.play();
+    console.info("Wick TTS playback started");
+    await once(audioElement, "ended");
+  } catch (error) {
+    console.warn("Wick TTS playback needs user action", { name: error instanceof Error ? error.name : "Error" });
+    setStatus("Alex's audio is ready — press Play below");
+  }
+}
+
+async function finishSession(stepOut: boolean) {
+  if (!session || busy) return;
+  busy = true;
+  setActiveControls(false);
+  clearCountdown();
+  setStatus(stepOut ? "Stepping out…" : "Ending session…");
+  try {
+    session = await api<WickSession>(`/sessions/${session.sessionId}/${stepOut ? "step-out" : "end"}`, { method: "POST" });
+    await finishLocalRecording();
+    renderTurns(session.turns);
+    setStatus(stepOut ? "Stepped out" : "Session complete");
     setSetupDisabled(false);
   } catch (error) {
     setStatus(errorMessage(error));
-  }
-}
-
-async function endProviderConversation() {
-  try {
-    await providerConversation?.endSession();
   } finally {
-    providerConversation = undefined;
-    stopMedia();
+    busy = false;
   }
 }
 
-function startCountdown(deadline: string) {
-  const update = () => {
-    const remaining = Math.max(0, Date.parse(deadline) - Date.now());
-    const seconds = Math.ceil(remaining / 1000);
-    timerElement.textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-  };
-  update();
-  countdownTimer = window.setInterval(update, 1000);
-  deadlineTimer = window.setTimeout(() => void finishAfterCurrentResponse(), Math.max(0, Date.parse(deadline) - Date.now()));
-}
-
-async function finishAfterCurrentResponse() {
-  if (!session || intentionalEnd) return;
-  setStatus("Time is up — waiting for Alex to finish…");
-  messageInput.disabled = true;
-  sendButton.disabled = true;
-  const graceDeadline = Date.now() + 30_000;
-  while (currentProviderMode === "speaking" && Date.now() < graceDeadline) {
-    await new Promise((resolve) => window.setTimeout(resolve, 350));
+async function finishLocalRecording() {
+  if (recorder) {
+    userOnlyRecording = await recorder.stop();
+    recorder = undefined;
   }
-  await finishSession();
+  sessionData.classList.remove("hidden");
+  transcriptSummary.textContent = `${session?.turns.length ?? 0} canonical transcript turns retained by Wick.`;
+  if (userOnlyRecording?.size) {
+    if (recordingUrl) URL.revokeObjectURL(recordingUrl);
+    recordingUrl = URL.createObjectURL(userOnlyRecording);
+    recordingDownload.href = recordingUrl;
+    recordingDownload.classList.remove("hidden");
+    recordingStatus.textContent = `User-only recording ready (${formatBytes(userOnlyRecording.size)}, ${userOnlyRecording.type}).`;
+  }
 }
 
-function renderMessage(id: string, role: "user" | "agent", text: string) {
-  let item = renderedMessages.get(id);
-  if (!item) {
-    item = document.createElement("li");
-    item.className = `message ${role}`;
-    item.innerHTML = `<span class="speaker"></span><span class="message-text"></span>`;
-    renderedMessages.set(id, item);
+export function getUserOnlyAudioRecording(): Blob | undefined {
+  return userOnlyRecording;
+}
+
+function renderTurns(turns: WickTurn[]) {
+  for (const turn of turns) {
+    if (renderedTurns.has(turn.turnId)) continue;
+    renderedTurns.add(turn.turnId);
+    const item = document.createElement("li");
+    item.className = `message ${turn.role === "character" ? "character" : "user"}`;
+    const speaker = document.createElement("span");
+    speaker.className = "speaker";
+    speaker.textContent = turn.role === "character" ? "Alex" : "You";
+    const text = document.createElement("span");
+    text.className = "message-text";
+    text.textContent = turn.text;
+    item.append(speaker, text);
     messagesElement.append(item);
+    item.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
-  item.querySelector<HTMLElement>(".speaker")!.textContent = role === "agent" ? "Alex" : "You";
-  item.querySelector<HTMLElement>(".message-text")!.textContent = text;
-  item.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-function renderFeedback(feedback: NonNullable<ResultResponse["feedback"]>) {
-  const labels: Record<string, string> = {
-    clearAction: "Clear action",
-    safety: "Safety",
-    supportAndChoice: "Support and choice",
-  };
-  feedbackElement.replaceChildren();
-  const summary = document.createElement("p");
-  summary.textContent = feedback.summary;
-  feedbackElement.append(summary);
+class UserOnlyRecorder {
+  private stream?: MediaStream;
+  private mediaRecorder?: MediaRecorder;
+  private chunks: Blob[] = [];
+  private utteranceRecorder?: MediaRecorder;
+  private utteranceChunks: Blob[] = [];
+  isCapturing = false;
 
-  const grid = document.createElement("div");
-  grid.className = "feedback-grid";
-  for (const [key, dimension] of Object.entries(feedback.dimensions)) {
-    const card = document.createElement("article");
-    card.className = "feedback-card";
-    const heading = document.createElement("h3");
-    heading.textContent = labels[key] ?? key;
-    const status = document.createElement("p");
-    status.className = "status-value";
-    status.textContent = dimension.status.replaceAll("_", " ");
-    const rationale = document.createElement("p");
-    rationale.textContent = dimension.rationale;
-    card.append(heading, status, rationale);
-    for (const evidence of dimension.evidence) {
-      const quote = document.createElement("blockquote");
-      quote.textContent = `“${evidence.quote}”`;
-      card.append(quote);
+  async start() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      throw new Error("This browser does not support microphone recording.");
     }
-    grid.append(card);
+    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = preferredMimeType();
+    this.mediaRecorder = new MediaRecorder(this.stream, mimeType ? { mimeType } : undefined);
+    this.mediaRecorder.addEventListener("dataavailable", (event) => {
+      if (event.data.size) this.chunks.push(event.data);
+    });
+    this.mediaRecorder.start(250);
   }
-  feedbackElement.append(grid);
-  const strategies = document.createElement("p");
-  strategies.textContent = feedback.identifiedStrategies.length
-    ? `Five Ds identified: ${feedback.identifiedStrategies.map((item) => `${item.number} ${item.name}`).join(", ")}`
-    : "Five Ds identified: not enough evidence yet";
-  const strength = document.createElement("p");
-  strength.textContent = `Strength: ${feedback.strength}`;
-  const next = document.createElement("p");
-  next.textContent = `Next step: ${feedback.nextStep}`;
-  feedbackElement.append(strategies, strength, next);
-  feedbackPanel.classList.remove("hidden");
+
+  beginUtterance() {
+    if (!this.mediaRecorder || this.mediaRecorder.state !== "recording") throw new Error("Microphone is not ready.");
+    this.utteranceChunks = [];
+    const mimeType = this.mediaRecorder.mimeType || preferredMimeType();
+    this.utteranceRecorder = new MediaRecorder(
+      this.stream!,
+      mimeType ? { mimeType } : undefined,
+    );
+    this.utteranceRecorder.addEventListener("dataavailable", (event) => {
+      if (event.data.size) this.utteranceChunks.push(event.data);
+    });
+    // Each utterance needs its own container header. Slicing chunks from the
+    // session-wide WebM produces headerless fragments that STT cannot decode.
+    this.utteranceRecorder.start();
+    this.isCapturing = true;
+  }
+
+  async endUtterance(): Promise<Blob> {
+    if (!this.utteranceRecorder || !this.isCapturing) throw new Error("No utterance is being recorded.");
+    const utteranceRecorder = this.utteranceRecorder;
+    const stopped = once(utteranceRecorder, "stop");
+    utteranceRecorder.stop();
+    await stopped;
+    this.isCapturing = false;
+    this.utteranceRecorder = undefined;
+    const blob = new Blob(this.utteranceChunks, { type: utteranceRecorder.mimeType || "audio/webm" });
+    if (!blob.size) throw new Error("No audio was recorded. Please try again.");
+    return blob;
+  }
+
+  async stop(): Promise<Blob> {
+    if (!this.mediaRecorder) return new Blob();
+    const mediaRecorder = this.mediaRecorder;
+    if (mediaRecorder.state !== "inactive") {
+      const stopped = once(mediaRecorder, "stop");
+      mediaRecorder.stop();
+      await stopped;
+    }
+    for (const track of this.stream?.getTracks() ?? []) track.stop();
+    const blob = new Blob(this.chunks, { type: mediaRecorder.mimeType || "audio/webm" });
+    this.mediaRecorder = undefined;
+    this.stream = undefined;
+    this.isCapturing = false;
+    return blob;
+  }
+
+  dispose() {
+    if (this.utteranceRecorder?.state === "recording") this.utteranceRecorder.stop();
+    for (const track of this.stream?.getTracks() ?? []) track.stop();
+    if (this.mediaRecorder?.state === "recording") this.mediaRecorder.stop();
+  }
 }
 
-async function api<T = unknown>(path: string, init: RequestInit = {}, authenticated = true): Promise<T> {
+async function api<T>(path: string, init: RequestInit = {}, authenticated = true): Promise<T> {
+  const response = await authenticatedFetch(path, init, authenticated);
+  if (!response.ok) throw new Error(await responseError(response));
+  return await response.json() as T;
+}
+
+function authenticatedFetch(path: string, init: RequestInit = {}, authenticated = true) {
   const headers = new Headers(init.headers);
-  if (init.body) headers.set("content-type", "application/json");
-  if (authenticated && session) headers.set("authorization", `Bearer ${session.sessionToken}`);
-  const response = await fetch(`/api${path}`, { ...init, headers });
-  const body = await response.json().catch(() => ({})) as { error?: { message?: string } };
-  if (!response.ok && response.status !== 202) {
-    throw new Error(body.error?.message ?? `Request failed (${response.status})`);
-  }
-  return body as T;
+  if (init.body && !(init.body instanceof FormData)) headers.set("content-type", "application/json");
+  if (authenticated && token) headers.set("authorization", `Bearer ${token}`);
+  return fetch(`/api${path}`, { ...init, headers });
 }
 
-function setConversationControls(active: boolean) {
+async function responseError(response: Response) {
+  const body = await response.json().catch(() => ({})) as { error?: { message?: string } };
+  return body.error?.message ?? `Request failed (${response.status}).`;
+}
+
+function setActiveControls(active: boolean | undefined) {
   finishButton.disabled = !active;
   stepOutButton.disabled = !active;
-  const textActive = active && session?.mode === "text";
+  const textActive = Boolean(active && session?.mode === "text");
   messageInput.disabled = !textActive;
   sendButton.disabled = !textActive;
-  if (textActive) messageInput.focus();
+  const voiceActive = Boolean(active && session?.mode === "voice");
+  recordTurnButton.disabled = !voiceActive;
+  voiceControls.classList.toggle("hidden", session?.mode !== "voice");
 }
 
 function setSetupDisabled(disabled: boolean) {
@@ -359,54 +377,57 @@ function setSetupDisabled(disabled: boolean) {
   for (const input of modePicker.querySelectorAll<HTMLInputElement>("input")) input.disabled = disabled;
 }
 
-function resetPage() {
-  intentionalEnd = false;
-  providerConversation = undefined;
-  session = undefined;
-  currentProviderMode = "listening";
-  renderedMessages.clear();
-  optimisticUserMessages.length = 0;
-  localMessageNumber = 0;
-  messagesElement.replaceChildren();
-  feedbackPanel.classList.add("hidden");
-  feedbackElement.replaceChildren();
-  retryTextButton.classList.add("hidden");
-  timerElement.textContent = "02:00";
-  clearTimers();
+function startCountdown(deadline: string) {
+  clearCountdown();
+  const update = () => {
+    const seconds = Math.max(0, Math.ceil((Date.parse(deadline) - Date.now()) / 1000));
+    timerElement.textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+    if (seconds === 0 && session?.state === "active" && !busy) void finishSession(false);
+  };
+  update();
+  countdownTimer = window.setInterval(update, 1_000);
 }
 
-function clearTimers() {
-  if (deadlineTimer !== undefined) window.clearTimeout(deadlineTimer);
+function clearCountdown() {
   if (countdownTimer !== undefined) window.clearInterval(countdownTimer);
-  deadlineTimer = undefined;
   countdownTimer = undefined;
 }
 
-function stopMedia() {
-  for (const media of document.querySelectorAll<HTMLMediaElement>("audio, video")) {
-    media.pause();
-    if (media.srcObject instanceof MediaStream) {
-      for (const track of media.srcObject.getTracks()) track.stop();
-      media.srcObject = null;
-    }
-  }
+function resetPage() {
+  recorder?.dispose();
+  recorder = undefined;
+  userOnlyRecording = undefined;
+  session = undefined;
+  token = undefined;
+  busy = false;
+  renderedTurns.clear();
+  messagesElement.replaceChildren();
+  sessionData.classList.add("hidden");
+  recordingDownload.classList.add("hidden");
+  audioElement.classList.add("hidden");
+  voiceControls.classList.add("hidden");
+  timerElement.textContent = "02:00";
+  clearCountdown();
+  revokeUrls();
 }
 
-function selectedMode(): Mode {
-  return document.querySelector<HTMLInputElement>('input[name="mode"]:checked')?.value === "voice"
-    ? "voice"
-    : "text";
+function revokeUrls() {
+  if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+  if (recordingUrl) URL.revokeObjectURL(recordingUrl);
+  currentAudioUrl = undefined;
+  recordingUrl = undefined;
 }
 
+function preferredMimeType() {
+  return ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) => MediaRecorder.isTypeSupported(type)) ?? "";
+}
+
+function fileNameFor(type: string) { return type.includes("mp4") ? "utterance.m4a" : "utterance.webm"; }
+function formatBytes(value: number) { return value < 1024 ? `${value} bytes` : `${(value / 1024).toFixed(1)} KB`; }
+function selectedMode(): Mode { return document.querySelector<HTMLInputElement>('input[name="mode"]:checked')?.value === "voice" ? "voice" : "text"; }
 function setStatus(value: string) { statusElement.textContent = value; }
-function statusLabel(value: string) {
-  return value === "connected" ? "Connected" : value === "connecting" ? "Connecting…" : "Disconnected";
-}
 function errorMessage(error: unknown) { return error instanceof Error ? error.message : "Something went wrong."; }
-function isMicrophoneDenial(error: unknown) {
-  return error instanceof DOMException && ["NotAllowedError", "PermissionDeniedError"].includes(error.name)
-    || errorMessage(error).toLowerCase().includes("permission");
-}
+function once(target: EventTarget, type: string): Promise<void> { return new Promise((resolve) => target.addEventListener(type, () => resolve(), { once: true })); }
 function element<T extends HTMLElement>(id: string): T {
   const value = document.getElementById(id);
   if (!value) throw new Error(`Missing #${id}`);

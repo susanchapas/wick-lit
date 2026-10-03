@@ -2,17 +2,10 @@ import { createServer, type IncomingMessage, type ServerResponse } from "node:ht
 import { readFileSync } from "node:fs";
 
 import { AppError, asPublicError } from "../domain/errors";
-import { publicScenario } from "../scenarios/askAFriend";
+import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
+import { publicScenarios } from "../scenarios";
 import { readBearerToken } from "../security/sessionAccess";
-import {
-  attachProviderConversation,
-  createSession,
-  disconnectSession,
-  finishSession,
-  getSessionResult,
-  rateLimitIdentity,
-  stepOutSession,
-} from "../services/sessionService";
+import { addMessage, createSession, endSession, getCharacterTurn, getSession, rateLimitIdentity, stepOutSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
 
 loadLocalSettings();
@@ -23,55 +16,51 @@ createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
     const path = url.pathname;
-    if (request.method === "GET" && path === "/api/health") {
-      return json(response, 200, { status: "ok", service: "wick-node-local" });
-    }
-    if (request.method === "GET" && path === "/api/scenarios") {
-      return json(response, 200, { scenarios: [publicScenario()] });
-    }
+    if (request.method === "GET" && path === "/api/health") return json(response, 200, { status: "ok", service: "wick-node-local" });
+    if (request.method === "GET" && path === "/api/scenarios") return json(response, 200, { scenarios: publicScenarios() });
     if (request.method === "POST" && path === "/api/sessions") {
-      const body = await readBody(request);
+      const body = await readJson(request);
       const result = await createSession(
         store,
-        { scenarioId: stringField(body.scenarioId), mode: stringField(body.mode) },
+        { scenarioId: stringField(body.scenarioId ?? body.scenario_id), mode: stringField(body.mode) },
         rateLimitIdentity(request.socket.remoteAddress),
       );
       return json(response, 201, result);
     }
 
-    const match = /^\/api\/sessions\/([^/]+)\/(connect|finish|result|step-out|disconnect)$/.exec(path);
+    const match = /^\/api\/sessions\/([^/]+)(?:\/(message|transcribe|end|step-out|turns\/([^/]+)\/speech))?$/.exec(path);
     if (!match) throw new AppError(404, "not_found", "The route was not found.");
-    const [, sessionId, action] = match;
-    const token = readBearerToken(
-      Array.isArray(request.headers.authorization)
-        ? request.headers.authorization[0]
-        : request.headers.authorization ?? null,
-    );
-    let result: unknown;
-    if (request.method === "POST" && action === "connect") {
-      const body = await readBody(request);
-      result = await attachProviderConversation(
-        store,
-        sessionId,
-        token,
-        stringField(body.providerConversationId),
-      );
-    } else if (request.method === "POST" && action === "finish") {
-      result = await finishSession(store, sessionId, token);
-    } else if (request.method === "GET" && action === "result") {
-      result = await getSessionResult(store, sessionId, token);
-    } else if (request.method === "POST" && action === "step-out") {
-      result = await stepOutSession(store, sessionId, token);
-    } else if (request.method === "POST" && action === "disconnect") {
-      result = await disconnectSession(store, sessionId, token);
-    } else {
-      throw new AppError(405, "method_not_allowed", "The method is not allowed.");
+    const [, sessionId, action, turnId] = match;
+    const token = readBearerToken(singleHeader(request.headers.authorization) ?? null);
+    if (request.method === "GET" && !action) return json(response, 200, await getSession(store, sessionId, token));
+    if (request.method === "POST" && action === "message") {
+      const body = await readJson(request);
+      return json(response, 200, await addMessage(store, sessionId, token, {
+        text: stringField(body.text),
+        sourceMedium: typeof body.sourceMedium === "string" ? body.sourceMedium : undefined,
+      }));
     }
-    const status =
-      typeof result === "object" && result && "state" in result && result.state === "processing"
-        ? 202
-        : 200;
-    return json(response, status, result);
+    if (request.method === "POST" && action === "transcribe") {
+      await getSession(store, sessionId, token);
+      const form = await readFormData(request);
+      const audio = form.get("audio");
+      if (!(audio instanceof Blob)) throw new AppError(400, "audio_required", "An audio recording is required.");
+      const text = await transcribeUserAudio({
+        bytes: new Uint8Array(await audio.arrayBuffer()),
+        fileName: "name" in audio && typeof audio.name === "string" ? audio.name : "utterance.webm",
+        contentType: audio.type || "audio/webm",
+      });
+      return json(response, 200, { text });
+    }
+    if (request.method === "POST" && action?.startsWith("turns/") && turnId) {
+      const turn = await getCharacterTurn(store, sessionId, token, turnId);
+      const audio = await synthesizeCharacterSpeech(turn.text);
+      response.writeHead(200, { "content-type": audio.contentType, "content-length": String(audio.bytes.byteLength), "cache-control": "no-store" });
+      return response.end(audio.bytes);
+    }
+    if (request.method === "POST" && action === "end") return json(response, 200, await endSession(store, sessionId, token));
+    if (request.method === "POST" && action === "step-out") return json(response, 200, await stepOutSession(store, sessionId, token));
+    throw new AppError(405, "method_not_allowed", "The method is not allowed.");
   } catch (error) {
     const value = asPublicError(error);
     return json(response, value.status, value.body);
@@ -80,14 +69,10 @@ createServer(async (request, response) => {
   console.log(`Wick local API listening on http://127.0.0.1:${port}`);
 });
 
-async function readBody(request: IncomingMessage): Promise<Record<string, unknown>> {
-  let raw = "";
-  for await (const chunk of request) {
-    raw += String(chunk);
-    if (raw.length > 16_384) throw new AppError(413, "request_too_large", "Request too large.");
-  }
+async function readJson(request: IncomingMessage): Promise<Record<string, unknown>> {
+  const bytes = await readBytes(request, 16_384);
   try {
-    const value = JSON.parse(raw || "{}");
+    const value = JSON.parse(bytes.toString("utf8") || "{}");
     if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error();
     return value as Record<string, unknown>;
   } catch {
@@ -95,23 +80,50 @@ async function readBody(request: IncomingMessage): Promise<Record<string, unknow
   }
 }
 
+async function readFormData(request: IncomingMessage): Promise<FormData> {
+  const bytes = await readBytes(request, 20 * 1024 * 1024);
+  try {
+    const copy = new Uint8Array(bytes.byteLength);
+    copy.set(bytes);
+    const webRequest = new Request("http://localhost/upload", {
+      method: "POST",
+      headers: { "content-type": singleHeader(request.headers["content-type"]) ?? "" },
+      body: copy.buffer,
+    });
+    return await webRequest.formData();
+  } catch {
+    throw new AppError(400, "invalid_audio_upload", "Upload the recording as multipart form data.");
+  }
+}
+
+async function readBytes(request: IncomingMessage, maxBytes: number): Promise<Buffer> {
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const chunk of request) {
+    const value = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    size += value.byteLength;
+    if (size > maxBytes) throw new AppError(413, "request_too_large", "Request too large.");
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks);
+}
+
 function stringField(value: unknown): string {
   if (typeof value !== "string") throw new AppError(400, "invalid_request", "A string is required.");
   return value;
 }
 
+function singleHeader(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
 function json(response: ServerResponse, status: number, body: unknown) {
-  response.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "cache-control": "no-store",
-  });
+  response.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
   response.end(JSON.stringify(body));
 }
 
 function loadLocalSettings() {
-  const settings = JSON.parse(readFileSync("local.settings.json", "utf8")) as {
-    Values?: Record<string, string>;
-  };
+  const settings = JSON.parse(readFileSync("local.settings.json", "utf8")) as { Values?: Record<string, string> };
   for (const [name, value] of Object.entries(settings.Values ?? {})) {
     if (process.env[name] === undefined) process.env[name] = value;
   }

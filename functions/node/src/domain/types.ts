@@ -1,23 +1,16 @@
 export const conversationModes = ["text", "voice"] as const;
 export type ConversationMode = (typeof conversationModes)[number];
 
-export const sessionStates = [
-  "authorized",
-  "conversing",
-  "processing",
-  "completed",
-  "stepped_out",
-  "disconnected",
-  "failed",
-  "expired",
-] as const;
+export const sessionStates = ["active", "completed", "stepped_out", "failed", "expired"] as const;
 export type SessionState = (typeof sessionStates)[number];
 
-export interface TranscriptTurn {
-  id: string;
-  role: "user" | "agent";
+export interface WickTurn {
+  turnId: string;
+  role: "user" | "character";
+  speaker: string;
   text: string;
-  timeInCallSeconds?: number;
+  sourceMedium: "text" | "audio";
+  createdAt: string;
 }
 
 export interface WickSession {
@@ -25,60 +18,15 @@ export interface WickSession {
   tokenHash: string;
   scenarioId: string;
   scenarioVersion: string;
-  rubricVersion: string;
   mode: ConversationMode;
   state: SessionState;
+  roleplayState: string;
   createdAt: string;
   conversationDeadline: string;
   expiresAt: string;
-  providerConversationId?: string;
-  providerVersionId?: string;
-  transcript?: TranscriptTurn[];
-  feedback?: FeedbackResult;
+  endedAt?: string;
+  turns: WickTurn[];
+  nextTurnNumber: number;
+  model?: string;
   failureCode?: string;
-  processingAttempts?: number;
-}
-
-export const dimensionStatuses = [
-  "demonstrated",
-  "partly_demonstrated",
-  "not_demonstrated",
-  "insufficient_evidence",
-] as const;
-export type DimensionStatus = (typeof dimensionStatuses)[number];
-
-export interface Evidence {
-  turnId: string;
-  quote: string;
-}
-
-export interface FeedbackDimension {
-  status: DimensionStatus;
-  evidence: Evidence[];
-  rationale: string;
-}
-
-export interface FiveDStrategy {
-  number: 1 | 2 | 3 | 4 | 5;
-  name: "Direct" | "Distract" | "Delegate" | "Delay" | "Document";
-  evidence: Evidence[];
-}
-
-export interface FeedbackResult {
-  dimensions: {
-    clearAction: FeedbackDimension;
-    safety: FeedbackDimension;
-    supportAndChoice: FeedbackDimension;
-  };
-  identifiedStrategies: FiveDStrategy[];
-  strength: string;
-  nextStep: string;
-  summary: string;
-  metadata: {
-    scenarioVersion: string;
-    rubricVersion: string;
-    evaluatorModel: string;
-    evaluatedAt: string;
-    audioMetricsIncluded: false;
-  };
 }

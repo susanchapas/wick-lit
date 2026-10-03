@@ -13,8 +13,7 @@
     "dev:api": "tsx src/tools/devServer.ts",
     "prestart": "npm run build",
     "start": "func start",
-    "test": "vitest run",
-    "verify:agent": "tsx src/tools/verifyAgent.ts"
+    "test": "vitest run"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",

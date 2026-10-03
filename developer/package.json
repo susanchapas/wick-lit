@@ -8,9 +8,7 @@
     "dev": "vite",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "@elevenlabs/client": "latest"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.7.2",
     "vite": "latest"
