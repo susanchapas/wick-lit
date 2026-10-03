@@ -1,0 +1,71 @@
+import { useEffect, useRef } from "react";
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from "react-router";
+import { NavBar } from "./components/NavBar";
+import { isOnboarded } from "./lib/settings";
+import { Access } from "./screens/Access";
+import { Clearing } from "./screens/Clearing";
+import { ContentNote } from "./screens/ContentNote";
+import { FieldGuide } from "./screens/FieldGuide";
+import { Grove } from "./screens/Grove";
+import { HowItWorks } from "./screens/HowItWorks";
+import { LanternsLit } from "./screens/LanternsLit";
+import { SteppingIn } from "./screens/SteppingIn";
+import { Trails } from "./screens/Trails";
+import { Welcome } from "./screens/Welcome";
+
+function RouteFocus() {
+  const { pathname } = useLocation();
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+    const h1 = document.querySelector("h1");
+    h1?.setAttribute("tabindex", "-1");
+    h1?.focus();
+  }, [pathname]);
+  return null;
+}
+
+const RequireOnboarded = () => (isOnboarded() ? <Outlet /> : <Navigate to="/welcome" replace />);
+
+function Shell() {
+  return (
+    <div className="shell">
+      <a className="wk-btn wk-btn--frost skip-link" href="#main">
+        Skip to content
+      </a>
+      <NavBar />
+      <main id="main" className="page">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <BrowserRouter>
+      <RouteFocus />
+      <Routes>
+        <Route path="welcome" element={<Welcome />} />
+        <Route path="welcome/how" element={<HowItWorks />} />
+        <Route path="welcome/access" element={<Access />} />
+        <Route path="welcome/stepping-in" element={<SteppingIn />} />
+        <Route element={<RequireOnboarded />}>
+          <Route element={<Shell />}>
+            <Route index element={<Grove />} />
+            <Route path="trails" element={<Trails />} />
+            <Route path="lanterns" element={<LanternsLit />} />
+            <Route path="guide" element={<FieldGuide />} />
+          </Route>
+          <Route path="trails/:id" element={<ContentNote />} />
+          <Route path="trails/:id/clearing" element={<Clearing />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}

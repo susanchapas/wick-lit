@@ -1,0 +1,75 @@
+body { min-height: 100dvh; }
+h1, h2, h3, p { margin: 0; }
+h1[tabindex="-1"]:focus-visible { box-shadow: none; }
+
+.overline { text-transform: uppercase; }
+.muted { color: var(--ink-muted); }
+.prose { max-width: var(--measure); }
+.self-start { justify-self: start; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.stack-list { display: grid; gap: var(--space-6); margin: 0; padding: 0; list-style: none; width: 100%; }
+.section { display: grid; gap: var(--space-4); }
+
+@media (max-width: 599px) {
+  .hero { font-size: 40px; line-height: 44px; }
+  .title { font-size: 32px; line-height: 36px; }
+  .heading { font-size: 24px; line-height: 30px; }
+}
+@media (min-width: 600px) and (max-width: 959px) {
+  .hero { font-size: 48px; line-height: 52px; }
+}
+@media (min-width: 1600px) {
+  .hero { font-size: 96px; line-height: 100px; }
+}
+
+.skip-link { position: absolute; left: var(--space-4); top: var(--space-4); z-index: var(--stratum-exit); translate: 0 -200%; }
+.skip-link:focus-visible { translate: none; }
+
+.page { display: grid; align-content: start; gap: var(--space-8); width: 100%; max-width: 1200px; margin-inline: auto; padding: var(--space-6) var(--space-4) calc(96px + env(safe-area-inset-bottom, 0px)); }
+.shell__nav { position: fixed; left: 50%; bottom: var(--space-2); translate: -50% 0; width: calc(100% - var(--space-4)); }
+.wk-nav__item { min-width: 0; text-align: center; }
+
+@media (min-width: 600px) {
+  .shell { display: grid; grid-template-columns: auto minmax(0, 1fr); }
+  .shell__nav { position: sticky; top: 0; left: auto; bottom: auto; translate: none; flex-direction: column; justify-content: flex-start; width: 104px; max-width: none; height: 100dvh; padding: var(--space-4) var(--space-2); border-radius: 0; }
+  .wk-nav__item { flex: none; }
+  .page { padding: var(--space-8) var(--space-6) var(--space-12); }
+}
+@media (min-width: 960px) {
+  .shell__nav { width: 232px; padding: var(--space-8) var(--space-4); }
+  .wk-nav__item { grid-auto-flow: column; justify-content: start; align-items: center; gap: var(--space-3); padding-inline: var(--space-4); font-size: 15px; line-height: 20px; }
+  .page { padding: var(--space-12); }
+}
+@media (min-width: 1280px) {
+  .page { padding-inline: var(--space-20); }
+}
+
+.trail-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); margin: 0; padding: 0; list-style: none; }
+.trail-grid > li { display: grid; }
+.trail-grid .wk-card, .trail-grid .wk-skeleton { max-width: none; }
+@media (min-width: 600px) { .trail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .trail-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.wk-card.wk-ornate > .wk-card__title { position: static; }
+.wk-card__title a::after { z-index: 2; }
+.wk-card__ds { margin: 0; padding: 0; list-style: none; }
+.wk-card > .wk-d { justify-self: start; }
+
+.grove-head { display: grid; margin: calc(var(--space-6) * -1) calc(var(--space-4) * -1) 0; }
+.grove-head__text { display: grid; justify-items: start; gap: var(--space-2); padding: var(--space-6) var(--space-4) 0; }
+@media (min-width: 600px) { .grove-head { margin: calc(var(--space-8) * -1) calc(var(--space-6) * -1) 0; } }
+@media (min-width: 960px) { .grove-head { margin: calc(var(--space-12) * -1) calc(var(--space-12) * -1) 0; } .grove-head__text { padding: var(--space-12) var(--space-12) 0; } }
+
+.onboard { display: grid; justify-items: start; align-content: center; gap: var(--space-6); width: 100%; max-width: 640px; min-height: 100dvh; margin-inline: auto; padding: var(--space-8) var(--space-4); }
+.welcome { display: grid; grid-template-rows: 1fr auto; min-height: 100dvh; }
+.welcome__body { min-height: 0; }
+.how-card { grid-template-columns: auto 1fr; align-items: start; gap: var(--space-4); max-width: none; }
+.how-card__icon { display: grid; place-items: center; width: var(--target-comfort); height: var(--target-comfort); border-radius: var(--radius-md); background: var(--lantern-soft); color: var(--lantern-text); }
+.choice { --d: var(--lantern-text); }
+.setting { display: grid; gap: var(--space-1); }
+
+.wk-scenery__pool { height: 90%; }
+
+.cnote-screen { display: grid; place-items: center; min-height: 100dvh; padding: calc(var(--target-min) + var(--space-8)) var(--space-4) var(--space-8); }
+.step-out { position: fixed; top: var(--space-4); right: var(--space-4); }
+.wk-cnote { width: 100%; }
