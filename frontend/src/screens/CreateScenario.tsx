@@ -150,11 +150,6 @@ export function CreateScenario() {
           </form>
         )}
       </section>
-
-      <p className="caption muted prose icon-row">
-        <Icon name="info" size={20} />
-        <span>Generated scenarios stay in this browser tab for the prototype. Provider keys remain on the Wick backend.</span>
-      </p>
     </>
   );
 }
