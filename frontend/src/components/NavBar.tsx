@@ -1,21 +1,21 @@
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Lockup } from "./Brand";
 import { Icon } from "./Icon";
 import type { IconName } from "./icons";
 
 const items: { to: string; label: string; icon: IconName }[] = [
-  { to: "/", label: "The grove", icon: "grove" },
+  { to: "/", label: "The Grove", icon: "grove" },
   { to: "/trails", label: "Trails", icon: "trail" },
   { to: "/journey", label: "Journey", icon: "lantern" },
-  { to: "/guide", label: "Field guide", icon: "guide" },
+  { to: "/guide", label: "Field Guide", icon: "guide" },
 ];
 
 export function NavBar() {
   return (
     <nav className="wk-nav shell__nav" aria-label="Main">
-      <span className="shell__brand">
+      <Link to="/" className="shell__brand" aria-label="The Grove">
         <Lockup />
-      </span>
+      </Link>
       {items.map((i) => (
         <NavLink key={i.to} to={i.to} end={i.to === "/"} className="wk-nav__item">
           <Icon name={i.icon} />
@@ -26,7 +26,6 @@ export function NavBar() {
         <Icon name="settings" />
         Settings
       </NavLink>
-      <p className="caption muted shell__note">Private practice. Voice audio is transcribed and not stored.</p>
     </nav>
   );
 }

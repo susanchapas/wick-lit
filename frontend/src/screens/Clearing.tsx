@@ -314,7 +314,7 @@ export function Clearing() {
             <Button icon="captions" aria-pressed={settings.captions} onClick={() => updateSettings({ captions: !settings.captions })}>Captions {settings.captions ? "on" : "off"}</Button>
           </div>
           {blocked ? <p className="caption danger" role="alert">Microphone blocked. Allow access in your browser settings, or type your reply.</p> : null}
-          <div className="clearing__end"><Button icon="steady" onClick={() => void finish()} disabled={!hasUserTurn || phase !== "live"}>End and get feedback</Button>{!hasUserTurn ? <p className="caption muted">Say or type one reply to get feedback.</p> : null}</div>
+          <div className="clearing__end"><Button icon="steady" onClick={() => void finish()} disabled={!hasUserTurn || phase !== "live"}>End and get feedback</Button></div>
           <section className="well clearing__keys" aria-label="Keyboard shortcuts">
             <ul className="chips center">{keys.map(([key, value]) => <li key={key} className="pill"><kbd>{key}</kbd> {value}</li>)}</ul>
           </section>

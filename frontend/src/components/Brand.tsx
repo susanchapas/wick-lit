@@ -37,7 +37,7 @@ export function Wordmark({ height = 28 }: { height?: number }) {
 
 export function Lockup({ size = 40 }: { size?: number }) {
   return (
-    <span className="wk-mark">
+    <span className="wk-mark wk-lockup">
       <Mark size={size} />
       <Wordmark height={Math.round((size * 56) / 64)} />
     </span>

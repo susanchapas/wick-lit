@@ -3,8 +3,8 @@ import { Button } from "../components/Button";
 import { Notice, Skeleton } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { PageHead } from "../components/PageHead";
-import { StreakCard } from "../components/Streak";
-import { streak, useHistory } from "../lib/history";
+import { PracticeStreak } from "../components/Streak";
+import { useHistory } from "../lib/history";
 import { useScenarios } from "../lib/useScenarios";
 
 const pins = [
@@ -22,7 +22,6 @@ export function Grove() {
   const history = useHistory();
   const { data, error, retry } = useScenarios();
   const groveScenarios = data?.filter((scenario) => !scenario.generated);
-  const { days, week, litToday } = streak(history);
   const done = new Set(history.map((h) => h.scenarioId));
 
   return (
@@ -40,21 +39,7 @@ export function Grove() {
           </>
         }
       />
-      <StreakCard
-        count={days.length}
-        aside="1 session / day"
-        days={week.map((d) => ({
-          label: d.date.toLocaleDateString(undefined, { weekday: "short" }),
-          name: d.date.toLocaleDateString(undefined, { weekday: "long" }),
-          lit: d.lit,
-          today: d.today,
-        }))}
-      >
-        <p className="muted prose">
-          One completed session per day keeps it lit.
-          {litToday ? " Today’s session is done." : " Light it again tonight to keep your streak going."}
-        </p>
-      </StreakCard>
+      <PracticeStreak />
       <section className="section" aria-labelledby="map-title">
         <div className="section">
           <p className="overline eyebrow">Grove map</p>

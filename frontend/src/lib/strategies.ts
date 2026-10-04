@@ -10,11 +10,11 @@ export const strategies = [
     whenNot: "Avoid Direct if the person affected is already being targeted, if the situation feels volatile, or if you would be putting yourself or someone else at risk.",
     definition: "Address the behavior clearly and immediately when it is safe to do so.",
     about: [
-      "Direct means you speak to the person causing harm. You name what is happening and ask them to stop. Keep it short and calm. You are not trying to win an argument or teach a lesson, only to stop the behavior.",
+      "Direct means you speak to the person causing harm. You name what is happening and ask them to stop. Keep it short and calm. Your only goal is to stop the behavior.",
       "Direct works best when you know the people, the setting is calm, and the person affected wants support. A short sentence from a peer can change the mood of a whole room, because it shows that others see the behavior too.",
-      "After you speak, turn your attention to the person affected. Ask if they are okay. Do not debate. If the person causing harm pushes back, you can repeat yourself once, then walk away or switch to another D.",
+      "After you speak, turn your attention to the person affected. Ask if they are okay. Do not debate. If the person causing harm argues, you can repeat yourself once, then walk away or switch to another D.",
     ],
-    tips: ["Use one short sentence. Do not explain or argue.", "Speak to the behavior, not the person’s character.", "Afterwards, check in with the person affected."],
+    tips: ["Use one short sentence. Do not explain or argue.", "Describe what the person did.", "Afterwards, check in with the person affected."],
     scenes: [
       { where: "At a party", text: "“Hey, she said no. Leave it.”" },
       { where: "In a group chat", text: "“Not cool. Delete that, please.”" },
@@ -51,11 +51,11 @@ export const strategies = [
     whenNot: "Avoid Distract if the situation is already physical, if the person affected is being followed, or if a diversion would make the scene more confusing.",
     definition: "Create a diversion that interrupts the situation without directly confronting the person causing harm.",
     about: [
-      "Distract means you interrupt the moment without naming the harm. You start a conversation, ask a question, or create a small scene that breaks the focus. The person causing harm loses their moment, and the person affected gets a chance to leave.",
+      "Distract means you interrupt the moment without naming the harm. You start a conversation, ask a question, or create a small scene that breaks the focus. This interrupts the person causing harm and gives the person affected a chance to leave.",
       "It is often the safest D, because nobody is confronted. It works well when speaking up directly could make things worse, or when you are not sure what is happening but something feels wrong.",
-      "Good distractions are ordinary: asking for directions, pretending to know the person, spilling a drink, or asking for help. Speak to the person affected, not to the person causing harm.",
+      "Good distractions are ordinary: asking for directions, pretending to know the person, spilling a drink, or asking for help. Speak only to the person affected.",
     ],
-    tips: ["Talk to the person affected, not the person causing harm.", "Keep it ordinary: a question, a request, a fake errand.", "Stay with them until the moment has passed."],
+    tips: ["Talk only to the person affected.", "Keep it ordinary: a question, a request, a fake errand.", "Stay with them until the moment has passed."],
     scenes: [
       { where: "At a party", text: "“There you are! Your roommate is looking for you.”" },
       { where: "On the bus", text: "“Excuse me, do you know which stop is for campus?”" },
@@ -175,8 +175,8 @@ export const strategies = [
     definition: "Preserve useful information about what happened while keeping consent and privacy in mind.",
     about: [
       "Document means you keep a record of what happened. That can be written notes, saved messages, or details like the time, place, and who was there. A record can help the person affected later if they choose to report.",
-      "Document is about the person affected, not about you. Before you record, check that someone is already helping, or that the person is safe. Never share a record or post it online without their consent.",
-      "For online harm, save the details rather than the harmful content itself. Note who posted, where, and when. If the content is a private image, do not save or forward it. Report it to the platform instead.",
+      "Document serves the person affected. Before you record, check that someone is already helping, or that the person is safe. Never share a record or post it online without their consent.",
+      "For online harm, record the details around the content: who posted it, where, and when. If the content is a private image, do not save or forward it. Report it to the platform instead.",
     ],
     tips: ["Make sure someone is helping first.", "Record facts: time, place, who, what.", "Give the record to the person affected. Never post it."],
     scenes: [
@@ -186,13 +186,13 @@ export const strategies = [
       { where: "Afterwards", text: "“I wrote down what I saw. Do you want it?”" },
     ],
     photo: 11391948,
-    examples: ["Note the time, the place, and who was there.", "Save who posted and when, not the image itself.", "Give the record to the person affected."],
+    examples: ["Note the time, the place, and who was there.", "Save who posted and when. Leave out the image.", "Give the record to the person affected."],
     situation: "Someone posts a private image of another student in a group chat without their consent.",
     question: "Which response best shows Document?",
     options: ["Forward the image to a friend as proof.", "Preserve only the information needed to report what happened without spreading the image further.", "Repost it publicly to call the person out."],
     answer: 1,
-    why: "Documentation should reduce harm, not spread the image further.",
-    practice: "What information is actually necessary to preserve?",
+    why: "It keeps the details needed for a report and stops the image from spreading.",
+    practice: "What information do you need to preserve?",
     placeholder: "The group name, who posted it, and the time",
     fit: [
       { text: "The person affected asks you to note what you saw so she can report it later.", ok: true },

@@ -7,11 +7,9 @@ export function Access() {
   const s = useSettings();
   return (
     <OnboardingStep
-      step={2}
       title="Access and modality"
       lead="Set up Wick the way that works for you. You can change these at any time in Settings."
       back="/welcome"
-      backLabel="Back to welcome"
       action={
         <ButtonLink tone="lantern" size="lg" to="/welcome/stepping-in" iconAfter="arrow">
           Continue
@@ -24,8 +22,8 @@ export function Access() {
           value={s.theme}
           onChange={(theme) => updateSettings({ theme })}
             options={[
-              { value: "night", label: "Night grove" },
-              { value: "dawn", label: "Dawn" },
+              { value: "night", label: "Night grove", icon: "moon" },
+              { value: "dawn", label: "Dawn", icon: "flame" },
             ]}
         />
         <ChoiceGroup

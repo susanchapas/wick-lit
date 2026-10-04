@@ -17,45 +17,45 @@ export function Settings() {
       <title>Settings · Wick</title>
       <PageHead overline="Settings" title="Accessibility and privacy" lead="Make practice comfortable, readable, and under your control." />
       <div className="settings-grid">
-        <section className="wk-card panel">
-          <ChoiceGroup
-            legend="Theme"
-            value={s.theme}
-            onChange={(theme) => updateSettings({ theme })}
-            options={[
-              { value: "night", label: "Night grove" },
-              { value: "dawn", label: "Dawn" },
-            ]}
-          />
-          <p className="caption muted">Color is never the only cue. Number and name always accompany strategy colors.</p>
-        </section>
-        <section className="wk-card panel">
+        <section className="wk-card panel settings-card" aria-labelledby="practice">
+          <h2 id="practice" className="subtitle">
+            Practice
+          </h2>
           <ChoiceGroup
             legend="Intensity"
             value={s.intensity}
             onChange={(intensity) => updateSettings({ intensity })}
             options={[
-              { value: "gentle", label: "Gentle", hint: "People back down sooner and coaching leans encouraging." },
-              { value: "realistic", label: "Realistic", hint: "People push back the way they often do." },
-              { value: "intense", label: "Intense", hint: "People argue, deflect, and escalate, with more direct coaching." },
+              { value: "gentle", label: "Gentle", icon: "leaf", hint: "People back down sooner and coaching leans encouraging." },
+              { value: "realistic", label: "Realistic", icon: "person", hint: "People push back the way they often do." },
+              { value: "intense", label: "Intense", icon: "bolt", hint: "People argue, deflect, and escalate, with more direct coaching." },
             ]}
           />
-        </section>
-        <section className="wk-card panel">
           <ChoiceGroup
             legend="Default input"
             value={s.input}
             onChange={(input) => updateSettings({ input })}
             options={[
-              { value: "voice", label: "Voice", hint: "Speak your replies. You can always type instead." },
-              { value: "text", label: "Text", hint: "Start sessions with typed replies." },
+              { value: "voice", label: "Voice", icon: "mic", hint: "Speak your replies. You can always type instead." },
+              { value: "text", label: "Text", icon: "chat", hint: "Start sessions with typed replies." },
             ]}
           />
         </section>
-        <section className="wk-card panel" aria-labelledby="comfort">
-          <h2 id="comfort" className="label">
-            Comfort.
+        <section className="wk-card panel settings-card" aria-labelledby="comfort">
+          <h2 id="comfort" className="subtitle">
+            Display and comfort
           </h2>
+          <div className="setting">
+            <ChoiceGroup
+              legend="Theme"
+              value={s.theme}
+              onChange={(theme) => updateSettings({ theme })}
+              options={[
+                { value: "night", label: "Night grove", icon: "theme" },
+                { value: "dawn", label: "Dawn", icon: "flame" },
+              ]}
+            />
+          </div>
           <Switch label="Captions" hint="Show every spoken line as text." checked={s.captions} onChange={(captions) => updateSettings({ captions })} />
           <Switch
             label="Reduce motion"

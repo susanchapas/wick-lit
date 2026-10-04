@@ -26,12 +26,11 @@ export function Notice({ tone = "info", title, action, children }: NoticeProps) 
 
 interface EmptyStateProps {
   title: ReactNode;
-  aside?: ReactNode;
   action: ReactNode;
   children?: ReactNode;
 }
 
-export function EmptyState({ title, aside, action, children }: EmptyStateProps) {
+export function EmptyState({ title, action, children }: EmptyStateProps) {
   return (
     <div className="wk-empty">
       <div className="wk-empty__art" aria-hidden="true">
@@ -45,7 +44,6 @@ export function EmptyState({ title, aside, action, children }: EmptyStateProps) 
         </svg>
       </div>
       <h2 className="wk-empty__title">{title}</h2>
-      {aside && <p className="wk-empty__aside">{aside}</p>}
       {children && <p className="wk-empty__body">{children}</p>}
       {action}
     </div>

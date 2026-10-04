@@ -3,7 +3,7 @@ import { guideSteps, pexels, strategies } from "../../lib/strategies";
 
 const about = [
   "A short definition, when to use it, and when to hold back.",
-  "Plain examples of what it can sound like in real places.",
+  "Plain examples of what it can sound like in everyday places.",
   "Three quick rounds: spot the response that fits.",
   "Write one short line you could say yourself.",
 ];
@@ -30,8 +30,8 @@ export function Overview({ steps, isOpen, labelledBy, onGo }: OverviewProps) {
             Five ways to step in
           </h2>
           <p className="aside prose">
-            When you see harm, you have more options than to confront or to stay quiet. The five Ds give you a choice
-            that fits the moment and keeps you safe.
+            When you see harm, you can respond in five ways. Each D fits a different situation, and each one lets you
+            help while you stay safe.
           </p>
           <div className="guide-overview__progress">
             <p className="muted">

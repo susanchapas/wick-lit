@@ -4,13 +4,13 @@ import { Lockup, Scenery } from "./Brand";
 import { Icon } from "./Icon";
 import { withPeriod } from "../lib/text";
 
-export function OnboardHeader({ back, backLabel }: { back?: string; backLabel?: string }) {
+export function OnboardHeader({ back }: { back?: string }) {
   return (
     <header className="onboard-head">
       {back && (
         <Link className="pill pill--link" to={back}>
           <Icon name="arrow" size={20} className="flip" />
-          {backLabel}
+          Back
         </Link>
       )}
       <Link to="/welcome" className="onboard-head__brand">
@@ -21,24 +21,21 @@ export function OnboardHeader({ back, backLabel }: { back?: string; backLabel?: 
 }
 
 interface OnboardingStepProps {
-  step: number;
   title: string;
   lead: ReactNode;
   back: string;
-  backLabel: string;
   action: ReactNode;
   note?: ReactNode;
   children: ReactNode;
 }
 
-export function OnboardingStep({ step, title, lead, back, backLabel, action, note, children }: OnboardingStepProps) {
+export function OnboardingStep({ title, lead, back, action, note, children }: OnboardingStepProps) {
   return (
     <div className="onboard">
       <title>{`${title} · Wick`}</title>
-      <OnboardHeader back={back} backLabel={backLabel} />
+      <OnboardHeader back={back} />
       <main className="onboard__body">
         <div className="onboard__intro">
-          <p className="pill pill--lantern overline">Before you enter · {step} of 3</p>
           <h1 className="hero">{withPeriod(title)}</h1>
           <p className="body-lg muted prose">{lead}</p>
         </div>
