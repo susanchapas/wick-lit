@@ -9,7 +9,6 @@ import { updateSettings, useSettings } from "../lib/settings";
 import { canListen, playTurn, record, silence, type AudioRecorder } from "../lib/speech";
 import type { Mode, Scenario, SessionCredential, WickSession, WickTurn } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
-import { withPeriod } from "../lib/text";
 
 const keys = [["Space", "speaks"], ["P", "pauses"], ["T", "types"], ["Esc", "steps out"]];
 
@@ -78,7 +77,7 @@ export function Clearing() {
     } catch {
       finishing.current = false;
       setPhase("live");
-      setError("Wick could not finish and evaluate this session yet. Your conversation is still on the backend.");
+      setError("Wick could not finish and evaluate this session yet. Your conversation is kept; try again.");
     }
   }, [credential, id, navigate, session]);
 
@@ -142,7 +141,7 @@ export function Clearing() {
       setPhase("live");
       await beginListening();
     } catch {
-      setError("The scene did not reply. Your backend session is still available; try again.");
+      setError("The scene did not reply. Your conversation is kept; try again.");
       setPhase("live");
     }
   }, [beginListening, credential, id, mode, navigate, paused, playCharacterTurns]);
@@ -237,7 +236,7 @@ export function Clearing() {
       }
     }).catch(() => {
       if (live) {
-        setError("The role-play could not start. Check the backend connection and try again.");
+        setError("The role-play could not start. Check your connection and try again.");
         setPhase("live");
       }
     });
@@ -302,10 +301,12 @@ export function Clearing() {
     <div className="session">
       <title>{`The clearing${scenario ? `: ${scenario.title}` : ""} · Wick`}</title>
       <SessionBar exitTo={exit} actions={<Button icon="pause" onClick={pause}>Pause</Button>}>
-        {timed ? <Timer remaining={remaining} total={scenario?.durationSeconds ?? 120} /> : <span />}
+        <div className="session-bar__title">
+          {timed && <Timer remaining={remaining} total={scenario?.durationSeconds ?? 120} />}
+          <h1 className="aside">The Clearing — <span className="session-bar__scenario">{scenario?.title ?? "Setting the scene"}</span></h1>
+        </div>
       </SessionBar>
       <main className="clearing">
-        <header className="clearing__head"><p className="aside">The clearing</p><h1 className="subtitle">{withPeriod(scenario?.title ?? "Setting the scene")}</h1></header>
         <div className="clearing__orb">
           <VoiceOrb state={orb} speaker={speakingCharacter} textMode={mode === "text"} onToggle={() => void toggleListen()} />
           <div className="actions center">
@@ -314,11 +315,12 @@ export function Clearing() {
           </div>
           {blocked ? <p className="caption danger" role="alert">Microphone blocked. Allow access in your browser settings, or type your reply.</p> : null}
           <div className="clearing__end"><Button icon="steady" onClick={() => void finish()} disabled={!hasUserTurn || phase !== "live"}>End and get feedback</Button>{!hasUserTurn ? <p className="caption muted">Say or type one reply to get feedback.</p> : null}</div>
-          <ul className="chips center clearing__keys" aria-label="Keyboard shortcuts">{keys.map(([key, value]) => <li key={key} className="pill"><kbd>{key}</kbd> {value}</li>)}</ul>
+          <section className="well clearing__keys" aria-label="Keyboard shortcuts">
+            <ul className="chips center">{keys.map(([key, value]) => <li key={key} className="pill"><kbd>{key}</kbd> {value}</li>)}</ul>
+          </section>
         </div>
         <section className="clearing__talk" aria-label="Conversation">
           {(settings.captions || typing) ? <Transcript lines={transcriptLines(session, scenario)} label="Live captions">{phase === "thinking" || phase === "transcribing" ? <Pending speaker={phase === "transcribing" ? "Wick" : "The scene"} /> : null}</Transcript> : null}
-          <p className="caption muted">The transcript and conversation state come from your private Wick backend session.</p>
           {error ? <Notice tone="danger" title={error} action={<Button onClick={() => setError("")}>Dismiss</Button>} /> : null}
           {typing ? <form className="wk-field reply" onSubmit={(event) => { event.preventDefault(); void submit(draft); }}>
             <label className="wk-field__label" htmlFor="reply">Your reply</label>
