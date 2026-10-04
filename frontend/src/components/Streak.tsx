@@ -93,7 +93,7 @@ export function LanternTile({ title, date, rank, score, retryTo }: LanternTilePr
         </svg>
       )}
       <span className="wk-card__lit">{rank ? rank.name : "Rank unavailable"}</span>
-      <h3 className="wk-lantern__title">{withPeriod(title)}</h3>
+      <h3 className="wk-lantern__title">{title}</h3>
       <p className="wk-lantern__meta">{date}{typeof score === "number" ? ` · ${score}/9` : ""}</p>
       {retryTo && (
         <div className="wk-lantern__retry">
