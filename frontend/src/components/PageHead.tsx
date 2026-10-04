@@ -16,7 +16,10 @@ export function PageHead({ overline, title, lead, aside }: PageHeadProps) {
         <h1 className="title">{withPeriod(title)}</h1>
         <p className="body-lg muted prose">{lead}</p>
       </div>
-      {aside}
+      <div className="page-head__aside">
+        {aside}
+        <img className="avatar" src="/assets/princess-pfp1.webp" alt="Profile" />
+      </div>
     </header>
   );
 }
