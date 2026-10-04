@@ -13,8 +13,8 @@
       "role": "person_pressuring_maya",
       "voice": {
         "provider": "elevenlabs",
-        "voice_id": "pNInz6obpgDQGcFmaJgB",
-        "name": "Adam"
+        "voice_id": "yl2ZDV1MzN4HbQJbMihG",
+        "name": "Alex - Upbeat, Energetic and Clear"
       },
       "behavior": [
         "Dylan wants to take Maya upstairs.",
