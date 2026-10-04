@@ -11,6 +11,11 @@
       "id": "jake",
       "name": "Jake",
       "role": "student_who_posted_the_private_photo",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "cjVigY5qzO86Huf0OWal",
+        "name": "Eric"
+      },
       "behavior": [
         "Jake posted Ana's private photo without her consent and initially minimizes the harm.",
         "He argues that sharing it in a private group is different from posting it publicly.",
@@ -30,6 +35,11 @@
       "id": "chris",
       "name": "Chris",
       "role": "student_encouraging_and_minimizing_the_sharing",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "iP95p4xoKVk53GoZ742B",
+        "name": "Chris"
+      },
       "behavior": [
         "Chris initially supports Jake and minimizes the effect of deleting the post.",
         "Chris may claim that the damage is already done or that the learner is overreacting.",

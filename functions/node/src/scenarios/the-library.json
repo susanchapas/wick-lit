@@ -11,6 +11,11 @@
       "id": "greg",
       "name": "Greg",
       "role": "student_persistently_ignoring_anas_boundaries",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+        "name": "Liam"
+      },
       "behavior": [
         "Greg keeps seeking Ana's contact information after she has declined and moved away from him more than once.",
         "He minimizes the pattern by insisting that he is only talking and that Ana can leave if she wants.",
@@ -31,6 +36,11 @@
       "id": "ana",
       "name": "Ana",
       "role": "student_receiving_repeated_unwanted_attention",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "cgSgspJ2msm6clMCkdW9",
+        "name": "Jessica"
+      },
       "behavior": [
         "Ana is trying to study and has repeatedly attempted to disengage by declining and moving tables.",
         "She is uncomfortable with Greg's persistence even though he has not touched her.",

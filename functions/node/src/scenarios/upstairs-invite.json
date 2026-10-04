@@ -11,6 +11,11 @@
       "id": "dylan",
       "name": "Dylan",
       "role": "person_pressuring_maya",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "pNInz6obpgDQGcFmaJgB",
+        "name": "Adam"
+      },
       "behavior": [
         "Dylan wants to take Maya upstairs.",
         "He minimizes concerns at first and realistically resists some learner interventions.",
@@ -29,6 +34,11 @@
       "id": "maya",
       "name": "Maya",
       "role": "guest_being_pressured",
+      "voice": {
+        "provider": "elevenlabs",
+        "voice_id": "eXpIbVcVbLo8ZJQDlDnl",
+        "name": "Existing Maya voice"
+      },
       "behavior": [
         "Maya is intoxicated, hesitant, and uncomfortable.",
         "She responds naturally when the learner talks directly to her and responds to distractions or offered exits.",

@@ -3,9 +3,9 @@ import { readFileSync } from "node:fs";
 
 import { AppError, asPublicError } from "../domain/errors";
 import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
-import { publicScenarios } from "../scenarios";
+import { getCharacterVoiceId, publicScenarios } from "../scenarios";
 import { readBearerToken } from "../security/sessionAccess";
-import { addMessage, createSession, endSession, getCharacterTurn, getSession, rateLimitIdentity, stepOutSession } from "../services/sessionService";
+import { addMessage, createSession, endSession, getCharacterTurnContext, getSession, rateLimitIdentity, stepOutSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
 
 loadLocalSettings();
@@ -53,8 +53,8 @@ createServer(async (request, response) => {
       return json(response, 200, { text });
     }
     if (request.method === "POST" && action?.startsWith("turns/") && turnId) {
-      const turn = await getCharacterTurn(store, sessionId, token, turnId);
-      const audio = await synthesizeCharacterSpeech(turn.text);
+      const { turn, scenarioId } = await getCharacterTurnContext(store, sessionId, token, turnId);
+      const audio = await synthesizeCharacterSpeech(turn.text, getCharacterVoiceId(scenarioId, turn.speaker));
       response.writeHead(200, { "content-type": audio.contentType, "content-length": String(audio.bytes.byteLength), "cache-control": "no-store" });
       return response.end(audio.bytes);
     }

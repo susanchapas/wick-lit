@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { RoleplayGenerator } from "../roleplay/types";
+import { getScenario } from "../scenarios";
 import { addMessage, createSession, getSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
 
@@ -16,6 +17,14 @@ const generator: RoleplayGenerator = async ({ conversationHistory, latestUserMes
 });
 
 describe("Wick-owned session flow", () => {
+  it("assigns every simulated character a distinct ElevenLabs voice", () => {
+    const characters = ["upstairs-invite", "private-group-chat", "the-library"]
+      .flatMap((scenarioId) => getScenario(scenarioId)?.characters ?? []);
+    expect(characters).toHaveLength(6);
+    expect(characters.every((character) => character.voice.provider === "elevenlabs")).toBe(true);
+    expect(new Set(characters.map((character) => character.voice.voice_id)).size).toBe(characters.length);
+  });
+
   it("rejects an invalid scenario without calling a provider", async () => {
     await expect(createSession(
       new MemorySessionStore(),

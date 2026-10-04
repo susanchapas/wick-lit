@@ -155,18 +155,18 @@ export async function stepOutSession(store: SessionStore, sessionId: string, tok
   return publicSession(session);
 }
 
-export async function getCharacterTurn(
+export async function getCharacterTurnContext(
   store: SessionStore,
   sessionId: string,
   token: string | undefined,
   turnId: string,
-): Promise<WickTurn> {
+): Promise<{ turn: WickTurn; scenarioId: string }> {
   const session = await requireSession(store, sessionId, token);
   const turn = session.turns.find((candidate) => candidate.turnId === turnId);
   if (!turn || turn.role !== "character") {
     throw new AppError(404, "character_turn_not_found", "The character turn was not found.");
   }
-  return turn;
+  return { turn, scenarioId: session.scenarioId };
 }
 
 async function requireSession(store: SessionStore, sessionId: string, token: string | undefined) {

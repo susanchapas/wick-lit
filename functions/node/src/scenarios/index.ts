@@ -6,6 +6,11 @@ export interface ScenarioCharacter {
   id: string;
   name: string;
   role: string;
+  voice: {
+    provider: string;
+    voice_id: string;
+    name: string;
+  };
   behavior: string[];
   example_behaviors: string[];
 }
@@ -49,6 +54,10 @@ const scenarios = new Map<string, ScenarioDefinition>([
 
 export function getScenario(id: string): ScenarioDefinition | undefined {
   return scenarios.get(id);
+}
+
+export function getCharacterVoiceId(scenarioId: string, characterId: string): string | undefined {
+  return getScenario(scenarioId)?.characters.find((character) => character.id === characterId)?.voice.voice_id;
 }
 
 export function publicScenarios() {

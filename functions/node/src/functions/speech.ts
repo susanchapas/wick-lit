@@ -3,8 +3,9 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { AppError, asPublicError } from "../domain/errors";
 import { corsHeaders, requiredString, respond } from "../http/helpers";
 import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
+import { getCharacterVoiceId } from "../scenarios";
 import { readBearerToken } from "../security/sessionAccess";
-import { getCharacterTurn, getSession } from "../services/sessionService";
+import { getCharacterTurnContext, getSession } from "../services/sessionService";
 import { getSessionStore } from "../storage/sessionStore";
 
 export async function transcribe(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
@@ -32,13 +33,16 @@ export async function transcribe(request: HttpRequest, context: InvocationContex
 export async function speech(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   if (request.method === "OPTIONS") return { status: 204, headers: corsHeaders(request) };
   try {
-    const turn = await getCharacterTurn(
-      await getSessionStore(),
-      requiredString(request.params.sessionId, "sessionId", 80),
-      token(request),
+    const store = await getSessionStore();
+    const sessionId = requiredString(request.params.sessionId, "sessionId", 80);
+    const sessionToken = token(request);
+    const { turn, scenarioId } = await getCharacterTurnContext(
+      store,
+      sessionId,
+      sessionToken,
       requiredString(request.params.turnId, "turnId", 20),
     );
-    const audio = await synthesizeCharacterSpeech(turn.text);
+    const audio = await synthesizeCharacterSpeech(turn.text, getCharacterVoiceId(scenarioId, turn.speaker));
     return {
       status: 200,
       body: audio.bytes,
