@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      host: '127.0.0.1',
       proxy: { '/api': env.WICK_API_PROXY_TARGET || 'http://127.0.0.1:7071' },
     },
   }
