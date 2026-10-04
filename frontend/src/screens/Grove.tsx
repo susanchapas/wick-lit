@@ -21,6 +21,7 @@ const pins = [
 export function Grove() {
   const history = useHistory();
   const { data, error, retry } = useScenarios();
+  const groveScenarios = data?.filter((scenario) => !scenario.generated);
   const { days, week, litToday } = streak(history);
   const done = new Set(history.map((h) => h.scenarioId));
 
@@ -77,10 +78,10 @@ export function Grove() {
             <Notice tone="danger" title="Trails did not load." action={<Button onClick={retry}>Try again</Button>}>
               Check your connection, then try again.
             </Notice>
-          ) : data ? (
+          ) : groveScenarios ? (
             <div className="map__ground">
               <ol className="map__pins">
-                {data.map((s, i) => {
+                {groveScenarios.map((s, i) => {
                   const [x, y] = pins[i % pins.length];
                   return (
                     <li key={s.id} style={{ left: `${x}%`, top: `${y}%` }}>
@@ -89,10 +90,10 @@ export function Grove() {
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <span className="pin__label">
-                          {s.location}
+                          {s.title}
                           {done.has(s.id) && <Icon name="flame" size={20} />}
                         </span>
-                        <span className="pin__title">{s.title}</span>
+                        <span className="pin__title">{s.location}</span>
                         {done.has(s.id) && <span className="wk-sr">, lantern lit</span>}
                       </Link>
                     </li>
