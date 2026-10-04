@@ -54,7 +54,7 @@
   "opening_dialogue": [
     { "speaker": "dylan", "text": "Come on, Maya, let's go upstairs for a little. It's way quieter up there." },
     { "speaker": "maya", "text": "I don't know... I'm really drunk." },
-    { "speaker": "dylan", "text": "You're fine. I've got you." }
+    { "speaker": "dylan", "text": "You're okay. I've got you." }
   ],
   "important_facts": [
     "Maya has been drinking.",
