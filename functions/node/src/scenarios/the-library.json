@@ -13,8 +13,8 @@
       "role": "student_persistently_ignoring_anas_boundaries",
       "voice": {
         "provider": "elevenlabs",
-        "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
-        "name": "Liam"
+        "voice_id": "yl2ZDV1MzN4HbQJbMihG",
+        "name": "Alex - Upbeat, Energetic and Clear"
       },
       "behavior": [
         "Greg keeps seeking Ana's contact information after she has declined and moved away from him more than once.",
