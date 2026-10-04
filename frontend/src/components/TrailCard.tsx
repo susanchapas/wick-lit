@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import type { Scenario } from "../lib/types";
 import { Icon } from "./Icon";
-import { withPeriod } from "../lib/text";
 
 const bands: Record<string, string> = {
   "House party": "lantern",
@@ -29,15 +28,9 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
         <span className="wk-card__time">
           Trail {String(index + 1).padStart(2, "0")} · {s.location}
         </span>
-        {lit && (
-          <span className="wk-card__lit">
-            <Icon name="flame" size={20} />
-            Lantern lit
-          </span>
-        )}
       </p>
       <Heading className="wk-card__title">
-        <Link to={`/trails/${s.id}`}>{withPeriod(s.title)}</Link>
+        <Link to={`/trails/${s.id}`}>{s.title}</Link>
       </Heading>
       <p className="wk-card__body">{s.setup}</p>
       <p className="wk-card__meta">
@@ -50,6 +43,7 @@ export function TrailCard({ scenario: s, index, featured, headingLevel = 3, lit 
         <Icon name="info" size={20} />
         <span>Content note: {s.contentTags.join(", ").toLowerCase()}</span>
       </p>
+      {lit && <span className="pill pill--lantern wk-card__done">Practiced</span>}
     </article>
   );
 }

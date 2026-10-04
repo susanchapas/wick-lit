@@ -26,13 +26,6 @@ export function LanternsLit() {
         overline="Lanterns lit"
         title="Practice you completed"
         lead="A quiet record of showing up. Completion never publishes a score."
-        aside={
-          history.length > 0 && (
-            <Button tone="lantern" onClick={viewCertificate}>
-              View Certificate
-            </Button>
-          )
-        }
       />
       {history.length ? (
         <>
@@ -53,7 +46,11 @@ export function LanternsLit() {
               </li>
             ))}
           </ul>
-          <p className="caption muted">Only you can see this browser history. Voice audio is transcribed and not stored.</p>
+          <div className="actions end">
+            <Button tone="lantern" onClick={viewCertificate}>
+              View Certificate
+            </Button>
+          </div>
         </>
       ) : (
         <EmptyState
