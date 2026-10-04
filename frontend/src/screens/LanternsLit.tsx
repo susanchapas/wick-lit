@@ -3,6 +3,7 @@ import { EmptyState } from "../components/Feedback";
 import { PageHead } from "../components/PageHead";
 import { LanternTile, StreakCard } from "../components/Streak";
 import { streak, useHistory } from "../lib/history";
+import { growthRankForScore } from "../lib/rankings";
 
 const short = (d: Date) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 const long = (d: Date) => d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
@@ -15,17 +16,17 @@ async function viewCertificate() {
   win.document.close();
 }
 
-export function LanternsLit() {
+export function Journey() {
   const history = useHistory();
   const { days } = streak(history);
 
   return (
     <>
-      <title>Lanterns lit · Wick</title>
+      <title>Journey · Wick</title>
       <PageHead
-        overline="Lanterns lit"
-        title="Practice you completed"
-        lead="A quiet record of showing up. Completion never publishes a score."
+        overline="Journey"
+        title="See how your practice grows"
+        lead="A private record of completed trails, feedback ranks, and the progress you are building over time."
       />
       {history.length ? (
         <>
@@ -42,7 +43,12 @@ export function LanternsLit() {
           <ul className="lantern-grid">
             {history.map((l) => (
               <li key={l.id}>
-                <LanternTile title={l.title} date={short(new Date(l.completedAt))} />
+                <LanternTile
+                  title={l.title}
+                  date={short(new Date(l.completedAt))}
+                  score={l.score}
+                  rank={typeof l.score === "number" ? growthRankForScore(l.score) : undefined}
+                />
               </li>
             ))}
           </ul>
@@ -54,15 +60,15 @@ export function LanternsLit() {
         </>
       ) : (
         <EmptyState
-          title="No lanterns lit yet."
-          aside="Your wick is ready when you are."
+          title="Your journey starts here."
+          aside="Your first growth stage appears after a completed trail."
           action={
             <ButtonLink tone="lantern" to="/trails">
               Find a trail
             </ButtonLink>
           }
         >
-          Finish a trail to light your first lantern.
+          Finish a trail to save your first result and growth rank.
         </EmptyState>
       )}
     </>

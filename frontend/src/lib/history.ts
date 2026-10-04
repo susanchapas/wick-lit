@@ -6,6 +6,7 @@ export interface Lantern {
   title: string;
   strategies: string[];
   completedAt: string;
+  score?: number;
   reflection?: string;
 }
 
@@ -31,7 +32,15 @@ function save(next: Lantern[]) {
 }
 
 export const addLantern = (l: Lantern) => {
-  if (!current.some((c) => c.id === l.id)) save([l, ...current]);
+  const existing = current.find((candidate) => candidate.id === l.id);
+  if (!existing) {
+    save([l, ...current]);
+    return;
+  }
+  const updated = { ...existing, ...l, reflection: existing.reflection ?? l.reflection };
+  if (JSON.stringify(updated) !== JSON.stringify(existing)) {
+    save(current.map((candidate) => candidate.id === l.id ? updated : candidate));
+  }
 };
 
 export const setReflection = (id: string, reflection: string) =>

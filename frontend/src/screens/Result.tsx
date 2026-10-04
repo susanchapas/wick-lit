@@ -5,6 +5,7 @@ import { Dialog, Meter, Notice } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { Transcript } from "../components/Session";
 import { addLantern, setReflection, useHistory } from "../lib/history";
+import { growthRankForScore } from "../lib/rankings";
 import type { EvaluationDimension, WickSession } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
 import { withPeriod } from "../lib/text";
@@ -12,34 +13,6 @@ import { withPeriod } from "../lib/text";
 interface ResultState { session: WickSession }
 const statusValue = { insufficient_evidence: 0, not_demonstrated: 1, partly_demonstrated: 2, demonstrated: 3 } as const;
 const statusLabel = (status: EvaluationDimension["status"]) => status.split("_").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
-const ranks = [
-  {
-    name: "Seedling",
-    image: "/assets/feedback-rankings/seedling.webp",
-    explanation: "You are beginning to recognize moments where a supportive response can make a difference.",
-  },
-  {
-    name: "Sprout",
-    image: "/assets/feedback-rankings/sprout.webp",
-    explanation: "You are starting to turn recognition into a clear and supportive response.",
-  },
-  {
-    name: "Sapling",
-    image: "/assets/feedback-rankings/sapling.webp",
-    explanation: "You are building steady intervention skills while considering safety and choice.",
-  },
-  {
-    name: "Young Tree",
-    image: "/assets/feedback-rankings/young-tree.webp",
-    explanation: "You respond with growing confidence, care, and practical judgment.",
-  },
-  {
-    name: "Mighty Oak",
-    image: "/assets/feedback-rankings/mighty-oak.webp",
-    explanation: "You demonstrated clear, supportive action while keeping safety and choice at the center.",
-  },
-] as const;
-
 export function Result() {
   const { id = "" } = useParams();
   const state = useLocation().state as ResultState | null;
@@ -50,16 +23,21 @@ export function Result() {
   const saved = useHistory().find((lantern) => lantern.id === session?.sessionId);
   const [note, setNote] = useState(saved?.reflection ?? "");
 
+  const score = evaluation
+    ? Object.values(evaluation.dimensions).reduce((sum, dimension) => sum + statusValue[dimension.status], 0)
+    : undefined;
+
   useEffect(() => {
-    if (!evaluation || !scenario || !session) return;
+    if (!evaluation || !scenario || !session || score === undefined) return;
     addLantern({
       id: session.sessionId,
       scenarioId: session.scenarioId,
       title: scenario.title,
       strategies: evaluation.identifiedStrategies.map((strategy) => strategy.name),
       completedAt: session.endedAt ?? evaluation.metadata.evaluatedAt,
+      score,
     });
-  }, [evaluation, scenario, session]);
+  }, [evaluation, scenario, score, session]);
 
   if (!session) return <Navigate to={`/trails/${id}`} replace />;
   const retry = <ButtonLink tone="lantern" icon="replay" to={`/trails/${id}/clearing`}>Try again</ButtonLink>;
@@ -75,8 +53,7 @@ export function Result() {
     ["Support and choice", evaluation.dimensions.supportAndChoice],
   ] as const;
 
-  const score = dimensions.reduce((sum, [, dimension]) => sum + statusValue[dimension.status], 0);
-  const rank = ranks[Math.min(ranks.length - 1, Math.floor(score / 2))];
+  const rank = growthRankForScore(score ?? 0);
 
   return (
     <>

@@ -6,7 +6,7 @@ import type { IconName } from "./icons";
 const items: { to: string; label: string; icon: IconName }[] = [
   { to: "/", label: "The grove", icon: "grove" },
   { to: "/trails", label: "Trails", icon: "trail" },
-  { to: "/lanterns", label: "Lanterns lit", icon: "lantern" },
+  { to: "/journey", label: "Journey", icon: "lantern" },
   { to: "/guide", label: "Field guide", icon: "guide" },
 ];
 

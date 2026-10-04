@@ -329,8 +329,8 @@ button.guide-trail { width: 100%; border: 0; background: none; font: inherit; te
 .data-panel { grid-template-columns: 1fr; align-items: center; }
 @media (min-width: 960px) { .data-panel { grid-template-columns: 1fr auto; } }
 
-.lantern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
-.lantern-grid .wk-lantern { width: auto; height: 100%; }
+.lantern-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+.lantern-grid .wk-lantern { width: auto; min-height: 300px; height: 100%; }
 
 .result-loading { display: grid; place-items: center; min-height: 50dvh; }
 .result-hero { max-width: none; align-items: center; }

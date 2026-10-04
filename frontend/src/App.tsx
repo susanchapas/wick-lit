@@ -9,7 +9,7 @@ import { ContentNote } from "./screens/ContentNote";
 import { CreateScenario } from "./screens/CreateScenario";
 import { FieldGuide } from "./screens/FieldGuide";
 import { Grove } from "./screens/Grove";
-import { LanternsLit } from "./screens/LanternsLit";
+import { Journey } from "./screens/LanternsLit";
 import { Result } from "./screens/Result";
 import { Settings } from "./screens/Settings";
 import { SteppingIn } from "./screens/SteppingIn";
@@ -70,7 +70,8 @@ export function App() {
             <Route index element={<Grove />} />
             <Route path="trails" element={<Trails />} />
             <Route path="trails/create" element={<CreateScenario />} />
-            <Route path="lanterns" element={<LanternsLit />} />
+            <Route path="journey" element={<Journey />} />
+            <Route path="lanterns" element={<Navigate to="/journey" replace />} />
             <Route path="guide" element={<FieldGuide />} />
             <Route path="settings" element={<Settings />} />
             <Route path="trails/:id/result" element={<Result />} />
