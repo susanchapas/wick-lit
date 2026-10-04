@@ -67,7 +67,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 }
 @media (min-width: 960px) {
   .shell__nav { width: 232px; padding: var(--space-8) var(--space-4); }
-  .shell__brand { display: block; padding: 0 var(--space-2) var(--space-6); }
+  .shell__brand { display: block; text-decoration: none; padding: 0 var(--space-2) var(--space-6); }
   .wk-nav__item { grid-auto-flow: column; justify-content: start; align-items: center; gap: var(--space-3); padding-inline: var(--space-4); font-size: 15px; line-height: 20px; }
   .page { padding: var(--space-12); }
 }
