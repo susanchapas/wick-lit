@@ -14,6 +14,7 @@ In the local copy, replace these placeholders:
 | `ELEVENLABS_API_KEY` | ElevenLabs API key with speech-to-text and text-to-speech access |
 | `ELEVENLABS_VOICE_ID` | The ElevenLabs voice ID used for scenario speech |
 | `WICK_RATE_LIMIT_SALT` | A long random value unique to the local machine |
+| `WICK_CUSTOM_SCENARIO_SECRET` | A long random value used to sign generated scenario drafts |
 
 The model fields already contain the Wick defaults. `GEMINI_EVALUATION_MODEL` may match the role-play model locally.
 

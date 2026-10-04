@@ -13,6 +13,7 @@
     "GEMINI_EVALUATION_MODEL": "gemini-3.5-flash-lite",
     "WICK_SESSIONS_TABLE": "WickSessions",
     "WICK_ALLOWED_ORIGINS": "http://localhost:5173",
+    "WICK_CUSTOM_SCENARIO_SECRET": "your-random-local-signing-value",
     "WICK_RATE_LIMIT_SALT": "your-random-local-value"
   }
 }

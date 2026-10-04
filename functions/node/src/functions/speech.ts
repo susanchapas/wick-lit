@@ -3,7 +3,7 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { AppError, asPublicError } from "../domain/errors";
 import { corsHeaders, requiredString, respond } from "../http/helpers";
 import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
-import { getCharacterVoiceId } from "../scenarios";
+import { getScenarioCharacterVoiceId } from "../scenarios";
 import { readBearerToken } from "../security/sessionAccess";
 import { getCharacterTurnContext, getSession } from "../services/sessionService";
 import { getSessionStore } from "../storage/sessionStore";
@@ -36,13 +36,13 @@ export async function speech(request: HttpRequest, context: InvocationContext): 
     const store = await getSessionStore();
     const sessionId = requiredString(request.params.sessionId, "sessionId", 80);
     const sessionToken = token(request);
-    const { turn, scenarioId } = await getCharacterTurnContext(
+    const { turn, scenario } = await getCharacterTurnContext(
       store,
       sessionId,
       sessionToken,
       requiredString(request.params.turnId, "turnId", 20),
     );
-    const audio = await synthesizeCharacterSpeech(turn.text, getCharacterVoiceId(scenarioId, turn.speaker));
+    const audio = await synthesizeCharacterSpeech(turn.text, getScenarioCharacterVoiceId(scenario, turn.speaker));
     return {
       status: 200,
       body: audio.bytes,

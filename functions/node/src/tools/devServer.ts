@@ -3,7 +3,8 @@ import { readFileSync } from "node:fs";
 
 import { AppError, asPublicError } from "../domain/errors";
 import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
-import { getCharacterVoiceId, publicScenarios } from "../scenarios";
+import { getScenarioCharacterVoiceId, publicScenario, publicScenarios } from "../scenarios";
+import { generateCustomScenario, signCustomScenario } from "../scenarios/customScenario";
 import { readBearerToken } from "../security/sessionAccess";
 import { addMessage, createSession, endSession, getCharacterTurnContext, getSession, rateLimitIdentity, stepOutSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
@@ -18,11 +19,25 @@ createServer(async (request, response) => {
     const path = url.pathname;
     if (request.method === "GET" && path === "/api/health") return json(response, 200, { status: "ok", service: "wick-node-local" });
     if (request.method === "GET" && path === "/api/scenarios") return json(response, 200, { scenarios: publicScenarios() });
+    if (request.method === "POST" && path === "/api/scenarios/generate") {
+      const body = await readJson(request);
+      await store.consumeRateLimit(`generate-${rateLimitIdentity(request.socket.remoteAddress)}`, 6, 60 * 60);
+      const prompt = stringField(body.prompt).trim();
+      if (prompt.length < 20 || prompt.length > 1_500) {
+        throw new AppError(400, "invalid_scenario_prompt", "Describe the situation in 20 to 1,500 characters.");
+      }
+      const scenario = await generateCustomScenario(prompt);
+      return json(response, 201, { scenario: publicScenario(scenario), scenarioToken: signCustomScenario(scenario) });
+    }
     if (request.method === "POST" && path === "/api/sessions") {
       const body = await readJson(request);
       const result = await createSession(
         store,
-        { scenarioId: stringField(body.scenarioId ?? body.scenario_id), mode: stringField(body.mode) },
+        {
+          scenarioId: stringField(body.scenarioId ?? body.scenario_id),
+          mode: stringField(body.mode),
+          scenarioToken: typeof body.scenarioToken === "string" ? body.scenarioToken : undefined,
+        },
         rateLimitIdentity(request.socket.remoteAddress),
       );
       return json(response, 201, result);
@@ -53,8 +68,8 @@ createServer(async (request, response) => {
       return json(response, 200, { text });
     }
     if (request.method === "POST" && action?.startsWith("turns/") && turnId) {
-      const { turn, scenarioId } = await getCharacterTurnContext(store, sessionId, token, turnId);
-      const audio = await synthesizeCharacterSpeech(turn.text, getCharacterVoiceId(scenarioId, turn.speaker));
+      const { turn, scenario } = await getCharacterTurnContext(store, sessionId, token, turnId);
+      const audio = await synthesizeCharacterSpeech(turn.text, getScenarioCharacterVoiceId(scenario, turn.speaker));
       response.writeHead(200, { "content-type": audio.contentType, "content-length": String(audio.bytes.byteLength), "cache-control": "no-store" });
       return response.end(audio.bytes);
     }

@@ -56,6 +56,7 @@ Voice mode requests it only after Start.
 | `WICK_SESSIONS_TABLE` | Defaults to `WickSessions` |
 | `WICK_ALLOWED_ORIGINS` | Allowed browser origins |
 | `WICK_RATE_LIMIT_SALT` | Salt for stored rate-limit identities |
+| `WICK_CUSTOM_SCENARIO_SECRET` | Signs generated scenario drafts before session creation |
 
 The provider keys and session tokens must never be committed or exposed to
 browser code. See [docs/API.md](docs/API.md) for the frontend contract.

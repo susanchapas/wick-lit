@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { RoleplayGenerator } from "../roleplay/types";
 import { getScenario } from "../scenarios";
+import { signCustomScenario } from "../scenarios/customScenario";
 import { addMessage, createSession, getSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
 
@@ -31,6 +32,45 @@ describe("Wick-owned session flow", () => {
       { scenarioId: "not-real", mode: "text" },
       "test-client",
     )).rejects.toMatchObject({ code: "invalid_scenario", status: 400 });
+  });
+
+  it("starts a signed generated scenario and keeps its private definition inside the stored session", async () => {
+    const previousSecret = process.env.WICK_RATE_LIMIT_SALT;
+    process.env.WICK_RATE_LIMIT_SALT = "test-custom-scenario-secret";
+    try {
+      const scenario = structuredClone(getScenario("upstairs-invite")!);
+      scenario.scenario_id = "custom-test-scenario";
+      scenario.title = "Generated workplace practice";
+      const started = await createSession(
+        new MemorySessionStore(),
+        { scenarioId: scenario.scenario_id, mode: "text", scenarioToken: signCustomScenario(scenario) },
+        "custom-client",
+      );
+      expect(started.scenarioId).toBe("custom-test-scenario");
+      expect(started.turns).toHaveLength(scenario.opening_dialogue.length);
+      expect(started).not.toHaveProperty("customScenario");
+    } finally {
+      if (previousSecret === undefined) delete process.env.WICK_RATE_LIMIT_SALT;
+      else process.env.WICK_RATE_LIMIT_SALT = previousSecret;
+    }
+  });
+
+  it("rejects a modified generated scenario token", async () => {
+    const previousSecret = process.env.WICK_RATE_LIMIT_SALT;
+    process.env.WICK_RATE_LIMIT_SALT = "test-custom-scenario-secret";
+    try {
+      const scenario = structuredClone(getScenario("upstairs-invite")!);
+      scenario.scenario_id = "custom-test-scenario";
+      const token = signCustomScenario(scenario);
+      await expect(createSession(
+        new MemorySessionStore(),
+        { scenarioId: scenario.scenario_id, mode: "text", scenarioToken: `${token}changed` },
+        "custom-client",
+      )).rejects.toMatchObject({ code: "invalid_scenario_token", status: 400 });
+    } finally {
+      if (previousSecret === undefined) delete process.env.WICK_RATE_LIMIT_SALT;
+      else process.env.WICK_RATE_LIMIT_SALT = previousSecret;
+    }
   });
 
   it("creates a stable opening turn and appends a canonical user/character pair", async () => {

@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from "react";
+import { ButtonLink } from "../components/Button";
 import { PageHead } from "../components/PageHead";
 import { TrailList } from "../components/TrailList";
 import type { Scenario } from "../lib/types";
@@ -31,6 +32,16 @@ export function Trails() {
         title="Choose a trailhead to practice"
         lead="Every trail starts with a content note. No trail is locked. Each one is ready to open."
       />
+      <section className="wk-card panel scenario-studio-cta" aria-labelledby="scenario-studio-title">
+        <div className="section">
+          <p className="eyebrow overline">Scenario studio · Prototype</p>
+          <h2 id="scenario-studio-title" className="heading">Practice a situation from your world.</h2>
+          <p className="muted prose">
+            Describe a workplace or campus challenge and Wick will generate the setting, characters, dialogue, and coaching path.
+          </p>
+        </div>
+        <ButtonLink tone="lantern" icon="flame" iconAfter="arrow" to="/trails/create">Create a scenario</ButtonLink>
+      </section>
       <div className="wk-tabs__list" role="tablist" aria-label="Filter trails" onKeyDown={onKey}>
         {filters.map((f, i) => (
           <button

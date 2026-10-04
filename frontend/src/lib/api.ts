@@ -1,4 +1,5 @@
-import type { ApiErrorBody, Mode, Scenario, StartedSession, TurnResponse, WickSession } from "./types";
+import { customScenarioToken } from "./customScenarios";
+import type { ApiErrorBody, GeneratedScenario, Mode, Scenario, StartedSession, TurnResponse, WickSession } from "./types";
 
 const configuredBase = import.meta.env.VITE_WICK_API_BASE_URL?.replace(/\/$/, "");
 const apiBase = configuredBase || "/api";
@@ -36,41 +37,53 @@ async function request(path: string, init?: RequestInit) {
 }
 
 export async function getScenarios(): Promise<Scenario[]> {
-  const payload = (await request("scenarios").then((response) => response.json())) as {
-    scenarios: Array<{
-      scenarioId: string;
-      scenarioVersion: string;
-      title: string;
-      description: string;
-      setting: string;
-      characters: { id: string; name: string; role: string }[];
-      openingDialogue: { speaker: string; text: string }[];
-      durationSeconds: number;
-      contentTags: string[];
-      contentNote: string;
-      strategies: Scenario["strategies"];
-      modes: Mode[];
-    }>;
+  const payload = (await request("scenarios").then((response) => response.json())) as { scenarios: ApiScenario[] };
+  return payload.scenarios.map(toScenario);
+}
+
+interface ApiScenario {
+  scenarioId: string;
+  scenarioVersion: string;
+  title: string;
+  description: string;
+  setting: string;
+  characters: { id: string; name: string; role: string }[];
+  openingDialogue: { speaker: string; text: string }[];
+  durationSeconds: number;
+  contentTags: string[];
+  contentNote: string;
+  strategies: Scenario["strategies"];
+  modes: Mode[];
+  generated?: boolean;
+}
+
+const toScenario = (scenario: ApiScenario): Scenario => ({
+  id: scenario.scenarioId,
+  version: scenario.scenarioVersion,
+  title: scenario.title,
+  setup: scenario.description,
+  location: scenario.setting,
+  minutes: Math.max(1, Math.ceil(scenario.durationSeconds / 60)),
+  characters: [...scenario.characters.map((character) => character.name), "You"],
+  characterNames: Object.fromEntries(scenario.characters.map((character) => [character.id, character.name])),
+  strategies: scenario.strategies,
+  contentTags: scenario.contentTags,
+  contentNote: scenario.contentNote,
+  durationSeconds: scenario.durationSeconds,
+  modes: scenario.modes,
+  generated: scenario.generated,
+});
+
+export async function generateScenario(prompt: string): Promise<GeneratedScenario> {
+  const payload = (await request("scenarios/generate", json({ prompt })).then((response) => response.json())) as {
+    scenario: ApiScenario;
+    scenarioToken: string;
   };
-  return payload.scenarios.map((scenario) => ({
-    id: scenario.scenarioId,
-    version: scenario.scenarioVersion,
-    title: scenario.title,
-    setup: scenario.description,
-    location: scenario.setting,
-    minutes: Math.max(1, Math.ceil(scenario.durationSeconds / 60)),
-    characters: [...scenario.characters.map((character) => character.name), "You"],
-    characterNames: Object.fromEntries(scenario.characters.map((character) => [character.id, character.name])),
-    strategies: scenario.strategies,
-    contentTags: scenario.contentTags,
-    contentNote: scenario.contentNote,
-    durationSeconds: scenario.durationSeconds,
-    modes: scenario.modes,
-  }));
+  return { scenario: toScenario(payload.scenario), scenarioToken: payload.scenarioToken };
 }
 
 export const startSession = (scenarioId: string, mode: Mode): Promise<StartedSession> =>
-  request("sessions", json({ scenarioId, mode })).then((response) => response.json());
+  request("sessions", json({ scenarioId, mode, scenarioToken: customScenarioToken(scenarioId) })).then((response) => response.json());
 
 export const sendTurn = (credential: { sessionId: string; sessionToken: string }, text: string, mode: Mode): Promise<TurnResponse> =>
   request(

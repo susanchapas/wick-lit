@@ -17,6 +17,12 @@ export interface Scenario {
   contentNote: string;
   durationSeconds: number;
   modes: Mode[];
+  generated?: boolean;
+}
+
+export interface GeneratedScenario {
+  scenario: Scenario;
+  scenarioToken: string;
 }
 
 export interface WickTurn {

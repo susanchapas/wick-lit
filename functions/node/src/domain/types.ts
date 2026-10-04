@@ -61,4 +61,6 @@ export interface WickSession {
   model?: string;
   failureCode?: string;
   evaluation?: FeedbackResult;
+  customScenario?: ScenarioDefinition;
 }
+import type { ScenarioDefinition } from "../scenarios";

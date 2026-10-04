@@ -6,6 +6,7 @@ import { isOnboarded } from "./lib/settings";
 import { Access } from "./screens/Access";
 import { Clearing } from "./screens/Clearing";
 import { ContentNote } from "./screens/ContentNote";
+import { CreateScenario } from "./screens/CreateScenario";
 import { FieldGuide } from "./screens/FieldGuide";
 import { Grove } from "./screens/Grove";
 import { LanternsLit } from "./screens/LanternsLit";
@@ -68,6 +69,7 @@ export function App() {
           <Route element={<Shell />}>
             <Route index element={<Grove />} />
             <Route path="trails" element={<Trails />} />
+            <Route path="trails/create" element={<CreateScenario />} />
             <Route path="lanterns" element={<LanternsLit />} />
             <Route path="guide" element={<FieldGuide />} />
             <Route path="settings" element={<Settings />} />

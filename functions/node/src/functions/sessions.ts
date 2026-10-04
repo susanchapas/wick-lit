@@ -17,6 +17,9 @@ export async function startSession(request: HttpRequest, context: InvocationCont
       {
         scenarioId: requiredString(body.scenarioId ?? body.scenario_id, "scenarioId", 80),
         mode: requiredString(body.mode, "mode", 10),
+        scenarioToken: typeof body.scenarioToken === "string"
+          ? requiredString(body.scenarioToken, "scenarioToken", 30_000)
+          : undefined,
       },
       rateLimitIdentity(clientIp(request)),
     );

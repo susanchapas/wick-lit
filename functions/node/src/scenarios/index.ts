@@ -56,12 +56,12 @@ export function getScenario(id: string): ScenarioDefinition | undefined {
   return scenarios.get(id);
 }
 
-export function getCharacterVoiceId(scenarioId: string, characterId: string): string | undefined {
-  return getScenario(scenarioId)?.characters.find((character) => character.id === characterId)?.voice.voice_id;
+export function getScenarioCharacterVoiceId(scenario: ScenarioDefinition, characterId: string): string | undefined {
+  return scenario.characters.find((character) => character.id === characterId)?.voice.voice_id;
 }
 
-export function publicScenarios() {
-  return [...scenarios.values()].map((scenario) => ({
+export function publicScenario(scenario: ScenarioDefinition) {
+  return {
     scenarioId: scenario.scenario_id,
     scenarioVersion: scenario.scenario_version,
     title: scenario.title,
@@ -75,5 +75,10 @@ export function publicScenarios() {
     contentNote: scenario.content_note,
     strategies: scenario.strategies,
     modes: ["text", "voice"] as const,
-  }));
+    generated: scenario.scenario_id.startsWith("custom-"),
+  };
+}
+
+export function publicScenarios() {
+  return [...scenarios.values()].map(publicScenario);
 }

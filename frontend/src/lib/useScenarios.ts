@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getScenarios } from "./api";
+import { customScenarios } from "./customScenarios";
 import type { Scenario } from "./types";
 
 let cache: Promise<Scenario[]> | null = null;
@@ -11,7 +12,7 @@ export function useScenarios() {
   useEffect(() => {
     let live = true;
     (cache ??= getScenarios()).then(
-      (data) => live && setState({ data }),
+      (data) => live && setState({ data: [...customScenarios(), ...data] }),
       (error) => {
         cache = null;
         if (live) setState({ error });

@@ -6,15 +6,20 @@ import { evaluateTranscript } from "../evaluation/feedback";
 import { generateRoleplayResponse } from "../roleplay/generateResponse";
 import type { RoleplayGenerator } from "../roleplay/types";
 import { getScenario } from "../scenarios";
+import { verifyCustomScenarioToken } from "../scenarios/customScenario";
 import { assertSessionAccess, createSessionCredential } from "../security/sessionAccess";
 import type { SessionStore } from "../storage/sessionStore";
 
 export async function createSession(
   store: SessionStore,
-  input: { scenarioId: string; mode: string },
+  input: { scenarioId: string; mode: string; scenarioToken?: string },
   rateLimitIdentity: string,
 ) {
-  const scenario = getScenario(input.scenarioId);
+  const customScenario = input.scenarioToken ? verifyCustomScenarioToken(input.scenarioToken) : undefined;
+  if (customScenario && customScenario.scenario_id !== input.scenarioId) {
+    throw new AppError(400, "invalid_scenario_token", "The generated scenario does not match this session.");
+  }
+  const scenario = customScenario ?? getScenario(input.scenarioId);
   if (!scenario) throw new AppError(400, "invalid_scenario", "The scenario ID is not supported.");
   if (input.mode !== "text" && input.mode !== "voice") {
     throw new AppError(400, "invalid_mode", "Mode must be text or voice.");
@@ -50,6 +55,7 @@ export async function createSession(
     expiresAt: new Date(now.getTime() + 30 * 60 * 1000).toISOString(),
     turns: openingTurns,
     nextTurnNumber: openingTurns.length + 1,
+    customScenario,
   };
   await store.create(session);
   return { ...publicSession(session), sessionToken: credential.token };
@@ -77,7 +83,7 @@ export async function addMessage(
     throw new AppError(400, "invalid_source_medium", "The message source does not match the session mode.");
   }
 
-  const scenario = getScenario(session.scenarioId)!;
+  const scenario = scenarioForSession(session);
   const userTurnNumber = session.turns.filter((turn) => turn.role === "user").length + 1;
   const generated = await generate({
     scenario,
@@ -139,7 +145,7 @@ export async function endSession(store: SessionStore, sessionId: string, token: 
     session.endedAt = new Date().toISOString();
   }
   if (session.state === "completed" && !session.evaluation) {
-    session.evaluation = await evaluateTranscript(session.turns, getScenario(session.scenarioId)!);
+    session.evaluation = await evaluateTranscript(session.turns, scenarioForSession(session));
   }
   await store.put(session);
   return publicSession(session);
@@ -160,13 +166,19 @@ export async function getCharacterTurnContext(
   sessionId: string,
   token: string | undefined,
   turnId: string,
-): Promise<{ turn: WickTurn; scenarioId: string }> {
+): Promise<{ turn: WickTurn; scenario: ReturnType<typeof scenarioForSession> }> {
   const session = await requireSession(store, sessionId, token);
   const turn = session.turns.find((candidate) => candidate.turnId === turnId);
   if (!turn || turn.role !== "character") {
     throw new AppError(404, "character_turn_not_found", "The character turn was not found.");
   }
-  return { turn, scenarioId: session.scenarioId };
+  return { turn, scenario: scenarioForSession(session) };
+}
+
+function scenarioForSession(session: WickSession) {
+  const scenario = session.customScenario ?? getScenario(session.scenarioId);
+  if (!scenario) throw new AppError(500, "scenario_unavailable", "The session scenario is unavailable.");
+  return scenario;
 }
 
 async function requireSession(store: SessionStore, sessionId: string, token: string | undefined) {
