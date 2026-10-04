@@ -37,8 +37,8 @@
       "role": "student_encouraging_and_minimizing_the_sharing",
       "voice": {
         "provider": "elevenlabs",
-        "voice_id": "iP95p4xoKVk53GoZ742B",
-        "name": "Chris"
+        "voice_id": "hfqsl1OMbiWsgPpht3el",
+        "name": "Dylan voice"
       },
       "behavior": [
         "Chris initially supports Jake and minimizes the effect of deleting the post.",

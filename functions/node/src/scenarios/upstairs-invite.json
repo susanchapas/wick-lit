@@ -13,8 +13,8 @@
       "role": "person_pressuring_maya",
       "voice": {
         "provider": "elevenlabs",
-        "voice_id": "hfqsl1OMbiWsgPpht3el",
-        "name": "Dylan voice"
+        "voice_id": "iP95p4xoKVk53GoZ742B",
+        "name": "Chris"
       },
       "behavior": [
         "Dylan wants to take Maya upstairs.",
