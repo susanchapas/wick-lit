@@ -67,6 +67,16 @@ describe("Wick-owned session flow", () => {
     expect(started.turns.some((turn) => turn.speaker === "ana")).toBe(false);
   });
 
+  it("creates the library scenario with the full Greg and Ana opening", async () => {
+    const started = await createSession(
+      new MemorySessionStore(),
+      { scenarioId: "the-library", mode: "text" },
+      "library-client",
+    );
+    expect(started.turns.map((turn) => turn.speaker)).toEqual(["greg", "ana", "greg", "ana", "greg"]);
+    expect(started.turns[4]?.text).toBe("Why are you making it weird?");
+  });
+
   it("does not allow a session token from another session", async () => {
     const store = new MemorySessionStore();
     const first = await createSession(store, { scenarioId: "upstairs-invite", mode: "text" }, "a");

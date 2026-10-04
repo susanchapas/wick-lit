@@ -34,4 +34,18 @@ describe("roleplay prompt", () => {
     expect(prompt).toContain("Chris");
     expect(prompt).not.toContain('"name":"Ana"');
   });
+
+  it("frames the library concern as a repeated nonphysical pattern", () => {
+    const prompt = buildRoleplayPrompt({
+      scenario: getScenario("the-library")!,
+      conversationHistory: [],
+      latestUserMessage: "Ana, do you want to come work at my table?",
+      currentState: "opening",
+      userTurnNumber: 1,
+    });
+    expect(prompt).toContain("moved tables more than once");
+    expect(prompt).toContain("not physical");
+    expect(prompt).toContain("Greg");
+    expect(prompt).toContain("Ana");
+  });
 });

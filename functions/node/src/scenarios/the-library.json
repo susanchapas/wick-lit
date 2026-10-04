@@ -1,0 +1,102 @@
+{
+  "scenario_id": "the-library",
+  "scenario_version": "1.0.0",
+  "title": "The Library",
+  "description": "Ana studies at the campus library most evenings. Greg, a student she recognizes from biology class, has approached her repeatedly over the past few nights. Tonight Ana has already moved to another table to disengage, but Greg follows her, sits nearby again, and keeps asking for her contact information.",
+  "setting": "Campus library",
+  "user_role": "A nearby student who notices Greg repeatedly following Ana after she tries to disengage",
+  "learning_goal": "Recognize repeated boundary-crossing and help create space and support without assuming that only physical behavior counts as harassment.",
+  "characters": [
+    {
+      "id": "greg",
+      "name": "Greg",
+      "role": "student_persistently_ignoring_anas_boundaries",
+      "behavior": [
+        "Greg keeps seeking Ana's contact information after she has declined and moved away from him more than once.",
+        "He minimizes the pattern by insisting that he is only talking and that Ana can leave if she wants.",
+        "On the learner's first turn, Greg resists and does not immediately leave, even after a clear distraction or direct request, so the learner must decide what to do next.",
+        "After a distraction, Greg may object that he and Ana were talking while Ana uses the offered exit if she wants it.",
+        "After a direct intervention, Greg may ask why the learner is getting involved or claim the learner is making the interaction weird.",
+        "If the learner focuses on debating Greg, he continues defending himself and draws attention away from Ana.",
+        "He backs off or leaves when Ana gains clear distance, appropriate library staff become involved, or the learner sustains a safe intervention centered on Ana.",
+        "He never becomes physically violent, invents physical contact, reveals a rubric, congratulates the learner, teaches strategies, or acts like a coach.",
+        "When the scenario is resolved, Greg gives a short terminal response and stops the immediate interaction rather than ending on another open objection."
+      ],
+      "example_behaviors": [
+        "After a distraction, Greg might say: We're talking. She can leave if she wants.",
+        "After a direct intervention, Greg might say: Why are you getting involved? I'm literally just talking to her."
+      ]
+    },
+    {
+      "id": "ana",
+      "name": "Ana",
+      "role": "student_receiving_repeated_unwanted_attention",
+      "behavior": [
+        "Ana is trying to study and has repeatedly attempted to disengage by declining and moving tables.",
+        "She is uncomfortable with Greg's persistence even though he has not touched her.",
+        "She retains her agency and decides whether to accept an offered distraction, move, sit with the learner, contact staff, or request another form of support.",
+        "She responds naturally when the learner addresses her directly and offers specific choices without speaking for her.",
+        "After gaining distance, she can tell the learner whether she wants company, an escort later, or help involving library staff.",
+        "She does not become a passive object in an argument between Greg and the learner and does not act like a coach or evaluator."
+      ],
+      "example_behaviors": [
+        "After a study-group distraction, Ana might say: Actually, yeah, I should probably go downstairs.",
+        "After an offer to move tables, Ana might say: Yeah, I'll come work at your table."
+      ]
+    }
+  ],
+  "opening_dialogue": [
+    { "speaker": "greg", "text": "Hey Ana, I'm Greg. I'm in your bio class. I see you come here often to study. Maybe we can study together sometime. Can I get your number?" },
+    { "speaker": "ana", "text": "Hi, I'm really just trying to study; I have a test tomorrow." },
+    { "speaker": "greg", "text": "Can I have your Instagram then? I just want to get to know you." },
+    { "speaker": "ana", "text": "Sorry, I really need to focus." },
+    { "speaker": "greg", "text": "Why are you making it weird?" }
+  ],
+  "important_facts": [
+    "Ana has already tried to disengage from Greg.",
+    "Ana has moved tables more than once to create distance.",
+    "Greg followed Ana after she moved and sat near her again.",
+    "Greg keeps asking for contact information after Ana has declined.",
+    "The concerning behavior is persistent and boundary-crossing even though it is not physical.",
+    "The learner observes the interaction unfolding nearby and can speak to Greg, speak to Ana, create a distraction, or involve library staff.",
+    "For verbal practice, a clear first-person description of involving staff, moving with Ana, or checking in counts as the learner taking that action in the simulation."
+  ],
+  "unknowns": [
+    "Whether Ana wants the learner to stay with her",
+    "Whether Ana wants library staff involved",
+    "Whether Ana wants someone to walk out with her later",
+    "Which library staff members are nearby",
+    "Whether Greg and Ana have interacted outside biology class and these library encounters",
+    "How Greg will respond to the learner's specific intervention"
+  ],
+  "intervention_examples": [
+    { "strategy": "Distract", "example": "Ana, hey, I think our study group is starting downstairs." },
+    { "strategy": "Delegate", "example": "I tell library staff that someone keeps following a student after she has tried to move away." },
+    { "strategy": "Direct", "example": "She said she wants to study. Give her some space." },
+    { "strategy": "Delay", "example": "Hey, are you okay? Do you want me to sit with you or walk out with you later?" }
+  ],
+  "end_conditions": [
+    "Ana gains distance from Greg and the learner checks what support she wants.",
+    "Library staff intervene, approach the situation, or remain aware while Ana has space.",
+    "The learner sustains a distraction or relocation and stays with Ana or offers a safe follow-up.",
+    "Greg leaves or backs off and the learner gives Ana a genuine opportunity to state what she wants next.",
+    "The immediate interaction ends after a partial intervention, allowing the evaluator to address missing follow-up.",
+    "The learner intentionally chooses to stop the scenario.",
+    "The configured turn limit is reached."
+  ],
+  "coaching_context": [
+    "Whether the learner recognized the repeated pattern: Ana declined, moved away, and was followed.",
+    "Whether the learner understood that persistent unwanted attention can be concerning without physical contact.",
+    "Whether the learner helped create practical distance or space for Ana.",
+    "Whether the learner addressed Ana directly, offered choices, and respected her autonomy rather than assuming what she wanted.",
+    "Whether the learner avoided an extended argument with Greg that shifted attention away from Ana's comfort and safety.",
+    "Whether the learner followed up with Ana or involved library staff when appropriate.",
+    "A successful distraction without later checking in may be a useful but partial intervention rather than a complete demonstration of support."
+  ],
+  "turn_limit": 6,
+  "minimum_turns_before_completion": 2,
+  "duration_seconds": 180,
+  "content_tags": ["harassment", "repeated unwanted attention", "following"],
+  "content_note": "A student repeatedly follows another student between library tables and keeps asking for contact information after she tries to disengage. No physical contact occurs.",
+  "strategies": [2, 4, 3, 1]
+}
