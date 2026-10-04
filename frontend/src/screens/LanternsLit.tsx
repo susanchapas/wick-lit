@@ -43,6 +43,7 @@ export function Journey() {
                   date={short(new Date(l.completedAt))}
                   score={l.score}
                   rank={typeof l.score === "number" ? growthRankForScore(l.score) : undefined}
+                  retryTo={`/trails/${l.scenarioId}`}
                 />
               </li>
             ))}

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { streak, useHistory } from "../lib/history";
 import type { GrowthRank } from "../lib/rankings";
 import { withPeriod } from "../lib/text";
+import { ButtonLink } from "./Button";
 
 const flame = "M12 3C14.6 6.4 18 8.9 18 13.6A6 6 0 0 1 6 13.6C6 10.6 7.8 8.6 9.2 6.4C9.8 8.2 10.7 9.2 11.8 9.6C12.6 7.6 12.6 5.3 12 3Z";
 
@@ -78,9 +79,10 @@ interface LanternTileProps {
   date: string;
   rank?: GrowthRank;
   score?: number;
+  retryTo?: string;
 }
 
-export function LanternTile({ title, date, rank, score }: LanternTileProps) {
+export function LanternTile({ title, date, rank, score, retryTo }: LanternTileProps) {
   return (
     <article className="wk-lantern is-lit">
       {rank ? (
@@ -93,6 +95,13 @@ export function LanternTile({ title, date, rank, score }: LanternTileProps) {
       <span className="wk-card__lit">{rank ? rank.name : "Rank unavailable"}</span>
       <h3 className="wk-lantern__title">{withPeriod(title)}</h3>
       <p className="wk-lantern__meta">{date}{typeof score === "number" ? ` · ${score}/9` : ""}</p>
+      {retryTo && (
+        <div className="wk-lantern__retry">
+          <ButtonLink tone="lantern" icon="replay" to={retryTo} aria-label={`Try ${title} again`}>
+            Try Again?
+          </ButtonLink>
+        </div>
+      )}
     </article>
   );
 }

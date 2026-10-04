@@ -259,6 +259,8 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-lantern:not(.is-lit) .wk-lantern__flame { color: var(--vein); }
 .wk-lantern__title { position: relative; margin: 0; font: 600 15px/20px var(--font-sans); }
 .wk-lantern__meta { position: relative; margin: 0; font: 400 13px/18px var(--font-mono); color: var(--ink-muted); }
+.wk-lantern__retry { position: absolute; inset: 0; display: grid; place-items: center; background: #0000008c; opacity: 0; transition: opacity var(--duration-settle) var(--ease-kindle); }
+.wk-lantern:hover .wk-lantern__retry, .wk-lantern:focus-within .wk-lantern__retry { opacity: 1; }
 
 /* ---------- Field ---------- */
 .wk-field { display: grid; gap: var(--space-2); max-width: 480px; width: 100%; }
