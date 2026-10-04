@@ -1,3 +1,4 @@
+html { overscroll-behavior: none; }
 body { min-height: 100dvh; }
 h1, h2, h3, p { margin: 0; }
 h1[tabindex="-1"]:focus-visible { box-shadow: none; }
