@@ -12,7 +12,33 @@ import { withPeriod } from "../lib/text";
 interface ResultState { session: WickSession }
 const statusValue = { insufficient_evidence: 0, not_demonstrated: 1, partly_demonstrated: 2, demonstrated: 3 } as const;
 const statusLabel = (status: EvaluationDimension["status"]) => status.split("_").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
-const levels = ["low", "low", "mid", "mid", "high"] as const;
+const ranks = [
+  {
+    name: "Seedling",
+    image: "/assets/feedback-rankings/seedling.webp",
+    explanation: "You are beginning to recognize moments where a supportive response can make a difference.",
+  },
+  {
+    name: "Sprout",
+    image: "/assets/feedback-rankings/sprout.webp",
+    explanation: "You are starting to turn recognition into a clear and supportive response.",
+  },
+  {
+    name: "Sapling",
+    image: "/assets/feedback-rankings/sapling.webp",
+    explanation: "You are building steady intervention skills while considering safety and choice.",
+  },
+  {
+    name: "Young Tree",
+    image: "/assets/feedback-rankings/young-tree.webp",
+    explanation: "You respond with growing confidence, care, and practical judgment.",
+  },
+  {
+    name: "Mighty Oak",
+    image: "/assets/feedback-rankings/mighty-oak.webp",
+    explanation: "You demonstrated clear, supportive action while keeping safety and choice at the center.",
+  },
+] as const;
 
 export function Result() {
   const { id = "" } = useParams();
@@ -50,16 +76,16 @@ export function Result() {
   ] as const;
 
   const score = dimensions.reduce((sum, [, dimension]) => sum + statusValue[dimension.status], 0);
-  const level = levels[Math.floor((score / (dimensions.length * 3)) * (levels.length - 1))];
+  const rank = ranks[Math.min(ranks.length - 1, Math.floor(score / 2))];
 
   return (
     <>
       <title>Coaching result · Wick</title>
       <header className="wk-score result-hero is-done">
-        <div className="result-hero__art" data-level={level} aria-hidden="true">Caricature · {level}</div>
+        <div className="result-hero__art" aria-hidden="true"><img src={rank.image} alt="" /></div>
         <div className="section">
-          <h1 className="title result-hero__title">Ranking Placeholder</h1>
-          <p className="muted">[Placeholder] A short sentence describing the skill level for this ranking.</p>
+          <h1 className="title result-hero__title">{rank.name}</h1>
+          <p className="muted">{rank.explanation}</p>
           <p className="wk-score__band subtitle">{withPeriod(evaluation.summary)}</p>
           <p className="wk-score__summary">{evaluation.strength}</p>
           <div className="actions">{retry}<Button tone="bark" icon="document" onClick={() => setReflecting(true)}>{saved?.reflection ? "Edit reflection" : "Reflect"}</Button></div>
