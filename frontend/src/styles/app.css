@@ -54,7 +54,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .avatar { flex: none; width: var(--avatar); height: var(--avatar); border-radius: 50%; object-fit: cover; background: var(--ground-raised); box-shadow: var(--inset-raised); }
 .page-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4); }
 .shell__nav { position: fixed; left: 50%; bottom: var(--space-2); translate: -50% 0; width: calc(100% - var(--space-4)); }
-.shell__brand, .shell__settings, .shell__note { display: none; }
+.shell__brand, .shell__settings { display: none; }
 .wk-nav__item { min-width: 0; text-align: center; }
 
 @media (min-width: 600px) {
@@ -67,7 +67,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 @media (min-width: 960px) {
   .shell__nav { width: 232px; padding: var(--space-8) var(--space-4); }
   .shell__brand { display: block; padding: 0 var(--space-2) var(--space-6); }
-  .shell__note { display: block; padding-inline: var(--space-2); }
   .wk-nav__item { grid-auto-flow: column; justify-content: start; align-items: center; gap: var(--space-3); padding-inline: var(--space-4); font-size: 15px; line-height: 20px; }
   .page { padding: var(--space-12); }
 }
@@ -352,7 +351,7 @@ button.guide-trail { width: 100%; border: 0; background: none; font: inherit; te
   .result-hero .section { display: flex; flex-direction: column; }
   .result-hero .actions { margin-top: auto; }
 }
-.result-hero__title { margin: var(--space-4) 0; }
+.result-hero__title { margin: 0 0 var(--space-4); }
 .result-split { display: grid; gap: var(--space-8); }
 @media (min-width: 960px) { .result-split { grid-template-columns: 1fr 1fr; align-items: start; } }
 .result-dims { display: grid; gap: var(--space-3); }

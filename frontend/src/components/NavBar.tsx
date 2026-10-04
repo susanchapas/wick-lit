@@ -26,7 +26,6 @@ export function NavBar() {
         <Icon name="settings" />
         Settings
       </NavLink>
-      <p className="caption muted shell__note">Private practice. Voice audio is transcribed and not stored.</p>
     </nav>
   );
 }

@@ -34,7 +34,7 @@ export function Trails() {
       />
       <section className="wk-card panel scenario-studio-cta" aria-labelledby="scenario-studio-title">
         <div className="section">
-          <p className="eyebrow overline">Scenario studio · Prototype</p>
+          <p className="eyebrow overline">Scenario studio</p>
           <h2 id="scenario-studio-title" className="heading">Practice a situation from your world.</h2>
           <p className="muted prose">
             Describe a workplace or campus challenge and Wick will generate the setting, characters, dialogue, and coaching path.
