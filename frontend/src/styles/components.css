@@ -342,6 +342,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-mark { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--ink); }
 .wk-mark__pane { fill: var(--ground-raised); }
 [data-theme="dawn"] .wk-mark__pane { fill: var(--pine); }
+.wk-lockup .wk-mark__pane { stroke: #000; stroke-width: 1.5; }
 .wk-mark__flame { fill: var(--lantern-amber); transform-origin: 32px 47px; }
 .wk-mark__core { fill: var(--flame-core); }
 .wk-mark__wick { stroke: var(--parchment); }
