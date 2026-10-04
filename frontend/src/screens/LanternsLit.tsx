@@ -11,7 +11,7 @@ async function viewCertificate() {
   const win = window.open();
   if (!win) return;
   const template = await fetch("/files/wick-certificate%20(2).html").then((r) => r.text());
-  win.document.write(template.replace("[Recipient Name]", "Neta R.").replace("[Completion date]", "Oct 4, 2026"));
+  win.document.write(template.replace("[Recipient Name]", "Tessa K.").replace("[Completion date]", "Oct 4, 2026"));
   win.document.close();
 }
 

@@ -10,11 +10,23 @@ interface SwitchProps {
 }
 
 export function Switch({ label, hint, checked, onChange }: SwitchProps) {
-  const hintId = useId();
+  const id = useId();
+  const hintId = `${id}-hint`;
   return (
-    <div className="setting">
+    <div className="setting setting--switch">
+      <div className="setting__text">
+        <label className="label" htmlFor={id}>
+          {label}
+        </label>
+        {hint && (
+          <p className="wk-field__hint" id={hintId}>
+            {hint}
+          </p>
+        )}
+      </div>
       <label className="wk-switch">
         <input
+          id={id}
           type="checkbox"
           role="switch"
           checked={checked}
@@ -24,16 +36,10 @@ export function Switch({ label, hint, checked, onChange }: SwitchProps) {
         <span className="wk-switch__track" aria-hidden="true">
           <span className="wk-switch__knob" />
         </span>
-        {label}
         <span className="wk-switch__state" aria-hidden="true">
           {checked ? "On" : "Off"}
         </span>
       </label>
-      {hint && (
-        <p className="wk-field__hint" id={hintId}>
-          {hint}
-        </p>
-      )}
     </div>
   );
 }

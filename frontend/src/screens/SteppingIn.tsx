@@ -17,11 +17,9 @@ export function SteppingIn() {
 
   return (
     <OnboardingStep
-      step={3}
       title="What you’re stepping into"
       lead="Please read this before your first practice. It is short, direct, and important."
       back="/welcome/access"
-      backLabel="Back to step 2"
       note="Continue only when you feel ready."
       action={
         <Button tone="lantern" size="lg" onClick={enter} iconAfter="arrow" className="block">

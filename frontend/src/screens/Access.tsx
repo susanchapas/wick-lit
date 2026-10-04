@@ -7,11 +7,9 @@ export function Access() {
   const s = useSettings();
   return (
     <OnboardingStep
-      step={2}
       title="Access and modality"
       lead="Set up Wick the way that works for you. You can change these at any time in Settings."
       back="/welcome"
-      backLabel="Back to welcome"
       action={
         <ButtonLink tone="lantern" size="lg" to="/welcome/stepping-in" iconAfter="arrow">
           Continue
