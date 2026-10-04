@@ -316,9 +316,9 @@ button.guide-trail { width: 100%; border: 0; background: none; font: inherit; te
 .setting__text label { cursor: pointer; }
 .setting .wk-switch__state { order: 1; }
 .setting .wk-switch__track { order: 2; }
-.setting + .setting, .choice + .setting { padding-top: var(--space-4); border-top: 1px solid var(--vein); }
+.setting + .setting, .choice + .setting, .choice + .choice { padding-top: var(--space-4); border-top: 1px solid var(--vein); }
 .choice .wk-dpick__opts { gap: var(--space-3); }
-.choice legend { margin-bottom: var(--space-1); }
+.choice legend { float: left; margin-bottom: 0; }
 
 .streak__aside { text-align: right; }
 .streak__days { flex-wrap: wrap; gap: var(--space-4); }

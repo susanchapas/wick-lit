@@ -34,8 +34,8 @@ export function Timer({ remaining, total }: { remaining: number; total: number }
 export type OrbState = "idle" | "listening" | "thinking" | "speaking" | "paused" | "blocked";
 
 const orbCopy: Record<OrbState, { status: string; hint: string; label: string }> = {
-  idle: { status: "Ready when you are", hint: "Press to speak, or type your reply.", label: "Start speaking" },
-  listening: { status: "Listening", hint: "Speak when you are ready. Wick sends after you stop.", label: "Stop speaking" },
+  idle: { status: "", hint: "Press to speak, or type your reply.", label: "Start speaking" },
+  listening: { status: "Listening", hint: "Speak when you are ready.\nWick transcribes after you stop.", label: "Stop speaking" },
   thinking: { status: "Thinking", hint: "Your partner is choosing a reply.", label: "Thinking" },
   speaking: { status: "is speaking", hint: "Captions show each line.", label: "Speaking" },
   paused: { status: "Paused", hint: "Nothing is recorded.", label: "Resume role-play" },
@@ -51,7 +51,7 @@ interface VoiceOrbProps {
 
 export function VoiceOrb({ state, speaker, onToggle, textMode = false }: VoiceOrbProps) {
   const c = textMode && state === "idle"
-    ? { status: "Ready when you are", hint: "Type your reply below.", label: "Focus reply" }
+    ? { status: "", hint: "Type your reply below.", label: "Focus reply" }
     : orbCopy[state];
   const busy = state === "thinking" || state === "speaking";
   return (

@@ -26,9 +26,9 @@ export function Settings() {
             value={s.intensity}
             onChange={(intensity) => updateSettings({ intensity })}
             options={[
-              { value: "gentle", label: "Gentle", hint: "People back down sooner and coaching leans encouraging." },
-              { value: "realistic", label: "Realistic", hint: "People push back the way they often do." },
-              { value: "intense", label: "Intense", hint: "People argue, deflect, and escalate, with more direct coaching." },
+              { value: "gentle", label: "Gentle", icon: "leaf", hint: "People back down sooner and coaching leans encouraging." },
+              { value: "realistic", label: "Realistic", icon: "person", hint: "People push back the way they often do." },
+              { value: "intense", label: "Intense", icon: "bolt", hint: "People argue, deflect, and escalate, with more direct coaching." },
             ]}
           />
           <ChoiceGroup
@@ -36,8 +36,8 @@ export function Settings() {
             value={s.input}
             onChange={(input) => updateSettings({ input })}
             options={[
-              { value: "voice", label: "Voice", hint: "Speak your replies. You can always type instead." },
-              { value: "text", label: "Text", hint: "Start sessions with typed replies." },
+              { value: "voice", label: "Voice", icon: "mic", hint: "Speak your replies. You can always type instead." },
+              { value: "text", label: "Text", icon: "chat", hint: "Start sessions with typed replies." },
             ]}
           />
         </section>
