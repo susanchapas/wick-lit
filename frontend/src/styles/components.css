@@ -129,9 +129,9 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-dpick__opt input:checked:focus + label { animation: wk-halo var(--duration-settle) var(--ease-kindle); }
 
 /* ---------- Trail card ---------- */
-.wk-card { position: relative; display: grid; gap: var(--space-3); padding: var(--space-6); border-radius: var(--radius-lg); background: var(--ground-raised); box-shadow: var(--inset-raised); color: var(--ink); max-width: 380px; transition: transform var(--duration-kindle) var(--ease-kindle), box-shadow var(--duration-kindle) var(--ease-kindle); animation: wk-rise var(--duration-rise) var(--ease-kindle) both; }
+.wk-card { position: relative; display: grid; gap: var(--space-3); padding: var(--space-6); border-radius: var(--radius-lg); background: var(--ground-raised); box-shadow: var(--inset-raised); color: var(--ink); max-width: 380px; transition: transform var(--duration-kindle) var(--ease-kindle), background-color var(--duration-kindle) var(--ease-kindle), box-shadow var(--duration-kindle) var(--ease-kindle); animation: wk-rise var(--duration-rise) var(--ease-kindle) both; }
 .wk-card--link { cursor: pointer; }
-.wk-card--link:hover { transform: translateY(-2px); box-shadow: var(--inset-raised), var(--glow-soft); }
+.wk-card--link:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--ground-raised) 60%, black); box-shadow: var(--inset-raised), var(--glow-soft); }
 .wk-card--link:focus-within { box-shadow: var(--inset-raised), var(--focus-ring); }
 .wk-glint { position: absolute; top: 6px; right: 6px; z-index: 1; width: 14px; height: 14px; background: var(--gold-bright); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); opacity: 0; pointer-events: none; }
 .wk-card--link:hover .wk-glint, .wk-card--link:focus-within .wk-glint { animation: wk-glint var(--duration-settle) var(--ease-lift) forwards; }

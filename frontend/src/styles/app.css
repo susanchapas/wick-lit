@@ -98,8 +98,8 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .trail-grid .wk-card__note { grid-row: 4; }
   .trail-grid .wk-card__done { grid-row: 5; }
   .trail-grid .wk-card__body { grid-row: 3 / -1; align-self: start; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; overflow: hidden; opacity: 0; visibility: hidden; }
-  .trail-grid :is(.wk-card__over, .wk-card__meta, .wk-card__note, .wk-card__body) { transition: opacity var(--duration-kindle) var(--ease-kindle), visibility var(--duration-kindle); }
-  .trail-grid .wk-card:is(:hover, :focus-within) :is(.wk-card__over, .wk-card__meta, .wk-card__note) { opacity: 0; visibility: hidden; }
+  .trail-grid :is(.wk-card__meta, .wk-card__note, .wk-card__body) { transition: opacity var(--duration-kindle) var(--ease-kindle), visibility var(--duration-kindle); }
+  .trail-grid .wk-card:is(:hover, :focus-within) :is(.wk-card__meta, .wk-card__note) { opacity: 0; visibility: hidden; }
   .trail-grid .wk-card:is(:hover, :focus-within) .wk-card__body { opacity: 1; visibility: visible; }
 }
 
