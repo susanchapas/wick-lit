@@ -24,8 +24,8 @@ export function Access() {
           value={s.theme}
           onChange={(theme) => updateSettings({ theme })}
             options={[
-              { value: "night", label: "Night grove" },
-              { value: "dawn", label: "Dawn" },
+              { value: "night", label: "Night grove", icon: "moon" },
+              { value: "dawn", label: "Dawn", icon: "flame" },
             ]}
         />
         <ChoiceGroup

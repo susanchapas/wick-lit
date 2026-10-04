@@ -125,6 +125,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-dpick__opt input:checked + label { background: var(--lantern-soft); box-shadow: inset 0 0 0 2px var(--d), var(--inset-frost); }
 .wk-dpick__check { width: 18px; height: 18px; color: var(--d); opacity: 0; transform: scale(.6); transition: opacity var(--duration-kindle) var(--ease-kindle), transform var(--duration-drift) var(--ease-lift); }
 .wk-dpick__opt input:checked + label .wk-dpick__check { opacity: 1; transform: none; }
+.wk-dpick__check--icon { opacity: 1; transform: none; }
 .wk-dpick__opt input:checked:focus + label { animation: wk-halo var(--duration-settle) var(--ease-kindle); }
 
 /* ---------- Trail card ---------- */
@@ -248,7 +249,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-week__dot { width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--ground-sunken); box-shadow: inset 0 0 0 1px var(--edge); }
 .wk-week__dot.is-lit { background: var(--flame); box-shadow: 0 0 8px var(--flame); }
 .wk-week__dot.is-today { animation: wk-kindle var(--duration-settle) var(--ease-lift) both; }
-.wk-lantern { position: relative; display: grid; justify-items: center; align-content: end; gap: var(--space-2); width: 168px; min-height: 220px; padding: var(--space-5) var(--space-4); text-align: center; color: var(--ink); background: var(--ground-raised); box-shadow: var(--inset-raised); clip-path: polygon(50% 0, 62% 4%, 73% 10%, 83% 18%, 91% 28%, 97% 39%, 100% 50%, 100% 100%, 0 100%, 0 50%, 3% 39%, 9% 28%, 17% 18%, 27% 10%, 38% 4%); }
+.wk-lantern { position: relative; display: grid; justify-items: center; align-content: end; gap: var(--space-2); width: 168px; min-height: 220px; padding: var(--space-5) var(--space-4); text-align: center; color: var(--ink); background: var(--ground-raised); box-shadow: var(--inset-raised); border-radius: 50% 50% var(--radius-xl) var(--radius-xl) / 36% 36% var(--radius-xl) var(--radius-xl); overflow: hidden; }
 .wk-lantern::before { content: ""; position: absolute; left: 50%; top: 34%; width: 120px; height: 120px; margin-left: -60px; border-radius: var(--radius-round); background: radial-gradient(closest-side, var(--lantern-pool), transparent); opacity: 0; transition: opacity var(--duration-settle) var(--ease-kindle); }
 .wk-lantern.is-lit::before { opacity: .35; }
 .wk-lantern__flame { position: relative; width: 28px; height: 36px; color: var(--flame); margin-bottom: var(--space-3); transform-origin: 50% 90%; }

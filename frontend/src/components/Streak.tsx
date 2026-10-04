@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { streak, useHistory } from "../lib/history";
 import type { GrowthRank } from "../lib/rankings";
 import { withPeriod } from "../lib/text";
 
@@ -47,6 +48,28 @@ export function StreakCard({ count, days, aside, children, action }: StreakCardP
         {action}
       </div>
     </section>
+  );
+}
+
+export function PracticeStreak({ action }: { action?: ReactNode }) {
+  const { days, week, litToday } = streak(useHistory());
+  return (
+    <StreakCard
+      count={days.length}
+      aside="1 session / day"
+      action={action}
+      days={week.map((d) => ({
+        label: d.date.toLocaleDateString(undefined, { weekday: "short" }),
+        name: d.date.toLocaleDateString(undefined, { weekday: "long" }),
+        lit: d.lit,
+        today: d.today,
+      }))}
+    >
+      <p className="muted prose">
+        One completed session per day keeps it lit.
+        {litToday ? " Today’s session is done." : " Light it again tonight to keep your streak going."}
+      </p>
+    </StreakCard>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { Icon } from "./Icon";
+import type { IconName } from "./icons";
 
 interface SwitchProps {
   label: ReactNode;
@@ -39,7 +40,7 @@ export function Switch({ label, hint, checked, onChange }: SwitchProps) {
 
 interface ChoiceGroupProps<T extends string> {
   legend: ReactNode;
-  options: { value: T; label: ReactNode; hint?: ReactNode }[];
+  options: { value: T; label: ReactNode; hint?: ReactNode; icon?: IconName }[];
   value: T;
   onChange: (next: T) => void;
 }
@@ -61,7 +62,11 @@ export function ChoiceGroup<T extends string>({ legend, options, value, onChange
               onChange={() => onChange(o.value)}
             />
             <label htmlFor={`${name}-${o.value}`}>
-              <Icon name="check" size={20} className="wk-dpick__check" />
+              {value !== o.value && o.icon ? (
+                <Icon name={o.icon} size={20} className="wk-dpick__check wk-dpick__check--icon" />
+              ) : (
+                <Icon name="check" size={20} className="wk-dpick__check" />
+              )}
               <span>
                 {o.label}
                 {o.hint && <small className="choice__hint">{o.hint}</small>}
