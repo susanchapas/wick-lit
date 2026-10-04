@@ -4,10 +4,10 @@ import { Icon } from "./Icon";
 import type { IconName } from "./icons";
 
 const items: { to: string; label: string; icon: IconName }[] = [
-  { to: "/", label: "The grove", icon: "grove" },
+  { to: "/", label: "The Grove", icon: "grove" },
   { to: "/trails", label: "Trails", icon: "trail" },
   { to: "/journey", label: "Journey", icon: "lantern" },
-  { to: "/guide", label: "Field guide", icon: "guide" },
+  { to: "/guide", label: "Field Guide", icon: "guide" },
 ];
 
 export function NavBar() {

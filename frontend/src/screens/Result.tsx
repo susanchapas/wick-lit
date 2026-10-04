@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation, useParams } from "react-router";
+import { Embers } from "../components/Brand";
 import { Button, ButtonLink } from "../components/Button";
 import { Dialog, Meter, Notice } from "../components/Feedback";
 import { Icon } from "../components/Icon";
@@ -59,7 +60,7 @@ export function Result() {
     <>
       <title>Coaching result · Wick</title>
       <header className="wk-score result-hero is-done">
-        <div className="result-hero__art" aria-hidden="true"><img src={rank.image} alt="" /></div>
+        <div className="result-hero__art" aria-hidden="true"><img src={rank.image} alt="" /><Embers count={6} /></div>
         <div className="section">
           <h1 className="title result-hero__title">{rank.name}</h1>
           <p className="muted">{rank.explanation}</p>
