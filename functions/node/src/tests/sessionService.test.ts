@@ -54,6 +54,19 @@ describe("Wick-owned session flow", () => {
     expect(session.turns.map((turn) => turn.turnId)).toEqual(["t1", "t2", "t3", "t4", "t5", "t6"]);
   });
 
+  it("creates the private group chat with only present chat participants as speakers", async () => {
+    const started = await createSession(
+      new MemorySessionStore(),
+      { scenarioId: "private-group-chat", mode: "text" },
+      "group-chat-client",
+    );
+    expect(started.turns).toMatchObject([
+      { turnId: "t1", role: "character", speaker: "jake" },
+      { turnId: "t2", role: "character", speaker: "chris" },
+    ]);
+    expect(started.turns.some((turn) => turn.speaker === "ana")).toBe(false);
+  });
+
   it("does not allow a session token from another session", async () => {
     const store = new MemorySessionStore();
     const first = await createSession(store, { scenarioId: "upstairs-invite", mode: "text" }, "a");

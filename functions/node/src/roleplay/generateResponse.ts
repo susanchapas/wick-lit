@@ -33,7 +33,7 @@ const responseJsonSchema = {
         required: ["speaker", "text"],
       },
     },
-    scenario_complete: { type: "boolean" },
+    scenario_complete: { type: "boolean", description: "True only when an end condition occurred and the final responses clearly establish the terminal outcome." },
     end_reason: { type: "string", enum: ["none", "resolved", "learner_stop"], description: "Use none unless scenario_complete is true." },
     state: { type: "string", description: "A short internal scenario-state label." },
   },

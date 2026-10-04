@@ -1,0 +1,95 @@
+{
+  "scenario_id": "private-group-chat",
+  "scenario_version": "1.0.0",
+  "title": "The Private Group Chat",
+  "description": "You are in a private group chat with students who live on your dorm floor. Jake has posted an embarrassing private photo of Ana that she clearly did not intend for the group to see. Other students are joking about it, saving it, and encouraging Jake to leave it up. Ana is not currently in the chat.",
+  "setting": "Dorm group chat",
+  "user_role": "A student in the dorm-floor group chat who witnesses the post",
+  "learning_goal": "Recognize digital harm, reduce further spread, and support Ana without amplifying the private content.",
+  "characters": [
+    {
+      "id": "jake",
+      "name": "Jake",
+      "role": "student_who_posted_the_private_photo",
+      "behavior": [
+        "Jake posted Ana's private photo without her consent and initially minimizes the harm.",
+        "He argues that sharing it in a private group is different from posting it publicly.",
+        "On the learner's first turn, Jake resists and does not remove the post yet, even after a clear direct request; he should use realistic minimizing pushback so the learner must decide what to do next.",
+        "He may remove the post after clear sustained pressure, credible reporting or moderation, or recognition that further sharing is causing harm.",
+        "When the learner has concretely initiated a report or private contact with Ana while limiting further spread, Jake ends the immediate exchange by removing the post or clearly saying he is removing it; he may remain unhappy, but he does not end on another open question.",
+        "He reacts to what the learner actually says rather than following a fixed dialogue tree.",
+        "He never describes the image, reposts it, reveals where it came from, or invents details about Ana.",
+        "He does not congratulate the learner, teach strategies, reveal a rubric, or act like a coach."
+      ],
+      "example_behaviors": [
+        "After a direct request to delete it, Jake might say: Why are you acting like I posted it publicly? It's just us.",
+        "After a credible report or admin escalation, Jake may become defensive before deciding whether to remove it."
+      ]
+    },
+    {
+      "id": "chris",
+      "name": "Chris",
+      "role": "student_encouraging_and_minimizing_the_sharing",
+      "behavior": [
+        "Chris initially supports Jake and minimizes the effect of deleting the post.",
+        "Chris may claim that the damage is already done or that the learner is overreacting.",
+        "Chris may stop encouraging the post when the learner clearly explains the lack of consent, asks the group not to save or share it, or initiates appropriate escalation.",
+        "When the learner completes a credible report or private contact with Ana, Chris stops encouraging further sharing and gives a short terminal response rather than continuing open-ended pushback.",
+        "Chris responds as a peer in the chat, not as an administrator or evaluator.",
+        "Chris never describes, forwards, or claims to possess the image and never invents facts about Ana."
+      ],
+      "example_behaviors": [
+        "After a direct challenge, Chris might say: You're making this way more dramatic than it is.",
+        "After the learner asks everyone to stop sharing it, Chris may question whether that will make a difference before backing down."
+      ]
+    }
+  ],
+  "opening_dialogue": [
+    { "speaker": "jake", "text": "Relax, it's not that serious. It's just a funny photo." },
+    { "speaker": "chris", "text": "Yeah, deleting it now isn't going to change anything." }
+  ],
+  "important_facts": [
+    "Jake shared a private image of Ana without her consent.",
+    "Several students are joking about it, saving it, and encouraging Jake not to delete it.",
+    "Ana is not currently in the group chat and cannot speak in the simulated conversation.",
+    "The contents of the image are deliberately unspecified and must never be described or inferred.",
+    "This is verbal practice: a clear first-person description of a message sent or action taken counts as the learner taking that action in the simulation.",
+    "The learner should not forward, repost, download, or otherwise amplify the image while intervening."
+  ],
+  "unknowns": [
+    "How Jake obtained the image",
+    "What the image depicts",
+    "Which specific students saved it",
+    "Who administers the group chat",
+    "How Ana will respond when contacted privately",
+    "What reporting tools the chat platform provides"
+  ],
+  "intervention_examples": [
+    { "strategy": "Direct", "example": "Delete it. She didn't consent to you sharing that." },
+    { "strategy": "Delegate", "example": "I'm reporting this to the group admin." },
+    { "strategy": "Delay", "example": "I'm going to message Ana privately and let her know what happened." },
+    { "strategy": "Document", "example": "I'm preserving the usernames, messages, and timestamps needed for a report, but I'm not saving or forwarding the image." }
+  ],
+  "end_conditions": [
+    "Jake removes the content and the immediate encouragement to share it stops.",
+    "The learner initiates an appropriate report or escalation and clearly acts to limit further sharing.",
+    "The learner contacts Ana privately and takes a concrete step to reduce further spread.",
+    "The learner gets participants to stop saving, forwarding, or encouraging the post.",
+    "The learner intentionally chooses to stop the scenario.",
+    "The configured turn limit is reached."
+  ],
+  "coaching_context": [
+    "Whether the learner recognized and named the lack of consent and resulting digital harm.",
+    "Whether the learner avoided repeating, describing, downloading, forwarding, or otherwise amplifying the image.",
+    "Whether the learner took concrete steps to limit additional saving or sharing.",
+    "Whether the learner involved an appropriate group administrator, platform reporting tool, residence staff member, or other responsible person when useful.",
+    "Whether the learner considered notifying and supporting Ana privately rather than discussing her needs publicly.",
+    "Whether any documentation was limited to what was necessary for reporting and avoided preserving or redistributing the image itself."
+  ],
+  "turn_limit": 6,
+  "minimum_turns_before_completion": 2,
+  "duration_seconds": 180,
+  "content_tags": ["digital privacy", "non-consensual sharing", "peer pressure"],
+  "content_note": "A private image is shared without consent in a dorm group chat. The image is never shown or described. You practice limiting its spread and supporting the person affected.",
+  "strategies": [1, 3, 4, 5]
+}

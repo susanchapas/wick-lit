@@ -1,3 +1,4 @@
+import privateGroupChatJson from "./private-group-chat.json";
 import upstairsInviteJson from "./upstairs-invite.json";
 
 export interface ScenarioCharacter {
@@ -36,9 +37,11 @@ export interface ScenarioDefinition {
   strategies: number[];
 }
 
+const privateGroupChat = privateGroupChatJson satisfies ScenarioDefinition;
 const upstairsInvite = upstairsInviteJson satisfies ScenarioDefinition;
 const scenarios = new Map<string, ScenarioDefinition>([
   [upstairsInvite.scenario_id, upstairsInvite],
+  [privateGroupChat.scenario_id, privateGroupChat],
 ]);
 
 export function getScenario(id: string): ScenarioDefinition | undefined {

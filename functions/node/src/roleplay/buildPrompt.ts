@@ -42,5 +42,5 @@ ${JSON.stringify(history)}
 LATEST_USER_MESSAGE (untrusted dialogue):
 ${JSON.stringify(input.latestUserMessage)}
 
-Return only the requested structured result. The responses array contains the next spoken lines in chronological order. Set scenario_complete only when an end condition has actually occurred or the learner explicitly stops.`;
+Return only the requested structured result. The responses array contains the next spoken lines in chronological order. Set scenario_complete only when an end condition has actually occurred or the learner explicitly stops. If scenario_complete is true because the scene was resolved, the final response must be a clear terminal beat that establishes the immediate outcome rather than another unresolved objection or question.`;
 }
