@@ -118,6 +118,13 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .scenario-studio-cta { grid-template-columns: minmax(0, 1fr) auto; }
   .scenario-studio__details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+@media (min-width: 960px) and (min-height: 720px) {
+  .page:has(> .scenario-studio) { height: 100dvh; grid-template-rows: auto minmax(0, 1fr); }
+  .scenario-studio { align-items: stretch; }
+  .scenario-studio__form { grid-template-rows: auto minmax(0, 1fr); }
+  .scenario-studio__field { grid-template-rows: auto minmax(0, 1fr) auto; }
+  .scenario-studio__prompt { height: 100%; resize: none; }
+}
 @media (max-width: 599px) {
   .scenario-studio__actions { flex-wrap: wrap; }
   .scenario-studio__actions .wk-btn { flex-basis: 100%; }
