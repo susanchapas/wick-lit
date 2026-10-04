@@ -27,7 +27,9 @@ const generatedCharacterSchema = z.object({
 const generatedScenarioSchema = z.object({
   title: z.string().trim().min(3).max(80),
   description: z.string().trim().min(30).max(900),
-  setting: z.string().trim().min(2).max(80),
+  // Generated settings often include useful context such as the communication
+  // channel and timing; allow a full sentence rather than rejecting it at 80.
+  setting: z.string().trim().min(2).max(200),
   user_role: z.string().trim().min(3).max(160),
   learning_goal: z.string().trim().min(10).max(400),
   characters: z.array(generatedCharacterSchema).min(2).max(3),
@@ -144,26 +146,32 @@ export async function generateCustomScenario(prompt: string): Promise<ScenarioDe
   let lastError: unknown;
 
   for (const model of models) {
-    try {
-      const result = await client.models.generateContent({
-        model,
-        contents: generationPrompt(prompt),
-        config: {
-          responseMimeType: "application/json",
-          responseJsonSchema,
-          temperature: 0.45,
-          abortSignal: AbortSignal.timeout(25_000),
-        },
-      });
-      if (!result.text) throw new Error("Gemini returned no scenario");
-      const draft = normalizeDraft(generatedScenarioSchema.parse(JSON.parse(result.text)));
-      validateDraft(draft);
-      return finalizeScenario(draft);
-    } catch (error) {
-      lastError = error;
-      if (error instanceof SyntaxError || error instanceof z.ZodError) continue;
-      const status = error && typeof error === "object" && "status" in error ? Number(error.status) : 0;
-      if (![429, 500, 502, 503, 504].includes(status)) break;
+    // Structured model output can occasionally be syntactically valid but miss one
+    // relationship (for example, an opening speaker ID). Retry once before moving
+    // to the fallback model so a transient draft never makes a built-in example fail.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const result = await client.models.generateContent({
+          model,
+          contents: generationPrompt(prompt),
+          config: {
+            responseMimeType: "application/json",
+            responseJsonSchema,
+            temperature: attempt === 0 ? 0.35 : 0.2,
+            abortSignal: AbortSignal.timeout(25_000),
+          },
+        });
+        if (!result.text) throw new ScenarioDraftError("Gemini returned no scenario");
+        const draft = normalizeDraft(generatedScenarioSchema.parse(JSON.parse(result.text)));
+        validateDraft(draft);
+        return finalizeScenario(draft);
+      } catch (error) {
+        lastError = error;
+        if (isRetryableDraftError(error)) continue;
+        const status = error && typeof error === "object" && "status" in error ? Number(error.status) : 0;
+        if ([429, 500, 502, 503, 504].includes(status)) continue;
+        break;
+      }
     }
   }
 
@@ -178,7 +186,7 @@ export async function generateCustomScenario(prompt: string): Promise<ScenarioDe
           ? lastError.message.slice(0, 160)
           : undefined,
   });
-  throw new AppError(502, "scenario_generation_failed", "Wick could not shape that scenario yet. Try a little more detail.", true);
+  throw new AppError(502, "scenario_generation_failed", "Wick could not shape that scenario right now. Please try again.", true);
 }
 
 export function signCustomScenario(scenario: ScenarioDefinition): string {
@@ -220,8 +228,14 @@ ${JSON.stringify(prompt)}`;
 
 function validateDraft(draft: z.infer<typeof generatedScenarioSchema>) {
   const ids = draft.characters.map((character) => character.id);
-  if (new Set(ids).size !== ids.length) throw new Error("Duplicate character ID");
-  if (draft.opening_dialogue.some((line) => !ids.includes(line.speaker))) throw new Error("Unknown opening speaker");
+  if (new Set(ids).size !== ids.length) throw new ScenarioDraftError("Duplicate character ID");
+  if (draft.opening_dialogue.some((line) => !ids.includes(line.speaker))) throw new ScenarioDraftError("Unknown opening speaker");
+}
+
+class ScenarioDraftError extends Error {}
+
+function isRetryableDraftError(error: unknown) {
+  return error instanceof ScenarioDraftError || error instanceof SyntaxError || error instanceof z.ZodError;
 }
 
 function normalizeDraft(draft: z.infer<typeof generatedScenarioSchema>): z.infer<typeof generatedScenarioSchema> {
