@@ -2,6 +2,7 @@ import { AppError } from "../domain/errors";
 
 const API_ORIGIN = "https://api.elevenlabs.io";
 const PROVIDER_TIMEOUT_MS = 30_000;
+const STABILIZED_VOICE_ID = "iP95p4xoKVk53GoZ742B";
 
 export interface TranscriptionInput {
   bytes: Uint8Array;
@@ -54,6 +55,15 @@ export async function synthesizeCharacterSpeech(text: string, characterVoiceId?:
       body: JSON.stringify({
         text,
         model_id: process.env.ELEVENLABS_TTS_MODEL ?? "eleven_flash_v2_5",
+        ...(voiceId === STABILIZED_VOICE_ID ? {
+          voice_settings: {
+            stability: 0.9,
+            similarity_boost: 0.75,
+            style: 0,
+            use_speaker_boost: true,
+            speed: 1,
+          },
+        } : {}),
       }),
     },
   );
