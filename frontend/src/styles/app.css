@@ -50,6 +50,8 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 
 .page { display: grid; align-content: start; gap: var(--space-8); width: 100%; max-width: 1200px; margin-inline: auto; padding: var(--space-6) var(--space-4) calc(96px + env(safe-area-inset-bottom, 0px)); }
 .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); }
+.page-head__aside { display: flex; align-items: center; gap: var(--space-2); }
+.avatar { flex: none; width: var(--avatar); height: var(--avatar); border-radius: 50%; object-fit: cover; background: var(--ground-raised); box-shadow: var(--inset-raised); }
 .page-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-4); }
 .shell__nav { position: fixed; left: 50%; bottom: var(--space-2); translate: -50% 0; width: calc(100% - var(--space-4)); }
 .shell__brand, .shell__settings, .shell__note { display: none; }
