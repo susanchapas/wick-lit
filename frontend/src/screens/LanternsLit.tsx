@@ -2,7 +2,7 @@ import { Button, ButtonLink } from "../components/Button";
 import { EmptyState } from "../components/Feedback";
 import { PageHead } from "../components/PageHead";
 import { LanternTile, StreakCard } from "../components/Streak";
-import { streak, useHistory } from "../lib/history";
+import { journeyEntries, streak, useHistory } from "../lib/history";
 import { growthRankForScore } from "../lib/rankings";
 
 const short = (d: Date) => d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
@@ -18,6 +18,7 @@ async function viewCertificate() {
 
 export function Journey() {
   const history = useHistory();
+  const journey = journeyEntries(history);
   const { days } = streak(history);
 
   return (
@@ -41,7 +42,7 @@ export function Journey() {
             </p>
           </StreakCard>
           <ul className="lantern-grid">
-            {history.map((l) => (
+            {journey.map((l) => (
               <li key={l.id}>
                 <LanternTile
                   title={l.title}

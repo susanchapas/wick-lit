@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
-import type { GrowthRank } from "../lib/rankings";
+import { growthRanks, type GrowthRank } from "../lib/rankings";
 import { withPeriod } from "../lib/text";
-
-const flame = "M12 3C14.6 6.4 18 8.9 18 13.6A6 6 0 0 1 6 13.6C6 10.6 7.8 8.6 9.2 6.4C9.8 8.2 10.7 9.2 11.8 9.6C12.6 7.6 12.6 5.3 12 3Z";
 
 interface Day {
   label: string;
@@ -56,16 +54,14 @@ interface LanternTileProps {
 export function LanternTile({ title, date, rank, score }: LanternTileProps) {
   return (
     <article className="wk-lantern is-lit">
-      {rank ? (
-        <img className="wk-lantern__rank-art" src={rank.image} alt="" />
-      ) : (
-        <svg className="wk-lantern__flame" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d={flame} />
-        </svg>
-      )}
-      <span className="wk-card__lit">{rank ? rank.name : "Rank unavailable"}</span>
+      <img
+        className={`wk-lantern__rank-art${rank ? "" : " is-placeholder"}`}
+        src={rank?.image ?? growthRanks[0].image}
+        alt=""
+      />
+      <span className="wk-card__lit">{rank ? rank.name : "Rank not recorded"}</span>
       <h3 className="wk-lantern__title">{withPeriod(title)}</h3>
-      <p className="wk-lantern__meta">{date}{typeof score === "number" ? ` · ${score}/9` : ""}</p>
+      <p className="wk-lantern__meta">{date}{typeof score === "number" ? ` · ${score}/9` : " · Legacy session"}</p>
     </article>
   );
 }

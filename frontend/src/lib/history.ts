@@ -55,6 +55,26 @@ const subscribe = (l: () => void) => {
 
 export const useHistory = () => useSyncExternalStore(subscribe, () => current);
 
+export function journeyEntries(history: Lantern[]) {
+  const byScenario = new Map<string, Lantern>();
+  for (const lantern of history) {
+    const selected = byScenario.get(lantern.scenarioId);
+    if (!selected) {
+      byScenario.set(lantern.scenarioId, lantern);
+      continue;
+    }
+    const lanternRanked = typeof lantern.score === "number";
+    const selectedRanked = typeof selected.score === "number";
+    const lanternIsNewer = new Date(lantern.completedAt).getTime() > new Date(selected.completedAt).getTime();
+    if ((lanternRanked && !selectedRanked) || (lanternRanked === selectedRanked && lanternIsNewer)) {
+      byScenario.set(lantern.scenarioId, lantern);
+    }
+  }
+  return [...byScenario.values()].sort(
+    (a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime(),
+  );
+}
+
 const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 
