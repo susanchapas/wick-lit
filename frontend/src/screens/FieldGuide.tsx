@@ -159,7 +159,6 @@ export function FieldGuide() {
       <section className="guide-head" aria-labelledby="guide-lead">
         <figure className="guide-photo">
           <img src={pexels(6383164)} alt="" width={960} height={600} loading="lazy" />
-          <figcaption>Photo: Liza Summer, Pexels</figcaption>
         </figure>
         <div className="guide-head__body">
           <div className="guide-head__id">
@@ -225,12 +224,11 @@ function Module({ i, step, note, trails, onSave, onGo }: ModuleProps) {
       <header className="guide-head">
         <figure className="guide-photo">
           <img
-            src={pexels(d.photo.id)}
+            src={pexels(d.photo)}
             alt=""
             width={960}
             height={600}
           />
-          <figcaption>Photo: {d.photo.by}, Pexels</figcaption>
         </figure>
         <div className="guide-head__body">
         <div className="guide-head__id">

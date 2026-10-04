@@ -147,7 +147,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .guide-head { display: grid; border-radius: var(--radius-lg); background: var(--ground-raised); box-shadow: var(--inset-raised); overflow: hidden; animation: wk-rise var(--duration-rise) var(--ease-kindle) both; }
 .guide-photo { position: relative; margin: 0; height: 180px; }
 .guide-photo img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.7) brightness(.85); -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent); mask-image: linear-gradient(to bottom, #000 45%, transparent); animation: wk-fade var(--duration-settle) var(--ease-kindle) both; }
-.guide-photo figcaption { position: absolute; top: var(--space-3); right: var(--space-3); padding: 2px var(--space-2); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--ground) 70%, transparent); color: var(--ink-muted); font: 400 11px/16px var(--font-mono); }
 .guide-head__body { display: grid; gap: var(--space-6); padding: 0 var(--space-6) var(--space-6); }
 .guide-head__id { display: flex; align-items: center; gap: var(--space-4); }
 .guide-head__icon { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border-radius: var(--radius-round); background: var(--ground-sunken); box-shadow: var(--inset-well); color: var(--d); }

@@ -24,7 +24,6 @@ export function Overview({ steps, isOpen, labelledBy, onGo }: OverviewProps) {
       <section className="guide-head" aria-labelledby="overview-intro">
         <figure className="guide-photo">
           <img src={pexels(6140655)} alt="" width={960} height={600} />
-          <figcaption>Photo: William Fortunato, Pexels</figcaption>
         </figure>
         <div className="guide-head__body">
           <h2 className="heading" id="overview-intro">
