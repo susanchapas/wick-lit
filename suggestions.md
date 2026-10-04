@@ -26,6 +26,8 @@ Layout limits used for the numbers below:
 | 13 | Social share card | All (`index.html`) | `<meta property="og:image">` | — | 1.91:1 | 1200 × 630 |
 | 14 | App icons | All (`index.html`) | `apple-touch-icon`, PWA icons | — | 1:1 | 180, 192, 512 |
 | 15 | How practice works card | Welcome (`/welcome`) | `Welcome` → `.step-card` | 927 × ~150 | ~3:1 (height follows text) | 1856 × 620 |
+| 16 | Strategy scene photo | Field guide (`/guide`) | `FieldGuide` → `.guide-photo` | 927 × 180 | 16:10 source, `object-fit: cover` | 960 × 600 (Pexels crop) |
+| 17 | Result caricature | Result (`/trails/:id/result`) | `Result` → `.result-hero__art` | 220 × 293 | 3:4 | 480 × 640 (× 3 levels) |
 
 ## Slot details
 
@@ -130,6 +132,15 @@ Layout limits used for the numbers below:
 - **Page:** Field guide. **File:** `src/lib/strategies.ts` (`photo`), shown in `src/screens/FieldGuide.tsx`.
 - **Use:** one Pexels photo per D that matches its practice situation. Loaded from `images.pexels.com`; CSS mutes and fades it into the card.
 - **Now:** party (Direct), club (Distract), transit (Delegate), study table (Delay), phone (Document).
+- **Sizes:** below 960px, full card width (up to 927px) × 180px, faded at the bottom. At 960px and up, the right half of the card (~552px) × at least 240px (height follows the text), faded at the left.
+- **Export:** 960 × 600, 16:10 (set in the `pexels()` URL). Keep the subject in the centre; the image is cropped and fades on one side.
+
+### 17. Result caricature
+- **Page:** Result (feedback). **File:** `src/screens/Result.tsx` (`.result-hero__art`), CSS in `src/styles/app.css`.
+- **Now:** a dashed placeholder box with the text "Caricature · {level}".
+- **Use:** one caricature per score level, picked by `data-level`: `low`, `mid`, `high`. Decorative (`aria-hidden`), so use `alt=""`. Keep the tone kind at every level; the low image must not mock the user.
+- **Sizes:** 160 × 213 below 960px. 220 × 293 at 960px and up (beside the text). Corners rounded 16px (`--radius-lg`).
+- **Export:** 480 × 640, 3:4, one file per level (`result-low`, `result-mid`, `result-high`). Keep the face in the centre 80%; corners are cut by the radius.
 
 ## General notes
 - Every image in slots 1–12 is decorative except 5, 6 and 8. Use `alt=""` for decorative images; give 5 and 6 a short scene description.

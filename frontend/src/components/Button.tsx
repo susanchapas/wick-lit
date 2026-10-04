@@ -4,7 +4,7 @@ import { Icon } from "./Icon";
 import type { IconName } from "./icons";
 
 interface Look {
-  tone?: "lantern" | "frost" | "quiet" | "exit";
+  tone?: "lantern" | "frost" | "bark" | "quiet" | "exit";
   size?: "md" | "lg";
   icon?: IconName;
   iconAfter?: IconName;

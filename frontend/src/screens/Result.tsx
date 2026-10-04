@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation, useParams } from "react-router";
 import { Button, ButtonLink } from "../components/Button";
-import { Meter, Notice } from "../components/Feedback";
+import { Dialog, Meter, Notice } from "../components/Feedback";
+import { Icon } from "../components/Icon";
 import { Transcript } from "../components/Session";
 import { addLantern, setReflection, useHistory } from "../lib/history";
 import type { EvaluationDimension, WickSession } from "../lib/types";
@@ -10,7 +11,8 @@ import { withPeriod } from "../lib/text";
 
 interface ResultState { session: WickSession }
 const statusValue = { insufficient_evidence: 0, not_demonstrated: 1, partly_demonstrated: 2, demonstrated: 3 } as const;
-const statusLabel = (status: EvaluationDimension["status"]) => status.replaceAll("_", " ");
+const statusLabel = (status: EvaluationDimension["status"]) => status.split("_").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+const levels = ["low", "low", "mid", "mid", "high"] as const;
 
 export function Result() {
   const { id = "" } = useParams();
@@ -47,25 +49,44 @@ export function Result() {
     ["Support and choice", evaluation.dimensions.supportAndChoice],
   ] as const;
 
+  const score = dimensions.reduce((sum, [, dimension]) => sum + statusValue[dimension.status], 0);
+  const level = levels[Math.floor((score / (dimensions.length * 3)) * (levels.length - 1))];
+
   return (
     <>
       <title>Coaching result · Wick</title>
-      <header className="wk-score result-head is-done">
-        <div className="wk-score__head"><p className="wk-score__over">Private feedback</p></div>
-        <div className="section"><h1 className="wk-score__band subtitle">{withPeriod(evaluation.summary)}</h1><p className="wk-score__summary">{evaluation.strength}</p></div>
+      <header className="wk-score result-hero is-done">
+        <div className="result-hero__art" data-level={level} aria-hidden="true">Caricature · {level}</div>
+        <div className="section">
+          <h1 className="title result-hero__title">Ranking Placeholder</h1>
+          <p className="muted">[Placeholder] A short sentence describing the skill level for this ranking.</p>
+          <p className="wk-score__band subtitle">{withPeriod(evaluation.summary)}</p>
+          <p className="wk-score__summary">{evaluation.strength}</p>
+          <div className="actions">{retry}<Button tone="bark" icon="document" onClick={() => setReflecting(true)}>{saved?.reflection ? "Edit reflection" : "Reflect"}</Button></div>
+        </div>
       </header>
-      <ul className="rubric-grid">
-        {dimensions.map(([name, dimension]) => <li key={name} className="wk-card panel"><Meter label={name} value={statusValue[dimension.status]} max={3} note={`${statusLabel(dimension.status)} — ${dimension.rationale}`} /></li>)}
-      </ul>
-      <div className="rubric-grid">
-        <section className="wk-card panel" aria-labelledby="worked"><h2 id="worked" className="label">What worked.</h2><p>{evaluation.strength}</p>{evaluation.identifiedStrategies.length ? <p className="muted">Strategies shown: {evaluation.identifiedStrategies.map((strategy) => strategy.name).join(", ")}.</p> : null}</section>
-        <section className="wk-card panel" aria-labelledby="next"><h2 id="next" className="label">Try next time.</h2><p>{evaluation.nextStep}</p></section>
+      <div className="result-split">
+        <div className="result-dims">
+          {dimensions.map(([name, dimension]) => (
+            <details key={name} className="wk-card panel result-dim">
+              <summary><Meter label={name} value={statusValue[dimension.status]} max={3} /><Icon name="chevron" size={20} /></summary>
+              <p className="label">{statusLabel(dimension.status)}</p>
+              <p>{dimension.rationale}</p>
+              {dimension.evidence.map((item) => <blockquote key={item.turnId} className="muted">“{item.quote}”</blockquote>)}
+            </details>
+          ))}
+        </div>
+        <div className="result-notes">
+          <section className="result-note" aria-labelledby="worked"><Icon name="check" /><div className="section"><h2 id="worked" className="heading">What worked:</h2><p>{evaluation.strength}</p>{evaluation.identifiedStrategies.length ? <p className="muted">Strategies shown: {evaluation.identifiedStrategies.map((strategy) => strategy.name).join(", ")}.</p> : null}</div></section>
+          <section className="result-note" aria-labelledby="next"><Icon name="arrow" /><div className="section"><h2 id="next" className="heading">Try next time:</h2><p>{evaluation.nextStep}</p></div></section>
+        </div>
       </div>
-      <Notice tone="safety" title="Safety comes first">Choose the safest option for the situation. If someone is aggressive, has a weapon, or you are alone, contact staff, campus security, or 911.</Notice>
-      <Transcript label="Your conversation" lines={lines} />
-      {reflecting ? <form className="wk-field" onSubmit={(event) => { event.preventDefault(); setReflection(session.sessionId, note.trim()); setReflecting(false); }}><label className="wk-field__label" htmlFor="reflection">Reflection</label><p className="wk-field__hint">A private note to yourself. It stays in this browser.</p><textarea id="reflection" className="wk-field__control" rows={4} value={note} onChange={(event) => setNote(event.target.value)} autoFocus /><div className="actions"><Button type="submit" icon="check">Save reflection</Button><Button tone="quiet" onClick={() => setReflecting(false)}>Cancel</Button></div></form> : null}
-      {saved?.reflection && !reflecting ? <Notice tone="steady" title="Reflection saved.">{saved.reflection}</Notice> : null}
-      <div className="page-foot"><div className="actions">{retry}{!reflecting ? <Button icon="document" onClick={() => setReflecting(true)}>{saved?.reflection ? "Edit reflection" : "Reflect"}</Button> : null}</div><p className="caption muted">This result is private. Trying again is optional.</p></div>
+      <div className="result-split">
+        <Transcript label="Your conversation" lines={lines} />
+        <Notice tone="safety" title="Safety comes first">Choose the safest option for the situation. If someone is aggressive, has a weapon, or you are alone, contact staff, campus security, or 911.</Notice>
+      </div>
+      {reflecting ? <Dialog title="Reflection" onClose={() => setReflecting(false)} actions={<><Button tone="quiet" onClick={() => setReflecting(false)}>Cancel</Button><Button icon="check" onClick={() => { setReflection(session.sessionId, note.trim()); setReflecting(false); }}>Save</Button></>}><div className="wk-field"><label className="wk-field__hint" htmlFor="reflection">A private note to yourself. It stays in this browser.</label><textarea id="reflection" className="wk-field__control" rows={5} value={note} onChange={(event) => setNote(event.target.value)} autoFocus /></div></Dialog> : null}
+      <div className="page-foot"><p className="caption muted">This result is private. Trying again is optional.</p></div>
     </>
   );
 }

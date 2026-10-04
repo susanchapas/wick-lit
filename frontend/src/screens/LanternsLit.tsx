@@ -42,7 +42,7 @@ export function LanternsLit() {
           <ul className="lantern-grid">
             {history.map((l) => (
               <li key={l.id}>
-                <LanternTile title={l.title} meta={l.strategies.join(" · ")} date={short(new Date(l.completedAt))} />
+                <LanternTile title={l.title} date={short(new Date(l.completedAt))} />
               </li>
             ))}
           </ul>

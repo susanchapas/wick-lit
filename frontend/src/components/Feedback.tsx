@@ -131,7 +131,7 @@ export function Dialog({ title, actions, onClose, children }: DialogProps) {
         <h2 id={id} className="wk-dialog__title">
           {title}
         </h2>
-        <p className="wk-dialog__body">{children}</p>
+        <div className="wk-dialog__body">{children}</div>
         <div className="wk-dialog__actions">{actions}</div>
       </div>
     </dialog>

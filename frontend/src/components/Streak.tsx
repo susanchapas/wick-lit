@@ -48,11 +48,10 @@ export function StreakCard({ count, days, aside, children }: StreakCardProps) {
 
 interface LanternTileProps {
   title: string;
-  meta: string;
   date: string;
 }
 
-export function LanternTile({ title, meta, date }: LanternTileProps) {
+export function LanternTile({ title, date }: LanternTileProps) {
   return (
     <article className="wk-lantern is-lit">
       <svg className="wk-lantern__flame" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -63,7 +62,6 @@ export function LanternTile({ title, meta, date }: LanternTileProps) {
         Lantern lit
       </span>
       <h3 className="wk-lantern__title">{withPeriod(title)}</h3>
-      <p className="wk-lantern__meta">{meta}</p>
       <p className="wk-lantern__meta">{date}</p>
     </article>
   );

@@ -58,6 +58,9 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-btn--frost { background: var(--frost); color: var(--ink); box-shadow: var(--inset-frost); }
 .wk-btn--frost:hover { background: var(--frost-hover); box-shadow: var(--inset-frost), var(--glow-soft); }
 .wk-btn--frost:focus-visible { box-shadow: var(--inset-frost), var(--focus-ring); }
+.wk-btn--bark { background: var(--lantern-soft); color: var(--lantern-text); box-shadow: var(--inset-frost); }
+.wk-btn--bark:hover { box-shadow: var(--inset-frost), var(--glow-soft); }
+.wk-btn--bark:focus-visible { box-shadow: var(--inset-frost), var(--focus-ring); }
 .wk-btn--quiet { background: transparent; color: var(--ink-link); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; padding-inline: var(--space-3); }
 .wk-btn--quiet:hover { text-decoration-thickness: 2px; background: var(--frost); box-shadow: var(--inset-frost); }
 .wk-btn--quiet:focus-visible { box-shadow: var(--focus-ring); }
@@ -319,7 +322,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 
 /* ---------- Dialog ---------- */
 .wk-dialog { position: fixed; inset: 0; z-index: var(--stratum-lantern); display: grid; place-items: center; padding: var(--space-4); }
-.wk-dialog__veil { position: absolute; inset: 0; background: var(--veil); opacity: var(--opacity-scrim); -webkit-backdrop-filter: blur(var(--blur-veil)); backdrop-filter: blur(var(--blur-veil)); animation: wk-fade var(--duration-rise) var(--ease-kindle) both; }
+.wk-dialog__veil { position: absolute; inset: 0; background: color-mix(in srgb, var(--veil) calc(var(--opacity-scrim) * 100%), transparent); -webkit-backdrop-filter: blur(var(--blur-veil)); backdrop-filter: blur(var(--blur-veil)); animation: wk-fade var(--duration-rise) var(--ease-kindle) both; }
 .wk-dialog__panel { position: relative; display: grid; gap: var(--space-4); width: 100%; max-width: 440px; padding: var(--space-6); border-radius: var(--radius-xl); background: var(--ground-raised); box-shadow: var(--inset-raised), var(--bleed-night); animation: wk-rise var(--duration-rise) var(--ease-kindle) both; }
 .wk-dialog__title { margin: 0; font: 600 20px/28px var(--font-sans); }
 .wk-dialog__body { margin: 0; font: 400 16px/26px var(--font-sans); color: var(--ink-muted); }
