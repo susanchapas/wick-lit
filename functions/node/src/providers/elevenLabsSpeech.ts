@@ -41,7 +41,7 @@ export async function transcribeUserAudio(input: TranscriptionInput): Promise<st
 }
 
 export async function synthesizeCharacterSpeech(text: string, characterVoiceId?: string): Promise<SpeechAudio> {
-  const voiceId = characterVoiceId ?? process.env.ELEVENLABS_VOICE_ID;
+  const voiceId = characterVoiceId;
   if (!voiceId) {
     throw new AppError(503, "elevenlabs_voice_not_configured", "Character voice is not configured on the server.");
   }

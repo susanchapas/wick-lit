@@ -12,7 +12,6 @@ In the local copy, replace these placeholders:
 | --- | --- |
 | `GEMINI_API_KEY` | Gemini API key from Google AI Studio |
 | `ELEVENLABS_API_KEY` | ElevenLabs API key with speech-to-text and text-to-speech access |
-| `ELEVENLABS_VOICE_ID` | The ElevenLabs voice ID used for scenario speech |
 | `WICK_RATE_LIMIT_SALT` | A long random value unique to the local machine |
 | `WICK_CUSTOM_SCENARIO_SECRET` | A long random value used to sign generated scenario drafts |
 

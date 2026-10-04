@@ -49,7 +49,6 @@ Voice mode requests it only after Start.
 | `GEMINI_MODEL` | Primary low-latency model |
 | `GEMINI_FALLBACK_MODEL` | Capacity fallback |
 | `ELEVENLABS_API_KEY` | Server-side STT and TTS |
-| `ELEVENLABS_VOICE_ID` | Voice used for scenario character speech |
 | `ELEVENLABS_STT_MODEL` | Defaults to `scribe_v2` |
 | `ELEVENLABS_TTS_MODEL` | Defaults to `eleven_flash_v2_5` |
 | `AzureWebJobsStorage` | Functions storage and durable sessions |
