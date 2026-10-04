@@ -156,25 +156,27 @@ export function FieldGuide() {
           <Overview steps={progress.steps} isOpen={isOpen} labelledBy={tabId(OVERVIEW)} onGo={go} />
         )}
       </div>
-      <section className="guide-head" aria-labelledby="guide-lead">
-        <figure className="guide-photo">
-          <img src={pexels(6383164)} alt="" width={960} height={600} loading="lazy" />
-        </figure>
-        <div className="guide-head__body">
-          <div className="guide-head__id">
-            <span className="guide-head__icon guide-lead__icon">
-              <Icon name="info" />
-            </span>
-            <h2 className="heading" id="guide-lead">
-              Let the person affected decide.
-            </h2>
+      {active === OVERVIEW && (
+        <section className="guide-head" aria-labelledby="guide-lead">
+          <figure className="guide-photo">
+            <img src={pexels(6383164)} alt="" width={960} height={600} loading="lazy" />
+          </figure>
+          <div className="guide-head__body">
+            <div className="guide-head__id">
+              <span className="guide-head__icon guide-lead__icon">
+                <Icon name="info" />
+              </span>
+              <h2 className="heading" id="guide-lead">
+                Let the person affected decide.
+              </h2>
+            </div>
+            <p className="muted prose">
+              The five Ds are a set of options you can use in any order. Choose based on safety, the context, and what
+              the person affected wants.
+            </p>
           </div>
-          <p className="muted prose">
-            The five Ds are a set of options you can use in any order. Choose based on safety, the context, and what
-            the person affected wants.
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
       <div className="actions">
         {active === OVERVIEW && done < strategies.length && (
           <Button

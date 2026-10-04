@@ -51,14 +51,13 @@ export function Journey() {
       ) : (
         <EmptyState
           title="Your journey starts here."
-          aside="Your first growth stage appears after a completed trail."
           action={
             <ButtonLink tone="lantern" to="/trails">
               Find a trail
             </ButtonLink>
           }
         >
-          Finish a trail to save your first result and growth rank.
+          Complete a trail to see your first result and growth rank.
         </EmptyState>
       )}
     </>

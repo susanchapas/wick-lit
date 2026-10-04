@@ -144,7 +144,6 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .wk-card__ds { margin: 0; padding: 0; list-style: none; }
 .wk-card > .wk-d { justify-self: start; }
 .wk-tabs__list { justify-self: start; flex-wrap: wrap; }
-.wk-tabs__tab[aria-selected="true"] { background: var(--frost); box-shadow: var(--inset-frost), inset 0 -2px 0 var(--lantern); }
 
 .guide { gap: var(--space-6); }
 .guide-tiles { display: flex; gap: var(--space-2); margin-inline: calc(var(--space-4) * -1); padding: var(--space-1) var(--space-4) var(--space-2); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--space-4); scrollbar-width: none; }

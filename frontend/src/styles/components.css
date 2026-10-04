@@ -300,7 +300,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-tabs__tab:hover { color: var(--ink); }
 .wk-tabs__tab[aria-selected="true"] { color: var(--ink); }
 .wk-tabs__tab:focus-visible { box-shadow: var(--focus-ring); }
-.wk-tabs__mark { position: absolute; top: var(--space-1); bottom: var(--space-1); border-radius: var(--radius-sm); background: var(--frost); box-shadow: var(--inset-frost), inset 0 -2px 0 var(--lantern); transition: left var(--duration-drift) var(--ease-lift), width var(--duration-drift) var(--ease-lift); }
+.wk-tabs__mark { position: absolute; border-radius: var(--radius-sm); background: var(--frost); box-shadow: var(--inset-frost), inset 0 -2px 0 var(--lantern); transition: left var(--duration-drift) var(--ease-lift), top var(--duration-drift) var(--ease-lift), width var(--duration-drift) var(--ease-lift), height var(--duration-drift) var(--ease-lift); }
 .wk-tabs__panel { padding: var(--space-4) 0 0; }
 .wk-tabs__panel:focus-visible { box-shadow: var(--focus-ring); }
 .wk-nav { display: flex; justify-content: space-around; gap: var(--space-1); padding: var(--space-2) var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom, 0px)); background: var(--ground-raised); box-shadow: var(--inset-raised); z-index: var(--stratum-path); width: 100%; max-width: 440px; border-radius: var(--radius-lg); }
@@ -331,13 +331,12 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-dialog__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-3); }
 
 /* ---------- Empty state ---------- */
-.wk-empty { display: grid; justify-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6); text-align: center; max-width: 420px; }
+.wk-empty { display: grid; justify-items: center; gap: var(--space-3); padding: var(--space-8) var(--space-6); text-align: center; width: 100%; box-sizing: border-box; border: 1px solid color-mix(in srgb, var(--ink-muted) 16%, transparent); border-radius: var(--radius-lg); }
 .wk-empty__art { position: relative; width: 96px; height: 132px; color: var(--edge); }
 .wk-empty__art .wk-flame { position: absolute; left: 50%; bottom: 26px; width: 22px; height: 28px; margin-left: -11px; color: var(--vein); transition: color var(--duration-settle) var(--ease-kindle); }
 .wk-empty:hover .wk-empty__art .wk-flame { color: var(--flame); }
 .wk-empty__title { margin: 0; font: 600 20px/28px var(--font-sans); }
-.wk-empty__aside { margin: 0; font: 400 20px/28px var(--font-display); color: var(--ink-muted); }
-.wk-empty__body { margin: 0; font: 400 16px/24px var(--font-sans); color: var(--ink-muted); }
+.wk-empty__body { margin: 0 0 var(--space-3); font: 400 16px/24px var(--font-sans); color: var(--ink-muted); max-width: 32ch; }
 
 /* ---------- Frame: mark, scenery, rule ---------- */
 .wk-mark { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--ink); }

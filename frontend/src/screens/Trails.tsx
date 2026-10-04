@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ButtonLink } from "../components/Button";
 import { PageHead } from "../components/PageHead";
 import { TrailList } from "../components/TrailList";
@@ -14,6 +14,21 @@ const filters = [
 
 export function Trails() {
   const [active, setActive] = useState(0);
+  const [mark, setMark] = useState<CSSProperties>();
+  const list = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = list.current;
+    if (!el) return;
+    const place = () => {
+      const tab = el.children[active] as HTMLElement;
+      setMark({ left: tab.offsetLeft, top: tab.offsetTop, width: tab.offsetWidth, height: tab.offsetHeight });
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [active]);
 
   const onKey = (e: KeyboardEvent) => {
     const next = { ArrowRight: active + 1, ArrowLeft: active - 1, Home: 0, End: filters.length - 1 }[e.key];
@@ -42,7 +57,7 @@ export function Trails() {
         </div>
         <ButtonLink tone="lantern" icon="flame" iconAfter="arrow" to="/trails/create">Create a scenario</ButtonLink>
       </section>
-      <div className="wk-tabs__list" role="tablist" aria-label="Filter trails" onKeyDown={onKey}>
+      <div ref={list} className="wk-tabs__list" role="tablist" aria-label="Filter trails" onKeyDown={onKey}>
         {filters.map((f, i) => (
           <button
             key={f.id}
@@ -58,6 +73,7 @@ export function Trails() {
             {f.label}
           </button>
         ))}
+        <span className="wk-tabs__mark" style={mark} aria-hidden="true" />
       </div>
       <div id="trail-panel" role="tabpanel" aria-labelledby={`tab-${filters[active].id}`}>
         <TrailList filter={filters[active].test} />
