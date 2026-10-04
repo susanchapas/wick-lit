@@ -305,6 +305,7 @@ button.guide-trail { width: 100%; border: 0; background: none; font: inherit; te
 
 .streak__aside { text-align: right; }
 .streak__days { flex-wrap: wrap; gap: var(--space-4); }
+.streak__foot { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
 
 .map { padding: var(--space-4); }
 .map__legend { display: flex; flex-wrap: wrap; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }

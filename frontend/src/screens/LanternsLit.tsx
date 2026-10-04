@@ -18,7 +18,7 @@ async function viewCertificate() {
 
 export function Journey() {
   const history = useHistory();
-  const { days } = streak(history);
+  const { days, recent } = streak(history);
 
   return (
     <>
@@ -33,10 +33,15 @@ export function Journey() {
           <StreakCard
             count={days.length}
             aside={`${days.length} ${days.length === 1 ? "day" : "days"} lit · 1 session / day`}
-            days={days.map((d) => ({ label: short(d), name: long(d), lit: true }))}
+            days={recent.map((d) => ({ label: short(d.date), name: long(d.date), lit: d.lit, today: d.today }))}
+            action={
+              <Button tone="lantern" onClick={viewCertificate}>
+                View Certificate
+              </Button>
+            }
           >
             <p className="muted prose">
-              One completed session per day keeps it lit. Step-outs do not count, and only one streak day counts per day.
+              Finish one session a day to keep your flame lit. Extra sessions on the same day do not add to your streak, and sessions you step out of do not count.
               {days.length === 0 && " Light it again tonight."}
             </p>
           </StreakCard>
@@ -52,11 +57,6 @@ export function Journey() {
               </li>
             ))}
           </ul>
-          <div className="actions end">
-            <Button tone="lantern" onClick={viewCertificate}>
-              View Certificate
-            </Button>
-          </div>
         </>
       ) : (
         <EmptyState

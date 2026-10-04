@@ -66,10 +66,12 @@ export function streak(history: Lantern[], today = new Date()) {
     days.unshift(start);
     start = addDays(start, -1);
   }
-  const monday = addDays(today, -((today.getDay() + 6) % 7));
-  const week = Array.from({ length: 7 }, (_, i) => {
-    const d = addDays(monday, i);
-    return { date: d, lit: lit.has(dayKey(d)), today: dayKey(d) === dayKey(today) };
-  });
-  return { days, week, litToday: lit.has(dayKey(today)) };
+  const span = (from: Date) =>
+    Array.from({ length: 7 }, (_, i) => {
+      const d = addDays(from, i);
+      return { date: d, lit: lit.has(dayKey(d)), today: dayKey(d) === dayKey(today) };
+    });
+  const week = span(addDays(today, -((today.getDay() + 6) % 7)));
+  const recent = span(addDays(today, -6));
+  return { days, week, recent, litToday: lit.has(dayKey(today)) };
 }

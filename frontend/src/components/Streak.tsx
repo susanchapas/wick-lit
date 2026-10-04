@@ -16,9 +16,10 @@ interface StreakCardProps {
   days: Day[];
   aside: ReactNode;
   children: ReactNode;
+  action?: ReactNode;
 }
 
-export function StreakCard({ count, days, aside, children }: StreakCardProps) {
+export function StreakCard({ count, days, aside, children, action }: StreakCardProps) {
   return (
     <section className="wk-card panel streak" aria-labelledby="streak-title">
       <div className="panel__head">
@@ -31,17 +32,20 @@ export function StreakCard({ count, days, aside, children }: StreakCardProps) {
         <p className="data muted streak__aside">{aside}</p>
       </div>
       {children}
-      <ul className="wk-week streak__days">
-        {days.map((d) => (
-          <li key={d.name}>
-            <span className={`wk-week__dot${d.lit ? " is-lit" : ""}${d.today ? " is-today" : ""}`} aria-hidden="true" />
-            <span aria-hidden="true">{d.label}</span>
-            <span className="wk-sr">
-              {d.name}: {d.lit ? "practiced" : "not practiced"}
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="streak__foot">
+        <ul className="wk-week streak__days">
+          {days.map((d) => (
+            <li key={d.name}>
+              <span className={`wk-week__dot${d.lit ? " is-lit" : ""}${d.today ? " is-today" : ""}`} aria-hidden="true" />
+              <span aria-hidden="true">{d.label}</span>
+              <span className="wk-sr">
+                {d.name}: {d.lit ? "practiced" : "not practiced"}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {action}
+      </div>
     </section>
   );
 }
