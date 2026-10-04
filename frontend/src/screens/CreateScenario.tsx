@@ -31,13 +31,24 @@ export function CreateScenario() {
     setGenerated(null);
     try {
       const result = await generateScenario(idea);
-      saveCustomScenario(result);
       setGenerated(result);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Wick could not generate that scenario yet.");
     } finally {
       setWorking(false);
     }
+  };
+
+  const practiceScenario = () => {
+    if (!generated) return;
+    saveCustomScenario(generated);
+    navigate(`/trails/${generated.scenario.id}`);
+  };
+
+  const saveScenario = () => {
+    if (!generated) return;
+    saveCustomScenario(generated);
+    navigate("/trails");
   };
 
   return (
@@ -49,58 +60,9 @@ export function CreateScenario() {
         lead="Describe a workplace or campus moment. Wick will shape the setting, assign characters and voices, and build a short scenario you can practice immediately."
       />
 
-      <section className={`scenario-studio${generated ? " is-previewing" : ""}`} aria-labelledby="scenario-idea-title">
-        <form className="wk-card panel scenario-studio__form wk-ornate" onSubmit={submit}>
-          <div className="section">
-            <p className="eyebrow overline">Your idea</p>
-            <h2 id="scenario-idea-title" className="heading">What should someone practice?</h2>
-            <p className="muted prose">
-              Include the setting, who is involved, and the difficult moment. Names and roles are optional—Wick can create them.
-            </p>
-          </div>
-          <label className="wk-field scenario-studio__field">
-            <span className="wk-field__label">Scenario prompt</span>
-            <textarea
-              className="wk-field__control scenario-studio__prompt"
-              value={prompt}
-              minLength={20}
-              maxLength={1500}
-              rows={7}
-              disabled={working}
-              aria-invalid={Boolean(error)}
-              placeholder="Example: During a planning meeting, a senior employee repeatedly takes credit for a new hire's work..."
-              onChange={(event) => setPrompt(event.target.value)}
-            />
-            <span className="wk-field__foot">
-              <span className="wk-field__hint">Do not include confidential company or personal information.</span>
-              <span className="wk-field__count">{prompt.length}/1500</span>
-            </span>
-          </label>
-          <div className="scenario-studio__examples" aria-label="Example scenario ideas">
-            <p className="caption muted">Try an example</p>
-            <div className="chips">
-              {examples.map((example, index) => (
-                <button className="pill pill--toggle" type="button" key={example} disabled={working} onClick={() => setPrompt(example)}>
-                  Example {index + 1}
-                </button>
-              ))}
-            </div>
-          </div>
-          {error && <Notice tone="danger" title="That scenario did not generate.">{error}</Notice>}
-          {working ? (
-            <WickLoader label="Shaping the setting, characters, and choices…" />
-          ) : (
-            <div className="actions">
-              <Button tone="lantern" size="lg" icon="flame" type="submit" disabled={prompt.trim().length < 20}>
-                Generate scenario
-              </Button>
-              <ButtonLink tone="quiet" to="/trails">Cancel</ButtonLink>
-            </div>
-          )}
-        </form>
-
-        {generated && (
-          <article className="wk-card panel scenario-studio__preview" aria-live="polite">
+      <section className="scenario-studio" aria-live="polite">
+        {generated ? (
+          <article className="wk-card panel scenario-studio__card scenario-studio__preview wk-ornate">
             <div className="section">
               <p className="eyebrow overline">Generated trail</p>
               <h2 className="heading">{generated.scenario.title}</h2>
@@ -114,13 +76,67 @@ export function CreateScenario() {
             <Notice tone="info" title="Prototype scenario">
               Wick generated this trail from your description. Review the content note before practicing.
             </Notice>
-            <div className="actions">
-              <Button tone="lantern" size="lg" iconAfter="arrow" onClick={() => navigate(`/trails/${generated.scenario.id}`)}>
+            <div className="actions scenario-studio__actions">
+              <Button tone="lantern" size="lg" iconAfter="arrow" onClick={practiceScenario}>
                 Review and practice
               </Button>
-              <Button tone="frost" onClick={() => setGenerated(null)}>Generate another</Button>
+              <Button tone="frost" size="lg" onClick={saveScenario}>Save</Button>
             </div>
           </article>
+        ) : working ? (
+          <article className="wk-card panel scenario-studio__card scenario-studio__loading wk-ornate">
+            <div className="section">
+              <p className="eyebrow overline">Building your trail</p>
+              <h2 className="heading">Shaping the setting and characters…</h2>
+              <p className="muted prose">Wick is turning your idea into a short scenario with distinct roles, choices, and a clear ending.</p>
+            </div>
+            <WickLoader label="Shaping the setting, characters, and choices…" />
+            <p className="caption muted scenario-studio__source">“{prompt}”</p>
+          </article>
+        ) : (
+          <form className="wk-card panel scenario-studio__card scenario-studio__form wk-ornate" onSubmit={submit}>
+            <div className="section">
+              <p className="eyebrow overline">Your idea</p>
+              <h2 id="scenario-idea-title" className="heading">What should someone practice?</h2>
+              <p className="muted prose">
+                Include the setting, who is involved, and the difficult moment. Names and roles are optional—Wick can create them.
+              </p>
+            </div>
+            <label className="wk-field scenario-studio__field">
+              <span className="wk-field__label">Scenario prompt</span>
+              <textarea
+                className="wk-field__control scenario-studio__prompt"
+                value={prompt}
+                minLength={20}
+                maxLength={1500}
+                rows={7}
+                aria-invalid={Boolean(error)}
+                placeholder="Example: During a planning meeting, a senior employee repeatedly takes credit for a new hire's work..."
+                onChange={(event) => setPrompt(event.target.value)}
+              />
+              <span className="wk-field__foot">
+                <span className="wk-field__hint">Do not include confidential company or personal information.</span>
+                <span className="wk-field__count">{prompt.length}/1500</span>
+              </span>
+            </label>
+            <div className="scenario-studio__examples" aria-label="Example scenario ideas">
+              <p className="caption muted">Try an example</p>
+              <div className="chips">
+                {examples.map((example, index) => (
+                  <button className="pill pill--toggle" type="button" key={example} onClick={() => setPrompt(example)}>
+                    Example {index + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {error && <Notice tone="danger" title="That scenario did not generate.">{error}</Notice>}
+            <div className="actions">
+              <Button tone="lantern" size="lg" icon="flame" type="submit" disabled={prompt.trim().length < 20}>
+                Generate scenario
+              </Button>
+              <ButtonLink tone="quiet" to="/trails">Cancel</ButtonLink>
+            </div>
+          </form>
         )}
       </section>
 
