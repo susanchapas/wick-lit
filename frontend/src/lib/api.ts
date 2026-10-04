@@ -1,4 +1,5 @@
 import { customScenarioToken } from "./customScenarios";
+import { directAddress } from "./text";
 import type { ApiErrorBody, GeneratedScenario, Mode, Scenario, StartedSession, TurnResponse, WickSession } from "./types";
 
 const configuredBase = import.meta.env.VITE_WICK_API_BASE_URL?.replace(/\/$/, "");
@@ -61,7 +62,7 @@ const toScenario = (scenario: ApiScenario): Scenario => ({
   id: scenario.scenarioId,
   version: scenario.scenarioVersion,
   title: scenario.title,
-  setup: scenario.description,
+  setup: directAddress(scenario.description),
   location: scenario.setting,
   minutes: Math.max(1, Math.ceil(scenario.durationSeconds / 60)),
   characters: [...scenario.characters.map((character) => character.name), "You"],

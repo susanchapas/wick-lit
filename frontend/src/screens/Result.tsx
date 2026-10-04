@@ -8,7 +8,7 @@ import { addLantern, setReflection, useHistory } from "../lib/history";
 import { growthRankForScore } from "../lib/rankings";
 import type { EvaluationDimension, WickSession } from "../lib/types";
 import { useScenarios } from "../lib/useScenarios";
-import { withPeriod } from "../lib/text";
+import { directAddress, withPeriod } from "../lib/text";
 
 interface ResultState { session: WickSession }
 const statusValue = { insufficient_evidence: 0, not_demonstrated: 1, partly_demonstrated: 2, demonstrated: 3 } as const;
@@ -63,8 +63,8 @@ export function Result() {
         <div className="section">
           <h1 className="title result-hero__title">{rank.name}</h1>
           <p className="muted">{rank.explanation}</p>
-          <p className="wk-score__band subtitle">{withPeriod(evaluation.summary)}</p>
-          <p className="wk-score__summary">{evaluation.strength}</p>
+          <p className="wk-score__band subtitle">{withPeriod(directAddress(evaluation.summary))}</p>
+          <p className="wk-score__summary">{directAddress(evaluation.strength)}</p>
           <div className="actions">{retry}<Button tone="bark" icon="document" onClick={() => setReflecting(true)}>{saved?.reflection ? "Edit reflection" : "Reflect"}</Button></div>
         </div>
       </header>
@@ -74,14 +74,14 @@ export function Result() {
             <details key={name} className="wk-card panel result-dim">
               <summary><Meter label={name} value={statusValue[dimension.status]} max={3} /><Icon name="chevron" size={20} /></summary>
               <p className="label">{statusLabel(dimension.status)}</p>
-              <p>{dimension.rationale}</p>
+              <p>{directAddress(dimension.rationale)}</p>
               {dimension.evidence.map((item) => <blockquote key={item.turnId} className="muted">“{item.quote}”</blockquote>)}
             </details>
           ))}
         </div>
         <div className="result-notes">
-          <section className="result-note" aria-labelledby="worked"><Icon name="check" /><div className="section"><h2 id="worked" className="heading">What worked:</h2><p>{evaluation.strength}</p>{evaluation.identifiedStrategies.length ? <p className="muted">Strategies shown: {evaluation.identifiedStrategies.map((strategy) => strategy.name).join(", ")}.</p> : null}</div></section>
-          <section className="result-note" aria-labelledby="next"><Icon name="arrow" /><div className="section"><h2 id="next" className="heading">Try next time:</h2><p>{evaluation.nextStep}</p></div></section>
+          <section className="result-note" aria-labelledby="worked"><Icon name="check" /><div className="section"><h2 id="worked" className="heading">What worked:</h2><p>{directAddress(evaluation.strength)}</p>{evaluation.identifiedStrategies.length ? <p className="muted">Strategies shown: {evaluation.identifiedStrategies.map((strategy) => strategy.name).join(", ")}.</p> : null}</div></section>
+          <section className="result-note" aria-labelledby="next"><Icon name="arrow" /><div className="section"><h2 id="next" className="heading">Try next time:</h2><p>{directAddress(evaluation.nextStep)}</p></div></section>
         </div>
       </div>
       <div className="result-split">

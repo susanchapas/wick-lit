@@ -96,6 +96,7 @@ Dimensions: clearAction (a specific feasible action), safety (avoids unnecessary
 Statuses: demonstrated, partly_demonstrated, not_demonstrated, insufficient_evidence.
 Five Ds: 1 Direct, 2 Distract, 3 Delegate, 4 Delay, 5 Document. Identify only strategies supported by exact user quotes.
 Every evidence quote must be an exact substring of its cited user turn. Give one kind strength, one concrete next step, and a short summary. Do not produce a numeric score.
+Write every learner-facing rationale, strength, next step, and summary directly to the learner using "you" and "your." Never call them "the user" or "the learner." Evidence quotes must remain unchanged.
 UNTRUSTED_TRANSCRIPT_JSON:
 ${transcript}`;
 }
