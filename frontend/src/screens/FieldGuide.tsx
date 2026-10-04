@@ -166,11 +166,11 @@ export function FieldGuide() {
               <Icon name="info" />
             </span>
             <h2 className="heading" id="guide-lead">
-              Follow the person’s lead.
+              Let the person affected decide.
             </h2>
           </div>
           <p className="muted prose">
-            In a real moment, the five Ds are options, not a checklist. Choose based on safety, the context, and what
+            The five Ds are a set of options you can use in any order. Choose based on safety, the context, and what
             the person affected wants.
           </p>
         </div>
