@@ -393,9 +393,12 @@ dialog.wk-dialog::backdrop { background: transparent; }
 .session-bar__title { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
 .session-bar__title .aside { color: var(--ink-muted); }
 .session-bar__scenario { color: var(--lantern-text); }
-.cnote-screen { flex: 1; overflow-y: auto; display: grid; place-items: center; padding: var(--space-8) var(--space-4); }
-.wk-cnote { width: 100%; max-width: 640px; }
-.wk-cnote .wk-notice { max-width: none; }
+.cnote-screen { flex: 1; overflow-y: auto; display: grid; place-items: center; align-content: center; gap: var(--space-5); padding: var(--space-8) var(--space-4); }
+.wk-cnote, .wk-cnote__exit { width: 100%; max-width: 640px; }
+.wk-cnote__exit { padding-inline: var(--space-6); }
+.wk-cnote .wk-notice { max-width: none; padding: var(--space-5) var(--space-6); }
+.wk-cnote .wk-notice__body { color: var(--ink-muted); }
+@media (min-width: 640px) { .wk-cnote { padding: var(--space-10) var(--space-12); } .wk-cnote__exit { padding-inline: var(--space-12); } }
 .wk-cnote .wk-notice__title { text-transform: uppercase; font-size: 13px; letter-spacing: .04em; }
 
 .clearing { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-rows: auto minmax(320px, 1fr); gap: var(--space-6); width: 100%; max-width: 1200px; margin-inline: auto; padding: var(--space-6) var(--space-4); }

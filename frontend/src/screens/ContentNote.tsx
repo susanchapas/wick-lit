@@ -5,7 +5,6 @@ import { Icon } from "../components/Icon";
 import { SessionBar } from "../components/SessionBar";
 import { useSettings } from "../lib/settings";
 import { useScenarios } from "../lib/useScenarios";
-import { withPeriod } from "../lib/text";
 
 export function ContentNote() {
   const { id } = useParams();
@@ -18,21 +17,23 @@ export function ContentNote() {
       <SessionBar exitTo="/trails" />
       <main className="cnote-screen">
         {s ? (
-          <article className="wk-cnote">
-            <title>{`Content note: ${s.title} · Wick`}</title>
-            <h1 className="wk-cnote__title">{withPeriod(s.title)}</h1>
-            <Notice tone="caution" title={s.contentTags.join(", ")}>
-              {s.contentNote}
-            </Notice>
-            <p className="wk-cnote__lead">{s.setup}</p>
-            <div className="actions">
-              <ButtonLink tone="lantern" size="lg" icon={input === "voice" ? "mic" : "direct"} to={`/trails/${s.id}/clearing`}>
-                Start role-play
-              </ButtonLink>
-              <ButtonLink tone="quiet" to="/trails">
-                Choose another trail
-              </ButtonLink>
-            </div>
+          <>
+            <article className="wk-cnote">
+              <title>{`Content note: ${s.title} · Wick`}</title>
+              <h1 className="wk-cnote__title">{s.title}</h1>
+              <Notice tone="caution" title={s.contentTags.join(", ")}>
+                {s.contentNote}
+              </Notice>
+              <p className="wk-cnote__lead">{s.setup}</p>
+              <div className="actions">
+                <ButtonLink tone="lantern" size="lg" icon={input === "voice" ? "mic" : "direct"} to={`/trails/${s.id}/clearing`}>
+                  Start role-play
+                </ButtonLink>
+                <ButtonLink tone="quiet" to="/trails">
+                  Choose another trail
+                </ButtonLink>
+              </div>
+            </article>
             <p className="wk-cnote__exit">
               <Icon name="step-out" size={20} />
               <span>
@@ -41,7 +42,7 @@ export function ContentNote() {
                 is not stored by Wick.
               </span>
             </p>
-          </article>
+          </>
         ) : error ? (
           <Notice tone="danger" title="This trail did not load." action={<Button onClick={retry}>Try again</Button>}>
             Check your connection, then try again.

@@ -44,7 +44,7 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 @keyframes wk-sheen { from { background-position: 130% 0; opacity: 1; } 80% { opacity: 1; } to { background-position: -30% 0; opacity: 0; } }
 @keyframes wk-glow-breath { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 @keyframes wk-pop { 40% { scale: 1.2; } }
-@keyframes wk-halo { from { box-shadow: inset 0 0 0 2px var(--d), var(--inset-frost), 0 0 0 0 color-mix(in srgb, var(--lantern) 50%, transparent); } to { box-shadow: inset 0 0 0 2px var(--d), var(--inset-frost), 0 0 0 10px transparent; } }
+@keyframes wk-halo { from { box-shadow: inset 0 0 0 1px var(--d), var(--inset-frost), 0 0 0 0 color-mix(in srgb, var(--lantern) 50%, transparent); } to { box-shadow: inset 0 0 0 1px var(--d), var(--inset-frost), 0 0 0 10px transparent; } }
 @keyframes wk-glint { 0% { opacity: 0; transform: scale(.3) rotate(0); } 60% { opacity: 1; transform: scale(1.1) rotate(70deg); } 100% { opacity: .85; transform: scale(1) rotate(90deg); } }
 
 /* ---------- Button ---------- */
@@ -121,8 +121,8 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-dpick__opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .wk-dpick__opt label { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--target-min); padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2); border-radius: var(--radius-md); background: var(--frost); box-shadow: var(--inset-frost); cursor: pointer; font: 600 15px/20px var(--font-sans); transition: background-color var(--duration-kindle) var(--ease-kindle), box-shadow var(--duration-kindle) var(--ease-kindle); }
 .wk-dpick__opt label:hover { background: var(--frost-hover); }
-.wk-dpick__opt input:focus-visible + label { box-shadow: var(--inset-frost), var(--focus-ring); }
-.wk-dpick__opt input:checked + label { background: var(--lantern-soft); box-shadow: inset 0 0 0 2px var(--d), var(--inset-frost); }
+.wk-dpick__opt input:focus-visible + label { box-shadow: var(--inset-frost), 0 0 0 1px var(--lantern); }
+.wk-dpick__opt input:checked + label { background: var(--lantern-soft); box-shadow: inset 0 0 0 1px var(--d), var(--inset-frost); }
 .wk-dpick__check { width: 18px; height: 18px; color: var(--d); opacity: 0; transform: scale(.6); transition: opacity var(--duration-kindle) var(--ease-kindle), transform var(--duration-drift) var(--ease-lift); }
 .wk-dpick__opt input:checked + label .wk-dpick__check { opacity: 1; transform: none; }
 .wk-dpick__check--icon { opacity: 1; transform: none; }
@@ -227,13 +227,14 @@ body { margin: 0; background: var(--ground); color: var(--ink); font-family: var
 .wk-notice__title { margin: 0; font: 600 16px/24px var(--font-sans); color: var(--tone); }
 .wk-notice__body { grid-column: 2; margin: 0; font: 400 16px/24px var(--font-sans); color: var(--ink); }
 .wk-notice__action { grid-column: 2; margin-top: var(--space-2); }
-.wk-cnote { display: grid; gap: var(--space-4); padding: var(--space-6); border-radius: var(--radius-xl); background: var(--ground-raised); box-shadow: var(--inset-raised); max-width: 520px; }
-.wk-cnote__title { margin: 0; font: 650 24px/30px var(--font-sans); }
-.wk-cnote__lead { margin: 0; font: 400 17px/27px var(--font-sans); color: var(--ink-muted); }
+.wk-cnote { display: grid; gap: var(--space-8); padding: var(--space-8) var(--space-6); border-radius: var(--radius-xl); background: var(--ground-raised); box-shadow: var(--inset-raised); max-width: 520px; }
+.wk-cnote__title { margin: 0; font: 650 28px/34px var(--font-sans); text-wrap: balance; }
+.wk-cnote__lead { margin: 0; font: 400 17px/28px var(--font-sans); color: var(--ink-muted); text-wrap: pretty; }
 .wk-cnote__list { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-2); }
 .wk-cnote__list li { display: flex; gap: var(--space-2); align-items: flex-start; font: 400 16px/24px var(--font-sans); }
 .wk-cnote__list li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 9px; border-radius: var(--radius-round); background: var(--caution); }
-.wk-cnote__exit { margin: 0; font: 450 14px/20px var(--font-sans); color: var(--ink-muted); display: flex; gap: var(--space-2); align-items: center; }
+.wk-cnote__exit { margin: 0; font: 450 13px/20px var(--font-sans); color: var(--ink-muted); display: flex; gap: var(--space-3); align-items: flex-start; }
+.wk-cnote__exit .wk-icon { flex: none; margin-top: 1px; }
 
 /* ---------- Tiles: streak and lantern ---------- */
 .wk-tile { position: relative; display: grid; gap: var(--space-3); padding: var(--space-6); border-radius: var(--cut-arch) var(--cut-arch) var(--radius-lg) var(--radius-lg) / 48px 48px var(--radius-lg) var(--radius-lg); background: var(--ground-raised); box-shadow: var(--inset-raised); max-width: 320px; text-align: center; justify-items: center; }
