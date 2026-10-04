@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { AppError, asPublicError } from "../domain/errors";
 import { synthesizeCharacterSpeech, transcribeUserAudio } from "../providers/elevenLabsSpeech";
 import { getScenarioCharacterVoiceId, publicScenario, publicScenarios } from "../scenarios";
-import { generateCustomScenario, signCustomScenario } from "../scenarios/customScenario";
+import { generateCustomScenario, generateScenarioSuggestion, signCustomScenario } from "../scenarios/customScenario";
 import { readBearerToken } from "../security/sessionAccess";
 import { addMessage, createSession, endSession, getCharacterTurnContext, getSession, rateLimitIdentity, stepOutSession } from "../services/sessionService";
 import { MemorySessionStore } from "../storage/sessionStore";
@@ -19,6 +19,10 @@ createServer(async (request, response) => {
     const path = url.pathname;
     if (request.method === "GET" && path === "/api/health") return json(response, 200, { status: "ok", service: "wick-node-local" });
     if (request.method === "GET" && path === "/api/scenarios") return json(response, 200, { scenarios: publicScenarios() });
+    if (request.method === "POST" && path === "/api/scenarios/suggest") {
+      await store.consumeRateLimit(`suggest-${rateLimitIdentity(request.socket.remoteAddress)}`, 12, 60 * 60);
+      return json(response, 200, { prompt: await generateScenarioSuggestion() });
+    }
     if (request.method === "POST" && path === "/api/scenarios/generate") {
       const body = await readJson(request);
       await store.consumeRateLimit(`generate-${rateLimitIdentity(request.socket.remoteAddress)}`, 6, 60 * 60);

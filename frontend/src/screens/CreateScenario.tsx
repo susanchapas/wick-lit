@@ -5,21 +5,16 @@ import { Button, ButtonLink } from "../components/Button";
 import { Notice, WickLoader } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { PageHead } from "../components/PageHead";
-import { generateScenario } from "../lib/api";
+import { generateScenario, suggestScenario } from "../lib/api";
 import { saveCustomScenario } from "../lib/customScenarios";
 import type { GeneratedScenario } from "../lib/types";
-
-const examples = [
-  "A team lead keeps interrupting a junior employee in a project meeting while others stay quiet.",
-  "A coworker pressures someone to share private medical information in a group Slack channel.",
-  "A manager dismisses repeated concerns about an unrealistic deadline and blames one teammate publicly.",
-];
 
 export function CreateScenario() {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState("");
   const [generated, setGenerated] = useState<GeneratedScenario | null>(null);
   const [working, setWorking] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
   const [error, setError] = useState("");
 
   const submit = async (event: FormEvent) => {
@@ -49,6 +44,19 @@ export function CreateScenario() {
     if (!generated) return;
     saveCustomScenario(generated);
     navigate("/trails");
+  };
+
+  const suggestIdea = async () => {
+    if (suggesting) return;
+    setSuggesting(true);
+    setError("");
+    try {
+      setPrompt(await suggestScenario());
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Wick could not suggest an idea right now.");
+    } finally {
+      setSuggesting(false);
+    }
   };
 
   return (
@@ -104,32 +112,35 @@ export function CreateScenario() {
             </div>
             <label className="wk-field scenario-studio__field">
               <span className="wk-field__label">Scenario prompt</span>
-              <textarea
-                className="wk-field__control scenario-studio__prompt"
-                value={prompt}
-                minLength={20}
-                maxLength={1500}
-                rows={7}
-                aria-invalid={Boolean(error)}
-                placeholder="Example: During a planning meeting, a senior employee repeatedly takes credit for a new hire's work..."
-                onChange={(event) => setPrompt(event.target.value)}
-              />
+              <span className="scenario-studio__prompt-wrap">
+                <textarea
+                  className="wk-field__control scenario-studio__prompt"
+                  value={prompt}
+                  minLength={20}
+                  maxLength={1500}
+                  rows={7}
+                  aria-invalid={Boolean(error)}
+                  aria-busy={suggesting}
+                  placeholder="Describe a difficult workplace or campus moment—or use the refresh button for an idea."
+                  onChange={(event) => setPrompt(event.target.value)}
+                />
+                <button
+                  className={`scenario-studio__suggest${suggesting ? " is-loading" : ""}`}
+                  type="button"
+                  aria-label={suggesting ? "Suggesting a scenario idea" : "Suggest a new scenario idea"}
+                  title="Suggest a new scenario idea"
+                  disabled={suggesting}
+                  onClick={suggestIdea}
+                >
+                  <Icon name="replay" size={20} />
+                </button>
+              </span>
               <span className="wk-field__foot">
                 <span className="wk-field__hint">Do not include confidential company or personal information.</span>
                 <span className="wk-field__count">{prompt.length}/1500</span>
               </span>
             </label>
-            <div className="scenario-studio__examples" aria-label="Example scenario ideas">
-              <p className="caption muted">Try an example</p>
-              <div className="chips">
-                {examples.map((example, index) => (
-                  <button className="pill pill--toggle" type="button" key={example} onClick={() => setPrompt(example)}>
-                    Example {index + 1}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {error && <Notice tone="danger" title="That scenario did not generate.">{error}</Notice>}
+            {error && <Notice tone="danger" title="Wick needs another try.">{error}</Notice>}
             <div className="actions">
               <Button tone="lantern" size="lg" icon="flame" type="submit" disabled={prompt.trim().length < 20}>
                 Generate scenario

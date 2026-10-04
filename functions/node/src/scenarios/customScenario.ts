@@ -126,6 +126,17 @@ const responseJsonSchema = {
   ],
 };
 
+const suggestionSchema = z.object({
+  prompt: z.string().trim().min(20).max(220),
+});
+
+const suggestionJsonSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: { prompt: { type: "string" } },
+  required: ["prompt"],
+};
+
 const availableVoices = [
   { style: "feminine", voice_id: "eXpIbVcVbLo8ZJQDlDnl", name: "Maya voice" },
   { style: "feminine", voice_id: "cgSgspJ2msm6clMCkdW9", name: "Jessica" },
@@ -187,6 +198,45 @@ export async function generateCustomScenario(prompt: string): Promise<ScenarioDe
           : undefined,
   });
   throw new AppError(502, "scenario_generation_failed", "Wick could not shape that scenario right now. Please try again.", true);
+}
+
+export async function generateScenarioSuggestion(): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new AppError(503, "gemini_not_configured", "Gemini is not configured on the server.");
+  const models = [...new Set([
+    process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite",
+    process.env.GEMINI_FALLBACK_MODEL ?? "gemini-3.1-flash-lite",
+  ])];
+  const client = new GoogleGenAI({ apiKey });
+  let lastError: unknown;
+
+  for (const model of models) {
+    try {
+      const result = await client.models.generateContent({
+        model,
+        contents: `Write one concise idea for a workplace or college interpersonal-skills practice scenario that the Wick training app can turn into a roleplay. Name a realistic setting and a difficult moment involving boundaries, communication, inclusion, ethical intervention, privacy, psychological safety, or respectful disagreement. Write from the learner's perspective or describe what the learner notices. Do not use "Wick" as a person, employer, school, or location. Make it specific, but keep it to one sentence under 180 characters. Do not use real people, minors, explicit sexual content, graphic violence, self-harm, illegal instructions, or hateful targeting. Return only the requested JSON.`,
+        config: {
+          responseMimeType: "application/json",
+          responseJsonSchema: suggestionJsonSchema,
+          temperature: 0.95,
+          abortSignal: AbortSignal.timeout(15_000),
+        },
+      });
+      if (!result.text) throw new Error("Gemini returned no suggestion");
+      return suggestionSchema.parse(JSON.parse(result.text)).prompt;
+    } catch (error) {
+      lastError = error;
+      const status = error && typeof error === "object" && "status" in error ? Number(error.status) : 0;
+      if (error instanceof SyntaxError || error instanceof z.ZodError || [429, 500, 502, 503, 504].includes(status)) continue;
+      break;
+    }
+  }
+
+  console.error("Gemini scenario suggestion failed", {
+    name: lastError instanceof Error ? lastError.name : typeof lastError,
+    status: lastError && typeof lastError === "object" && "status" in lastError ? Number(lastError.status) : undefined,
+  });
+  throw new AppError(502, "scenario_suggestion_failed", "Wick could not suggest an idea right now. Please try again.", true);
 }
 
 export function signCustomScenario(scenario: ScenarioDefinition): string {

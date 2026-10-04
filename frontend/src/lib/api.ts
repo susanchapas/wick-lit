@@ -82,6 +82,11 @@ export async function generateScenario(prompt: string): Promise<GeneratedScenari
   return { scenario: toScenario(payload.scenario), scenarioToken: payload.scenarioToken };
 }
 
+export async function suggestScenario(): Promise<string> {
+  const payload = (await request("scenarios/suggest", json()).then((response) => response.json())) as { prompt: string };
+  return payload.prompt;
+}
+
 export const startSession = (scenarioId: string, mode: Mode): Promise<StartedSession> =>
   request("sessions", json({ scenarioId, mode, scenarioToken: customScenarioToken(scenarioId) })).then((response) => response.json());
 
