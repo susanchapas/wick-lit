@@ -9,7 +9,7 @@ import { ContentNote } from "./screens/ContentNote";
 import { CreateScenario } from "./screens/CreateScenario";
 import { FieldGuide } from "./screens/FieldGuide";
 import { Grove } from "./screens/Grove";
-import { Journey } from "./screens/LanternsLit";
+import { Journey } from "./screens/Journey";
 import { Result } from "./screens/Result";
 import { Settings } from "./screens/Settings";
 import { SteppingIn } from "./screens/SteppingIn";
