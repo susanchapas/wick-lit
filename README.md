@@ -15,10 +15,10 @@ teaches three things:
 2. How to report it when it happens to you.
 3. How to make sure you do not do it yourself.
 
-It does not teach what to do when you **see** it happen to someone else. We
-always hear "say something" or "do something", but no one shows us how. So in
-the moment, most people freeze. They do not know the words, they fear making it
-worse, and they have never practised.
+It does not teach what to do when you **see** it happen to someone else. 
+We always hear "say something" or "do something", but no one shows us how. 
+So in the moment, most people freeze. They do not know the words, they 
+fear making it worse, and they have never practised.
 
 ## Purpose
 
