@@ -24,7 +24,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 
 .pill { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 32px; padding: var(--space-1) var(--space-3); border: 0; border-radius: var(--radius-xl); background: var(--frost); box-shadow: var(--inset-frost); color: var(--ink); font: 500 13px/18px var(--font-sans); text-decoration: none; white-space: nowrap; }
 .pill--lantern { background: var(--lantern-soft); color: var(--lantern-text); justify-self: start; }
-.wk-card__done.pill { justify-self: center; min-height: 0; padding: 0 var(--space-3); font-size: 12px; line-height: 16px; margin-block: calc(var(--space-1) - var(--space-3)) calc(-16px - var(--space-1)); }
+.wk-card__done.pill { justify-self: center; min-height: 0; padding: 0 var(--space-3); font-size: 12px; line-height: 16px; margin-block: calc(var(--space-1) + var(--space-6)) calc(-16px - var(--space-1)); }
 .pill--link, .pill--toggle { min-height: var(--target-min); padding-inline: var(--space-4); cursor: pointer; }
 .pill--link:hover, .pill--toggle:hover { background: var(--frost-hover); }
 .pill--toggle[aria-pressed="true"] { background: var(--lantern-soft); color: var(--lantern-text); }
@@ -97,7 +97,7 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
   .trail-grid .wk-card { grid-template-rows: auto auto auto auto 1fr; }
   .trail-grid .wk-card__note { grid-row: 4; }
   .trail-grid .wk-card__done { grid-row: 5; }
-  .trail-grid .wk-card__body { grid-row: 3 / -1; opacity: 0; visibility: hidden; }
+  .trail-grid .wk-card__body { grid-row: 3 / -1; align-self: start; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; overflow: hidden; opacity: 0; visibility: hidden; }
   .trail-grid :is(.wk-card__over, .wk-card__meta, .wk-card__note, .wk-card__body) { transition: opacity var(--duration-kindle) var(--ease-kindle), visibility var(--duration-kindle); }
   .trail-grid .wk-card:is(:hover, :focus-within) :is(.wk-card__over, .wk-card__meta, .wk-card__note) { opacity: 0; visibility: hidden; }
   .trail-grid .wk-card:is(:hover, :focus-within) .wk-card__body { opacity: 1; visibility: visible; }
